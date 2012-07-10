@@ -92,6 +92,10 @@ $.extend($.expr[":"], {data:function(elem, i, match, array){
 		// There are no data cell in the tfoot, if there are that is an table design layout issue
 		return false;
 	case "tr": // Vector
+		
+		if(!$(elem).data['tblparser']){
+			return false;
+		}
 		if($(elem).data().tblparser.type == 2){
 			return true;
 		}

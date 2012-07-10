@@ -887,7 +887,12 @@
 			if(rowgroupHeaderRowStack.length == 0 && lstRowGroup.length > 0 && !currentRowGroup.type){
 				currentRowGroup.type = 3;
 			}
-		
+			
+			
+			for(i=0; i<currentRowGroup.row.length; i++){
+				currentRowGroup.row[i].type = currentRowGroup.type;
+			}
+			
 
 			// console.log(rowgroupHeaderRowStack);
 			// console.log(currentRowGroup);
@@ -967,7 +972,18 @@
 					}
 					
 				} else {
-					currentRowGroup.level = 2;
+					
+
+					currentRowGroup.level = currentRowGroup.headerlevel.length+1;
+					
+					// Set the level for each group header cell
+					for(i=0; i<currentRowGroup.headerlevel.length; i++){
+						if(!currentRowGroup.headerlevel[i].level){
+							currentRowGroup.headerlevel[i].level = i+1;
+							currentRowGroup.headerlevel[i].rowlevel = currentRowGroup.headerlevel[i].level;
+						}
+					}
+					
 				}
 				
 			}
