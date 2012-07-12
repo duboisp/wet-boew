@@ -61,3 +61,56 @@ table.wet-boew-zebra td{
 .wet-boew-zebra tr.table-hover td{
     background-color:#eee!important;
 }
+
+/* Column and row Zebra Highligh */
+
+.zebra col, .zebra tr {
+	.table-hover {
+		background-color:#eee!important;
+	}
+}
+
+/* Zebra for Data Summary Level 0 */
+.zebra col.summary0, .zebra tr.summary0 {
+	background-color:#eee!important;
+	.table-hover {
+		background-color:#fff!important;
+	}
+}
+
+/* Zebra for Data Summary Level 1 */
+.zebra col.summary1, .zebra tr.summary1 {
+	background-color:#dedeee!important;
+	.table-hover {
+		background-color:#fff!important;
+	}
+}
+
+/* Zebra for Data Summary Level 2 */
+.zebra col.summary2, .zebra tr.summary2 {
+	background-color:#a0f5e5;!important;
+	.table-hover {
+		background-color:#fff!important;
+	}
+}
+
+/* Zebra for Data Summary Level 3 */
+.zebra col.summary3, .zebra tr.summary3 {
+	background-color:#aaa5e5!important;
+	.table-hover {
+		background-color:#fff!important;
+	}
+}
+
+/* Zebra for Data Summary Level 4 */
+.zebra col.summary4, .zebra tr.summary4 {
+	background-color:#5580Fe!important;
+	.table-hover {
+		background-color:#5eb90a!important;
+	}
+}
+
+.zebra td.layout, .zebra th.layout {
+	background-color:#fff!important;
+}
+
