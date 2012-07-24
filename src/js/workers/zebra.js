@@ -18,6 +18,35 @@
 				$lis,
 				parity;
 			if (elm.is('table')) {
+				
+				// To go in advance mode, we check for the presence of special element like:
+				// * TODO: forced by a CSS class
+				// * presence of colgroup tag
+				// * more than one tbody tag
+				// * thead with more than one row
+				// * ~ tfoot presence
+				// * ~ width of the th at the first row in the tbody
+				
+				
+				
+				// Summary colgroup highlight
+				
+				// Column Hover effect
+				
+				// Summary rowgroup highlight
+				
+				// Row Hover effect
+				
+				
+				
+				
+				
+				
+				
+				//
+				// Basic Mode
+				//
+				
 				$trs = (elm.children('tr').add(elm.children('tbody').children('tr'))).filter(function () {
 					return $(this).children('td').length > 0;
 				});
