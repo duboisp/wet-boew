@@ -13,17 +13,18 @@
 	/* local reference */
 	_pe.fn.rdtable = {
 		type: 'plugin',
+		depends: ['parserTable'],
 		_exec: function (elem) {
 			var tblparser;
 			if (!elem.is('table')) {
 				return;
 			}
 
-			// Check if the table needs to be shrinked based on the viewport
-
+			// Check if the table size overflow on the viewport (per his width)
+			
 			// Parse the table
 			if (!$(elem).data().tblparser) {
-				_pe.fn.parsertable._exec($(elem));
+				_pe.fn.parsertable.parse($(elem));
 			}
 			tblparser = $(elem).data().tblparser; // Create an alias
 
