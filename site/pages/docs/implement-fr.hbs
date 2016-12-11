@@ -1,0 +1,34 @@
+---
+{
+	"title": "Mise en oeuvre de la WET-BOEW",
+	"language": "fr",
+	"description": "Information à propos de comment mettre en oeuvre la Boîte à outils de l'expérience Web.",
+	"altLangPrefix": "implement",
+	"dateModified": "2016-12-11"
+}
+---
+<p>Information à propos de comment mettre en oeuvre la Boîte à outils de l'expérience Web.</p>
+
+
+<h2>Utiliser la BOEW pour mon site Web</h2>
+<ol>
+	<li>Téléchargez les fichiers de production de la dernière version stable d'un des thèmes de la <a href="versions/dwnld-fr.html">page de téléchargements</a>.</li>
+	<li>Assurez-vous que le <a href="server-fr.html">serveur est configuré correctement</a>.</li>
+	<li>Codez vos page web selon le <a href="http://wet-boew.github.io/wet-boew-styleguide/v4/index-fr.html">guide de style</a>.</li>
+</ol>
+
+<h2>L'intégrité des sous-ressources <small>Securité</small></h2>
+
+<p>Ceci améliore la sécurité lorsque les ressource de la WET sont lié à un CDN. <a href="https://www.w3.org/TR/SRI/" hreflang="en">L'intégrité des sous-ressources (SRI) est une recommendation du W3C</a> (en anglais seulement) et c'est supporté par la plupart des furteurs majeurs. La mise en oeuvre des SRI est laissé à la discrétion de l'intégrateur.</p>
+
+<p>Vous pouvez obtenir les métadonnées de l'intégrité des ressource pour toutes les versions 4 de la BOEW incluant les thèmes ici: <a href="https://github.com/LaurentGoderre/wet-boew-sri">https://github.com/LaurentGoderre/wet-boew-sri</a></p>
+
+<h3>Comment utiliser les métadonnées d'intégrité</h3>
+
+<p>Vous devez ajouter deux nouveaux attributs, <code>integrity</code> et <code>crossorigin</code>, pour vos éléments <code>script</code> et <code>link</code> duquel font référence à un fichier sur un CDN.</p>
+
+<pre><code>&lt;script src=&quot;https://example.com/example-framework.js&quot;
+		integrity=&quot;sha384-Li9vy3DqF8tnTXuiaAJuML3ky+er10rcgNR/VqsVpcw+ThHmYcwiB1pbOxEbzJr7&quot;
+		crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre>
+
+<p>Veuillez noter que si vous utiliser SRI que cela va impliqué une mise à jour de la métadonnée d'intégrité pour l'ensemble de vos page à chaque mise à jour vers une version plus récente de la BOEW.</p>

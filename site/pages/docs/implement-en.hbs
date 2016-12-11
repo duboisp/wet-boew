@@ -1,0 +1,33 @@
+---
+{
+	"title": "Implementing WET-BOEW",
+	"language": "en",
+	"description": "Information on how to implement the Web Experience Toolkit",
+	"altLangPrefix": "implement",
+	"dateModified": "2016-12-11"
+}
+---
+<p>Information on how to implement the Web Experience Toolkit</p>
+
+<h2>How to use WET on my website</h2>
+<ol>
+	<li><a href="versions/dwnld-en.html">Download</a> the production files of one of the themes.</li>
+	<li>Ensure the <a href="server-en.html">server is configured correctly</a></li>
+	<li>Code your web page according to <a href="http://wet-boew.github.io/wet-boew-styleguide/v4/index-en.html">the WET style guide</a>.</li>
+</ol>
+
+<h2>Sub-resource integrity <small>Security</small></h2>
+
+<p>This improve the security when linking to a CDN for WET resources. <a href="https://www.w3.org/TR/SRI/">Sub-resource integrity (SRI) is a W3C recommendation</a> and supported by many major browsers. The implementation of SRI would be up to the implementer and at their discretion.</p>
+
+<p>You can get the integrity metadata for all version 4 releases including themes here: <a href="https://github.com/LaurentGoderre/wet-boew-sri">https://github.com/LaurentGoderre/wet-boew-sri</a></p>
+
+<h3>How to use SRIs integrity metadata</h3>
+
+<p>You will need to add two attributes, <code>integrity</code> and <code>crossorigin</code>, for <code>script</code> tag and <code>link</code> tag that usually retreive files from a CDN.</p>
+
+<pre><code>&lt;script src=&quot;https://example.com/example-framework.js&quot;
+        integrity=&quot;sha384-Li9vy3DqF8tnTXuiaAJuML3ky+er10rcgNR/VqsVpcw+ThHmYcwiB1pbOxEbzJr7&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre>
+
+<p>Please note that if you use SRI that means you will update the integrity metadata for all of your pages when updating to the latest version of WET.</p>
