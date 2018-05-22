@@ -194,15 +194,16 @@ var componentName = "wb-frmvld",
 						// Create our error summary that will appear before the form
 						showErrors: function( errorMap ) {
 							this.defaultShowErrors();
-							var $errors = $form.find( "strong.error" ).filter( ":not(:hidden)" ),
+							var $errors = $form.find( ".wb-server-error, strong.error" ).filter( ":not(:hidden)" ),
 								$errorfields = $form.find( "input.error, select.error, textarea.error" ),
 								prefixStart = "<span class='prefix'>" + i18nText.error + "&#160;",
 								prefixEnd = i18nText.colon + " </span>",
 								separator = i18nText.hyphen,
 								ariaLive = $form.parent().find( ".arialive" )[ 0 ],
 								$summaryContainer, summary, key, i, len, $error, prefix, $fieldName, $fieldset, label, labelString;
+							$form.find( ".wb-server-error-clear" ).remove();
 
-							// Correct the colouring of fields that are no longer invalid
+								// Correct the colouring of fields that are no longer invalid
 							$form
 								.find( ".has-error [aria-invalid=false]" )
 									.closest( ".has-error" )
@@ -239,7 +240,13 @@ var componentName = "wb-frmvld",
 									summary += "<li><a href='#" + $error.data( "element-id" ) +
 										"'>" + prefix + ( $fieldName.length !== 0 ? $fieldName.html() + separator : "" ) +
 										$error.text() + "</a></li>";
-									$error.html( "<span class='label label-danger'>" + prefix + $error.text() + "</span>" );
+
+										//Verify if it is a server-error
+									if ( $errors[ i ].classList.contains( "wb-server-error" ) ) {
+										$error.html( prefix + $error.text() );
+									} else {
+										$error.html( "<span class='label label-danger'>" + prefix + $error.text() + "</span>" );
+									}
 								}
 								summary += "</ul>";
 

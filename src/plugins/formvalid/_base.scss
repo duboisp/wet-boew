@@ -11,7 +11,9 @@
 	font-size: 100%;
 	white-space: normal;
 }
-
+.wb-server-error {
+	font-size:inherit !important; white-space:normal !important;
+}
 .wb-frmvld,
 .wb-frm {
 	label {
