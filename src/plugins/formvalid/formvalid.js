@@ -60,7 +60,8 @@ var componentName = "wb-frmvld",
 					error: i18n( "err" ),
 					errorFound: i18n( "err-fnd" ),
 					errorsFound: i18n( "errs-fnd" ),
-					formNotSubmitted: i18n( "frm-nosubmit" )
+					formNotSubmitted: i18n( "frm-nosubmit" ),
+					correct: i18n( "correct" )
 				};
 			}
 
@@ -237,15 +238,14 @@ var componentName = "wb-frmvld",
 									}
 
 									$error.find( "span.prefix" ).detach();
-									summary += "<li><a href='#" + $error.data( "element-id" ) +
-										"'>" + prefix + ( $fieldName.length !== 0 ? $fieldName.html() + separator : "" ) +
-										$error.text() + "</a></li>";
 
-										//Verify if it is a server-error
+									//Verify if it is a wb-server-error
 									if ( $errors[ i ].classList.contains( "wb-server-error" ) ) {
+										summary += "<li><a class='alert-link' href='#" + $error.data( "element-id" ) + "'>" + prefix + i18nText.correct + ( $fieldName.length !== 0 ? $fieldName.html() + separator : "" ) + $error.text() + "</a></li>";
 										$error.html( prefix + $error.text() );
 									} else {
-										$error.html( "<span class='label label-danger'>" + prefix + $error.text() + "</span>" );
+										summary += "<li><a href='#" + $error.data( "element-id" ) + "'>" + prefix + ( $fieldName.length !== 0 ? $fieldName.html() + separator : "" ) + $error.text() + "</a></li>";
+										$error.html( "<span class='label label-danger'>" + prefix + $error.text( ) + "</span>" );
 									}
 								}
 								summary += "</ul>";
@@ -342,6 +342,11 @@ var componentName = "wb-frmvld",
 							// Correct the colouring of fields that are no longer invalid
 							$form.find( ".has-error" ).removeClass( "has-error" );
 						}
+					} );
+
+					// Trigger the validation on wb-server-error
+					$form.find( ".wb-server-error" ).filter( ":not( :hidden )" ).each( function() {
+						$( "form" ).validate().element( $( "[id =" + this.attributes[ "data-element-id" ].value + "]" ) );
 					} );
 
 					// Tell the i18n file to execute to run any $.validator extends
