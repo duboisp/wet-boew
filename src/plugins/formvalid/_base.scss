@@ -11,9 +11,14 @@
 	font-size: 100%;
 	white-space: normal;
 }
+
 .wb-server-error {
-	font-size:inherit !important; white-space:normal !important;
+	display: block !important;
+	font-size:100% !important;
+	text-align: left !important;
+	white-space:normal !important;
 }
+
 .wb-frmvld,
 .wb-frm {
 	label {
