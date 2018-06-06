@@ -241,7 +241,7 @@ var componentName = "wb-frmvld",
 
 									//Verify if it is a wb-server-error
 									if ( $errors[ i ].classList.contains( "wb-server-error" ) ) {
-										summary += "<li><a class='alert-link' href='#" + $error.data( "element-id" ) + "'>" + prefix + ( $fieldName.length !== 0 ? $fieldName.html() + separator : "" ) + $error.text() + separator + i18nText.correct + "</a></li>";
+										summary += "<li><a href='#" + $error.data( "element-id" ) + "'>" + prefix + ( $fieldName.length !== 0 ? $fieldName.html() + separator : "" ) + $error.text() + separator + i18nText.correct + "</a></li>";
 										$error.html( "<strong>" + prefix + $error.text() + "</strong>" );
 									} else {
 										summary += "<li><a href='#" + $error.data( "element-id" ) + "'>" + prefix + ( $fieldName.length !== 0 ? $fieldName.html() + separator : "" ) + $error.text() + "</a></li>";
