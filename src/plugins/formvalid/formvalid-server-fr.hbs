@@ -1,0 +1,115 @@
+---
+{
+	"title": "Fusion des erreurs Serveur-Client",
+	"language": "fr",
+	"category": "Plugiciels",
+	"description": "Ce composant fusionne les erreurs de type serveur et client ensemble.",
+	"tag": "formvalid-server",
+	"parentdir": "formvalid",
+	"altLangPrefix": "formvalid-server",
+	"dateModified": "2018-06-28"
+}
+---
+
+<ul>
+	<li><a href="formvalid-fr.html">Validation de formulaires</a></li>
+	<li><a href="formvalid-server-fr.html">Fusion des erreurs Serveur-Client</a></li>
+</ul>
+
+<hr />
+
+<section>
+	<h2>But</h2>
+	<p>Ce composant fusionne les erreurs de type serveur et client ensemble.</p>
+</section>
+
+<section>
+	<h2>Exemple</h2>
+
+<p>Après avoir soumis votre page, le serveur retoune 2 erreurs serveur. Maintenant si vous essayez de resoumettre votre formulaire avec des erreurs clients, ce composant ajoutera ces erreurs aux erreurs serveur déjà existantes.</p>
+<p>Pour tester le composant: Essayez d'effacer un champ ou d'entrer 201 comme âge du bénéficiaire.</p>
+
+	<h2>
+		<span id="lblTitle" property="name">Démo Formulaire Asp.Net Web</span>
+	</h2>
+
+	<div class="wb-frmvld">
+	<form id="frmMain" action="#" method="get">
+
+		<section tabindex="-1" class="alert alert-danger" id="errors-frmMain">
+			<h2>Le formulaire n'a pu être soumis, car 2 erreurs ont été trouvées.</h2>
+			<ul>
+				<li><a href="#BeneficiaryName"><span class="prefix">Erreur&nbsp;1: </span>Nom du bénéficiaire - Le nom doit commencer par "Super" - (Corriger et resoumettre) </a></li>
+				<li><a href="#BeneficiaryAge"><span class="prefix">Erreur&nbsp;2: </span>Âge du bénéficiaire - L'âge doit être entre 64 et 200 pour recevoir des prestations de retraite - (Corriger et resoumettre) </a></li>
+			</ul>
+		</section>
+
+		<section class="panel panel-info">
+			<header class="panel-heading">
+				<h2 class="panel-title">
+					Section 1
+				</h2>
+			</header>
+
+			<div class="panel-body">
+				<div class="form-group">      
+					<label class="css-star" for="TypeOfPrestation">
+						<abbr title="">
+							<span title="Entrer le type de prestation désiré" class="field-name" id="TypeOfPrestationLbl">Type de prestation</span>
+						</abbr>
+						<strong class="css-required">
+							(Champ requis)
+						</strong>
+					</label>
+					<div>
+						<select name="TypeOfPrestation" class="valid" id="TypeOfPrestation" aria-invalid="false" aria-required="true" required="required">
+							<option value="">Sélectionner une prestation</option>
+							<option value="ChildrenHelp">Aide à l'enfance (Age 1-18) </option>
+							<option value="Invalidity">Invalidité (Age 1-64)</option>
+							<option selected="selected" value="Retirement">Retraite (Age 65-200)</option>
+						</select>
+					</div>
+				</div>
+
+				<fieldset>
+				<legend>Bénéficiaire</legend>
+
+				<div class="form-group">
+					<label class="css-star" for="BeneficiaryName">
+						<abbr title="">
+							<span title="Entrer le nom du bénéficiaire" class="field-name" id="BeneficiaryNameLbl">Nom du bénéficiaire</span>
+						</abbr>
+						<strong class="css-required">
+							(Champ requis)
+						</strong>
+						<span class="label label-danger wb-server-error" id="BeneficiaryNameCv" data-fieldname-id="Nom du bénéficiaire" data-element-id="BeneficiaryName">
+						<strong><span class="prefix">Erreur&nbsp;1: </span>Le nom doit commencer par "Super"</strong></span>
+					</label>
+						<input name="BeneficiaryName" class="form-control valid" id="BeneficiaryName" aria-invalid="false" aria-required="true" required="required" type="text" maxlength="16" value="Moi">
+				</div>
+
+				<div class="form-group">
+					<label class="css-star" for="BeneficiaryAge">
+						<abbr title="">
+							<span title="Entrer l'âge du bénéficiaire" class="field-name" id="BeneficiaryAgeLbl">Âge du bénéficiaire</span>
+						</abbr>
+						<strong class="css-required">
+							(Champ requis)
+						</strong>
+						<span class="label label-danger wb-server-error" id="BeneficiaryAgeCv" data-fieldname-id="Âge du bénéficiaire" data-element-id="BeneficiaryAge">
+							<strong><span class="prefix">Erreur&nbsp;2: </span>L'âge doit être entre 64 et 200 pour recevoir des prestations de retraite</strong>
+						</span>
+					</label>
+						<input name="BeneficiaryAge" class="form-control valid" id="BeneficiaryAge" aria-invalid="false" aria-required="true" required="required" type="number" min="1" max="200" step="1" value="52">
+					</div>
+				</fieldset>
+
+				<ul class="list-inline">
+					<li><input name="btnSubmit" class="btn btn-primary" id="btnSubmit" type="submit" value="Soumettre"></li> 
+				</ul>
+
+			</div>
+		</section>
+	</form>
+	</div>
+</section>

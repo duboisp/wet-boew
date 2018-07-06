@@ -19,6 +19,17 @@
 	white-space:normal !important;
 }
 
+.css-star:before {
+	color: #d3080c;
+	content: "* ";
+	margin-left: -.665em;
+}
+
+.css-required {
+	color: #d3080c;
+	font-weight: 700;
+}
+
 .wb-frmvld,
 .wb-frm {
 	label {

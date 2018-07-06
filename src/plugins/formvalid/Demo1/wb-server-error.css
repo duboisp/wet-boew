@@ -1,0 +1,17 @@
+﻿.wb-server-error {    
+    font-size:100% !important; 
+    white-space:normal !important;
+    display: block !important;
+    text-align: left !important;
+}
+
+.css-star:before {
+	color: #d3080c;
+	content: "* ";
+	margin-left: -.665em;
+}
+
+.css-required {
+	color: #d3080c;
+	font-weight: 700;
+}
