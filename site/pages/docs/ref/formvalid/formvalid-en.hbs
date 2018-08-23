@@ -268,6 +268,47 @@
 
 <section>
 	<h3 id="MergeSCE">Merge Server-Client errors functionality</h3>
+
+	<p>It require to configure the server to create the error summary section and to make the error persistant beside each erroned field.</p>
+	<h4>Error summary markup requirement</h4>
+	<p>The server will need to generate the error summary markup. Where:</p>
+	<ul>
+		<li>Create a <code>&lt;section&gt;</code> element as the first child of the form.</li>
+		<li>Set the <code>id</code> for that section to be the form id prefixed by "errors-"</li>
+		<li>List and number each form validation detected server side.</li>
+		<li>Add a anchor to navigate to each errored field.</li>
+		<li>Suffix each error with " - (Correct and resubmit)" in English and "<span lang="fr"> - (Corriger et resoumettre)</span>" in French.</li>
+		<li>The error text is composed from the field name followed by the error with a clue on how it can be fixed</li>
+	</ul> 
+</ul>
+	<p>For example</p>
+	<pre><code>&lt;form id="myForm"&gt;
+	&lt;section id="errors-myForm" class="alert alert-danger"&gt;
+		&lt;h2&gt;The form could not be submitted because 2 errors were found.&lt;/h2&gt;
+		&lt;ul&gt;
+			&lt;li&gt;&lt;a href="#BeneficiaryName"&gt;&lt;span class="prefix"&gt;Error&nbsp;1: &lt;/span&gt;Beneficiary name - The name should begin with "Super" - (Correct and resubmit) &lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="#BeneficiaryAge"&gt;&lt;span class="prefix"&gt;Error&nbsp;2: &lt;/span&gt;Beneficiary age - Age should be greater than 64 for a Retirement benefit - (Correct and resubmit) &lt;/a&gt;&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/section&gt;
+	...
+&lt;/form&gt;</code></pre>
+	
+	<h4>Identify the field in error</h4>
+	<p>The server need to markup each the errored field as such, where:</p>
+	<ul>
+		<li>Add The CSS class <code>wb-server-error</code> to the label that contains the description of the error.</li>
+	</ul>
+
+	<pre><code>&lt;label class="required" for="BeneficiaryName"&gt;
+	&lt;span class="field-name"&gt;Beneficiary name&lt;/span&gt;
+	&lt;strong class="required"&gt;
+		(Required field)
+	&lt;/strong&gt;
+	&lt;span class="label label-danger wb-server-error"&gt;
+	&lt;strong&gt;&lt;span class="prefix"&gt;Error&nbsp;1: &lt;/span&gt;The name should begin with "Super"&lt;/strong&gt;&lt;/span&gt;
+&lt;/label&gt;</code></pre>
+
+	<h4>Implementation example with ASP.Net</h4>
 	<p>If you want to concatenate the server errors with the client errors, add the following attributes to each ASP validator:</p>
 	<p><code>Display="Dynamic" EnableClientScript="false" data-element-id="ContentPlaceHolderID_ControlInputID" CssClass="label label-danger wb-server-error"</code></p>
 	<p><Strong>Asp Validator examples:</strong></p>

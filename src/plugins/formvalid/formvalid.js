@@ -61,7 +61,7 @@ var componentName = "wb-frmvld",
 					errorFound: i18n( "err-fnd" ),
 					errorsFound: i18n( "errs-fnd" ),
 					formNotSubmitted: i18n( "frm-nosubmit" ),
-					correct: i18n( "correct" )
+					correct: i18n( "err-correct" )
 				};
 			}
 
