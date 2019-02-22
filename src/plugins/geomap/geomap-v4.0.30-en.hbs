@@ -1,84 +1,85 @@
 ---
 {
-	"title": "Géocarte - v4.0.x",
-	"language": "fr",
-	"category": "Plugiciels",
-	"description": "Affiche une carte dynamique sur laquelle des informations de sources supplémentaires peuvent être superposées.",
+	"title": "Geomap - prior v4.0.30",
+	"language": "en",
+	"category": "Plugins",
+	"description": "Displays a dynamic map over which information from additional sources can be overlaid.",
 	"tag": "geomap",
 	"parentdir": "geomap",
 	"altLangPrefix": "geomap",
-	"js": ["demo/client_functions"],
+	"js": ["v4.0.30/demo/client_functions"],
 	"dateModified": "2014-07-22"
 }
 ---
 <span class="wb-prettify all-pre hide"></span>
 
-<section>
-	<h2>But</h2>
-	<p>Affiche une carte dynamique sur laquelle des informations de sources supplémentaires peuvent être superposées.</p>
+<section class="alert alert-warning">
+	<h2>Notice - Working example on this page</h2>
+	<p>Please note all the following example are now deprecated since v4.0.31 and we recommend to update your geomap markup and code as per the <a href="geomap-en.html">latest working example</a>. The examples in this page should be taken as test example to ensure subsequent version of WET 4.0.x are continuing to work how the geomap bellow were coded.</p>
 </section>
 
 <section>
-	<h2>Carte dynamique - Exemple</h2>
+	<h2>Dynamic map example</h2>
 
 	<!-- GeomapStart -->
 	<div id="sample_map"
-		class="wb-geomap position scaleline tab geocoder aoi geolocation"
+		class="wb-geomap position scaleline tab geocoder geolocation aoi"
 		data-wb-geomap='{
-			"layersFile": "demo/config-fr{{environment.suffix}}.js",
+			"layersFile": "v4.0.30/demo/config-en{{environment.suffix}}.js",
 			"tables": [{
 				"id": "bbox",
 				"tab": false,
 				"zoom": true,
-				"popups": true,
-				"visible": false
+				"visible": false,
+				"popups": true
 			},{
 				"id": "cities",
 				"zoom": true,
 				"tab": false,
 				"popups": true,
+				"visible": true,
 				"popupsInfo": {
 					"id": "citiesPopup",
 					"height": 200,
 					"width": 300,
 					"close": true,
-					"content": "<div style=\"white-space:nowrap;\"><p><strong>Subdivision de recensement: </strong>_Subdivision de recensement<div><a href=\"#\" class=\"button\" role=\"button\" title=\"Zoom à la ville\" aria-label=\"Zoom à la ville\" onclick=\"wb.doc.zoomFeature()\">Zoom à la ville</a></div></div>"
+					"content": "<div style=\"white-space:nowrap;\"><p><strong>Census subdivision: </strong>_Census subdivision<div><a href=\"#\" class=\"button\" role=\"button\" title=\"Zoom to city\" aria-label=\"Zoom to city\" onclick=\"wb.doc.zoomFeature()\">Zoom to city</a></div></div>"
 				},
 				"style": {
 					"type": "rule",
 					"rule": [
 					{
-						"field": "Rang",
+						"field": "Rank",
 						"value": [3],
 						"filter": "GREATER_THAN",
 						"init": {
 							"strokeColor": "#0083f5",
 							"fillColor": "#57a8f0",
-							"pointRadius": "6",
+							"pointRadius": 6,
 							"fillOpacity": 0.80,
 							"strokeWidth": 1.0
 						}
 					},
 					{
-						"field": "Rang",
+						"field": "Rank",
 						"value": [2, 3],
 						"filter": "BETWEEN",
 						"init": {
 							"strokeColor": "#F90",
 							"fillColor": "#F90",
-							"pointRadius": "8",
+							"pointRadius": 8,
 							"fillOpacity": 0.80,
 							"strokeWidth": 1.0
 						}
 					},
 					{
-						"field": "Rang",
+						"field": "Rank",
 						"value": [1],
 						"filter": "EQUAL_TO",
 						"init": {
 							"strokeColor": "#F00",
 							"fillColor": "#F00",
-							"pointRadius": "10",
+							"pointRadius": 10,
 							"fillOpacity": 0.80,
 							"strokeWidth": 1.0
 						}
@@ -89,40 +90,40 @@
 
 		<div class="row">
 			<div class="col-md-9">
-				<!-- Insert Map Start (mandatory) -->
-				<div class="wb-geomap-map"></div>
-				<!-- Insert Map End -->
+			<!-- Insert Map Start (mandatory) -->
+			<div class="wb-geomap-map"></div>
+			<!-- Insert Map End -->
 			</div>
 
 			<!-- Insert Legend Start (optional) -->
 			<section class="wb-geomap-legend col-md-3">
-				<h3>Légende</h3>
+				<h3>Legend</h3>
 			</section>
 			<!-- Insert Legend End -->
 		</div>
 
-		<!-- Insert Layer Data Start (mandatory) -->
 		<div class="row">
 			<section class="col-md-12">
-				<h3>Exemple - Données extérieure &amp; provenant de fichiers</h3>
-				<p>Les données sont créées à partir de fichiers, fils ou d'API web.</p>
+				<h3>Example - Remote &amp; File-based Layer Data</h3>
+				<p>Layers are created from file-based formats, feeds, and web API's.</p>
 			</section>
 		</div>
 
+		<!-- Insert Layer Data Start (mandatory) -->
 		<div class="row">
 			<section>
 				<div class="wb-geomap-layers col-md-12">
-					<h3>Exemple - Données dans le fichier HTML</h3>
-					<p>Les données est créées à partir des tables suivantes. Un attribut <code>data-geometry</code> contient la géometry et un attribut <code>data-type</code> contient le type (wkt ou bbox) ont été ajoutés à chaque ligne.</p>
+					<h3>Example - Inline Layer Data</h3>
+					<p>Layers are created from the following tables. An attribute <code>data-geometry</code> to hold the geometry and an attribute <code>data-type</code> to hold the geometry type (wkt or bbox) are required for each row.</p>
 					<section>
 						<h4>Points</h4>
 						<table id="cities" aria-label="Points" class="table wb-tables">
-							<caption>Tableau de géométrie point</caption>
+							<caption>Table of point geometries</caption>
 							<thead>
 								<tr>
-									<th>Rang</th>
-									<th>Subdivision de recensement</th>
-									<th>Population de 2011</th>
+									<th>Rank</th>
+									<th>Census subdivision</th>
+									<th>Population 2011</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -143,7 +144,7 @@
 								</tr>
 								<tr data-geometry="POINT (-75.68937, 45.41072)" data-type="wkt">
 									<td>4</td>
-									<td class="select"><a href="http://www.wikipedia.org/wiki/Ottawa" title="Ottawa">Ottawa</a></td>
+									<td><a href="http://www.wikipedia.org/wiki/Ottawa" title="Ottawa">Ottawa</a></td>
 									<td>883{{{i18n "info1000"}}}391</td>
 								</tr>
 								<tr data-geometry="POINT (-113.49590, 53.53398)" data-type="wkt">
@@ -182,22 +183,22 @@
 				</div>
 
 				<section class="col-md-12">
-					<h4>Boîtes des délimitations</h4>
-					<table id="bbox" aria-label="Boîtes des délimitations" class="table table-condensed">
-						<caption>Tableau des boîtes de délimitations</caption>
+					<h4>Bounding Boxes</h4>
+					<table id="bbox" aria-label="Bounding Boxes" class="table table-condensed">
+						<caption>Table of bounding box geometries</caption>
 						<thead>
 							<tr>
-								<th>Titre</th>
-								<th>Géometrie</th>
+								<th>Title</th>
+								<th>Geometry</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr data-geometry="-136, 61, -118, 70" data-type="bbox">
-								<td>Rapport de 2011 sur les activités terrain et la collecte de données terrain dont les couches thermiques et active dans le corridor du Mackenzie, Territoires du Nord, n ° de licence 14918</td>
+								<td>Report on 2011 field activities and collection of ground thermal and active layer data in the Mackenzie Corridor completed under Northwest Territories science licence #14918</td>
 								<td>-136, 61, -118, 70</td>
 							</tr>
 							<tr data-geometry="-92.5, 72.75, -79, 75.5" data-type="bbox">
-								<td>Dinokystes du Crétacé supérieur-inférieur tertiaire, îles de Bylot et Devon, archipel arctique</td>
+								<td>Dinoflagellate cysts from upper cretaceous-lower tertiary sections, Bylot and Devon Islands, Arctic Archipelago</td>
 								<td>-92.5, 72.75, -79, 75.5</td>
 							</tr>
 						</tbody>
@@ -205,72 +206,73 @@
 				</section>
 			</section>
 		</div>
-		<!-- Insert Layer Data End-->
+		<!-- Insert Layer Data End -->
 	</div>
 	<!-- GeomapEnd -->
 
 	<section>
 		<h3>Code</h3>
 		<details class="mrgn-bttm-lg">
-			<summary>Visualiser le code</summary>
+			<summary>View code</summary>
 			<pre><code>&lt;!-- GeomapStart --&gt;
 &lt;div id=&quot;sample_map&quot;
-	class=&quot;wb-geomap position scaleline tab geocoder aoi geolocation&quot;
+	class=&quot;wb-geomap position scaleline tab geocoder geolocation aoi&quot;
 	data-wb-geomap='{
-		&quot;layersFile&quot;: &quot;demo/config-fr{{environment.suffix}}.js&quot;,
+		&quot;layersFile&quot;: &quot;v4.0.30/demo/config-en{{environment.suffix}}.js&quot;,
 		&quot;tables&quot;: [{
 			&quot;id&quot;: &quot;bbox&quot;,
 			&quot;tab&quot;: false,
 			&quot;zoom&quot;: true,
-			&quot;popups&quot;: true,
-			&quot;visible&quot;: false
+			&quot;visible&quot;: false,
+			&quot;popups&quot;: true
 		},{
 			&quot;id&quot;: &quot;cities&quot;,
 			&quot;zoom&quot;: true,
 			&quot;tab&quot;: false,
 			&quot;popups&quot;: true,
+			&quot;visible&quot;: true,
 			&quot;popupsInfo&quot;: {
 				&quot;id&quot;: &quot;citiesPopup&quot;,
 				&quot;height&quot;: 200,
 				&quot;width&quot;: 300,
 				&quot;close&quot;: true,
-				&quot;content&quot;: &quot;&lt;div style=\&quot;white-space:nowrap;\&quot;&gt;&lt;p&gt;&lt;strong&gt;Subdivision de recensement: &lt;/strong&gt;_Subdivision de recensement&lt;div&gt;&lt;a href=\&quot;#\&quot; class=\&quot;button\&quot; role=\&quot;button\&quot; title=\&quot;Zoom à la ville\&quot; aria-label=\&quot;Zoom à la ville\&quot; onclick=\&quot;wb.doc.zoomFeature()\&quot;&gt;Zoom à la ville&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&quot;
+				&quot;content&quot;: &quot;&lt;div style=\&quot;white-space:nowrap;\&quot;&gt;&lt;p&gt;&lt;strong&gt;Census subdivision: &lt;/strong&gt;_Census subdivision&lt;div&gt;&lt;a href=\&quot;#\&quot; class=\&quot;button\&quot; role=\&quot;button\&quot; title=\&quot;Zoom to city\&quot; aria-label=\&quot;Zoom to city\&quot; onclick=\&quot;wb.doc.zoomFeature()\&quot;&gt;Zoom to city&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&quot;
 			},
 			&quot;style&quot;: {
 				&quot;type&quot;: &quot;rule&quot;,
 				&quot;rule&quot;: [
 				{
-					&quot;field&quot;: &quot;Rang&quot;,
+					&quot;field&quot;: &quot;Rank&quot;,
 					&quot;value&quot;: [3],
 					&quot;filter&quot;: &quot;GREATER_THAN&quot;,
 					&quot;init&quot;: {
 						&quot;strokeColor&quot;: &quot;#0083f5&quot;,
 						&quot;fillColor&quot;: &quot;#57a8f0&quot;,
-						&quot;pointRadius&quot;: &quot;6&quot;,
+						&quot;pointRadius&quot;: 6,
 						&quot;fillOpacity&quot;: 0.80,
 						&quot;strokeWidth&quot;: 1.0
 					}
 				},
 				{
-					&quot;field&quot;: &quot;Rang&quot;,
+					&quot;field&quot;: &quot;Rank&quot;,
 					&quot;value&quot;: [2, 3],
 					&quot;filter&quot;: &quot;BETWEEN&quot;,
 					&quot;init&quot;: {
 						&quot;strokeColor&quot;: &quot;#F90&quot;,
 						&quot;fillColor&quot;: &quot;#F90&quot;,
-						&quot;pointRadius&quot;: &quot;8&quot;,
+						&quot;pointRadius&quot;: 8,
 						&quot;fillOpacity&quot;: 0.80,
 						&quot;strokeWidth&quot;: 1.0
 					}
 				},
 				{
-					&quot;field&quot;: &quot;Rang&quot;,
+					&quot;field&quot;: &quot;Rank&quot;,
 					&quot;value&quot;: [1],
 					&quot;filter&quot;: &quot;EQUAL_TO&quot;,
 					&quot;init&quot;: {
 						&quot;strokeColor&quot;: &quot;#F00&quot;,
 						&quot;fillColor&quot;: &quot;#F00&quot;,
-						&quot;pointRadius&quot;: &quot;10&quot;,
+						&quot;pointRadius&quot;: 10,
 						&quot;fillOpacity&quot;: 0.80,
 						&quot;strokeWidth&quot;: 1.0
 					}
@@ -281,40 +283,42 @@
 
 	&lt;div class=&quot;row&quot;&gt;
 		&lt;div class=&quot;col-md-9&quot;&gt;
-			&lt;!-- Insert Map Start (mandatory) --&gt;
-			&lt;div class=&quot;wb-geomap-map&quot;&gt;&lt;/div&gt;
-			&lt;!-- Insert Map End --&gt;
+		&lt;!-- Insert Map Start (mandatory) --&gt;
+		&lt;div class=&quot;wb-geomap-map&quot;&gt;&lt;/div&gt;
+		&lt;!-- Insert Map End --&gt;
 		&lt;/div&gt;
 
 		&lt;!-- Insert Legend Start (optional) --&gt;
 		&lt;section class=&quot;wb-geomap-legend col-md-3&quot;&gt;
-			&lt;h3&gt;Légende&lt;/h2&gt;
+			&lt;h3&gt;Legend&lt;/h3&gt;
 		&lt;/section&gt;
 		&lt;!-- Insert Legend End --&gt;
 	&lt;/div&gt;
 
-	&lt;!-- Insert Layer Data Start (mandatory) --&gt;
 	&lt;div class=&quot;row&quot;&gt;
 		&lt;section class=&quot;col-md-12&quot;&gt;
-			&lt;h3&gt;Exemple - Données extérieure &amp;amp; provenant de fichiers&lt;/h3&gt;
-			&lt;p&gt;Les données sont créées à partir de fichiers, fils ou d'API web.&lt;/p&gt;
+			&lt;h3&gt;Example - Remote &amp;amp; File-based Layer Data&lt;/h3&gt;
+			&lt;p&gt;Layers are created from file-based formats, feeds, and web API's.&lt;/p&gt;
 		&lt;/section&gt;
 	&lt;/div&gt;
 
+	&lt;!-- Insert Layer Data Start (mandatory) --&gt;
 	&lt;div class=&quot;row&quot;&gt;
 		&lt;section&gt;
 			&lt;div class=&quot;wb-geomap-layers col-md-12&quot;&gt;
-				&lt;h3&gt;Exemple - Données dans le fichier HTML&lt;/h3&gt;
-				&lt;p&gt;Les données est créées à partir des tables suivantes. Un attribut &lt;code&gt;data-geometry&lt;/code&gt; contient la géometry et un attribut &lt;code&gt;data-type&lt;/code&gt; contient le type (wkt ou bbox) ont été ajoutés à chaque ligne.&lt;/p&gt;
+				&lt;h3&gt;Example - Inline Layer Data&lt;/h3&gt;
+				&lt;p&gt;Layers are created from the following tables. An attribute &lt;em&gt;data-geometry&lt;/em&gt; to hold the geometry and an attribute &lt;em&gt;data-type&lt;/em&gt; to hold the geometry type (wkt or bbox) are required for each row.&lt;/p&gt;
 				&lt;section&gt;
 					&lt;h4&gt;Points&lt;/h4&gt;
 					&lt;table id=&quot;cities&quot; aria-label=&quot;Points&quot; class=&quot;table wb-tables&quot;&gt;
-						&lt;caption&gt;Tableau de géométrie point&lt;/caption&gt;
+						&lt;caption&gt;
+							Table of point geometries.
+						&lt;/caption&gt;
 						&lt;thead&gt;
 							&lt;tr&gt;
-								&lt;th&gt;Rang&lt;/th&gt;
-								&lt;th&gt;Subdivision de recensement&lt;/th&gt;
-								&lt;th&gt;Population de 2011&lt;/th&gt;
+								&lt;th&gt;Rank&lt;/th&gt;
+								&lt;th&gt;Census subdivision&lt;/th&gt;
+								&lt;th&gt;Population 2011&lt;/th&gt;
 							&lt;/tr&gt;
 						&lt;/thead&gt;
 						&lt;tbody&gt;
@@ -335,7 +339,7 @@
 							&lt;/tr&gt;
 							&lt;tr data-geometry=&quot;POINT (-75.68937, 45.41072)&quot; data-type=&quot;wkt&quot;&gt;
 								&lt;td&gt;4&lt;/td&gt;
-								&lt;td class=&quot;select&quot;&gt;&lt;a href=&quot;http://www.wikipedia.org/wiki/Ottawa&quot; title=&quot;Ottawa&quot;&gt;Ottawa&lt;/a&gt;&lt;/td&gt;
+								&lt;td&gt;&lt;a href=&quot;http://www.wikipedia.org/wiki/Ottawa&quot; title=&quot;Ottawa&quot;&gt;Ottawa&lt;/a&gt;&lt;/td&gt;
 								&lt;td&gt;883391&lt;/td&gt;
 							&lt;/tr&gt;
 							&lt;tr data-geometry=&quot;POINT (-113.49590, 53.53398)&quot; data-type=&quot;wkt&quot;&gt;
@@ -374,22 +378,24 @@
 			&lt;/div&gt;
 
 			&lt;section class=&quot;col-md-12&quot;&gt;
-				&lt;h4&gt;Boîtes des délimitations&lt;/h4&gt;
-				&lt;table id=&quot;bbox&quot; aria-label=&quot;Boîtes des délimitations&quot; class=&quot;table table-condensed&quot;&gt;
-					&lt;caption&gt;Tableau des boîtes de délimitations&lt;/caption&gt;
+				&lt;h4&gt;Bounding Boxes&lt;/h4&gt;
+				&lt;table id=&quot;bbox&quot; aria-label=&quot;Bounding Boxes&quot; class=&quot;table table-condensed&quot;&gt;
+					&lt;caption&gt;
+						Table of bounding box geometries.
+					&lt;/caption&gt;
 					&lt;thead&gt;
 						&lt;tr&gt;
-							&lt;th&gt;Titre&lt;/th&gt;
-							&lt;th&gt;Géometrie&lt;/th&gt;
+							&lt;th&gt;Title&lt;/th&gt;
+							&lt;th&gt;Geometry&lt;/th&gt;
 						&lt;/tr&gt;
 					&lt;/thead&gt;
 					&lt;tbody&gt;
 						&lt;tr data-geometry=&quot;-136, 61, -118, 70&quot; data-type=&quot;bbox&quot;&gt;
-							&lt;td&gt;Rapport de 2011 sur les activités terrain et la collecte de données terrain dont les couches thermiques et active dans le corridor du Mackenzie, Territoires du Nord, n ° de licence 14918&lt;/td&gt;
+							&lt;td&gt;Report on 2011 field activities and collection of ground thermal and active layer data in the Mackenzie Corridor completed under Northwest Territories science licence #14918&lt;/td&gt;
 							&lt;td&gt;-136, 61, -118, 70&lt;/td&gt;
 						&lt;/tr&gt;
 						&lt;tr data-geometry=&quot;-92.5, 72.75, -79, 75.5&quot; data-type=&quot;bbox&quot;&gt;
-							&lt;td&gt;Dinokystes du Crétacé supérieur-inférieur tertiaire, îles de Bylot et Devon, archipel arctique&lt;/td&gt;
+							&lt;td&gt;Dinoflagellate cysts from upper cretaceous-lower tertiary sections, Bylot and Devon Islands, Arctic Archipelago&lt;/td&gt;
 							&lt;td&gt;-92.5, 72.75, -79, 75.5&lt;/td&gt;
 						&lt;/tr&gt;
 					&lt;/tbody&gt;
@@ -397,7 +403,7 @@
 			&lt;/section&gt;
 		&lt;/section&gt;
 	&lt;/div&gt;
-	&lt;!-- Insert Layer Data End--&gt;
+	&lt;!-- Insert Layer Data End --&gt;
 &lt;/div&gt;
 &lt;!-- GeomapEnd --&gt;</code></pre>
 		</details>
@@ -405,8 +411,8 @@
 </section>
 
 <section>
-	<h2>Carte statique - Exemple</h2>
-	<p>Geomap peux être configuré pour créer une carte statique afin de situer un endroit comme un bureau ou une étendue à l'aide d'une "bbox".</p>
+	<h2>Static Map example</h2>
+	<p>Geomap can be configured to provide a static map ideally suited to display a location or bounding box extent.</p>
 
 	<!-- GeomapStart -->
 	<div id="location_map"
@@ -434,16 +440,16 @@
 			</div>
 			<!-- Insert Layer Data Start (mandatory) -->
 			<div class="wb-geomap-layers col-md-4">
-				<table id="addNRCan" aria-label="Adresse des bureaux de RNCan Ottawa" class="table">
-					<caption class="wb-inv">Adresse des bureaux de Ressources naturelles Canada Ottawa</caption>
+				<table id="addNRCan" aria-label="NRCan Ottawa office address" class="table">
+					<caption class="wb-inv">Natural Resources Canada Ottawa office address</caption>
 					<thead>
 						<tr>
-							<th>Adresse</th>
+							<th>Address</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr data-geometry="POINT (-75.70535, 45.3995)" data-type="wkt">
-							<td>615 rue Booth,<br />Ottawa (ON),<br />Canada,<br />K1A 0E8</td>
+							<td>615 Booth St.,<br />Ottawa (ON),<br />Canada,<br />K1A 0E8</td>
 						</tr>
 					</tbody>
 				</table>
@@ -455,8 +461,8 @@
 
 	<section>
 		<h3>Code</h3>
-		<details>
-			<summary>Visualiser le code</summary>
+		<details class="mrgn-tp-lg">
+			<summary>View code</summary>
 			<pre><code>&lt;!-- GeomapStart --&gt;
 &lt;div id=&quot;location_map&quot;
 	class=&quot;wb-geomap static&quot;
@@ -483,16 +489,16 @@
 		&lt;/div&gt;
 		&lt;!-- Insert Layer Data Start (mandatory) --&gt;
 		&lt;div class=&quot;wb-geomap-layers col-md-4&quot;&gt;
-			&lt;table id=&quot;addNRCan&quot; aria-label=&quot;Adresse des bureaux de RNCan Ottawa&quot; class=&quot;table&quot;&gt;
-				&lt;caption class=&quot;wb-inv&quot;&gt;Adresse des bureaux de Ressources naturelles Canada Ottawa&lt;/caption&gt;
+			&lt;table id=&quot;addNRCan&quot; aria-label=&quot;NRCan Ottawa office adress&quot; class=&quot;table&quot;&gt;
+				&lt;caption class=&quot;wb-inv&quot;&gt;Natural Resources Canada Ottawa office adress&lt;/caption&gt;
 				&lt;thead&gt;
 					&lt;tr&gt;
-						&lt;th&gt;Adresse&lt;/th&gt;
+						&lt;th&gt;Adress&lt;/th&gt;
 					&lt;/tr&gt;
 				&lt;/thead&gt;
 				&lt;tbody&gt;
 					&lt;tr data-geometry=&quot;POINT (-75.70535, 45.3995)&quot; data-type=&quot;wkt&quot;&gt;
-						&lt;td&gt;615 rue Booth,&lt;br /&gt;Ottawa (ON),&lt;br /&gt;Canada,&lt;br /&gt;K1A 0E8&lt;/td&gt;
+						&lt;td&gt;615 Booth St.,&lt;br /&gt;Ottawa (ON),&lt;br /&gt;Canada,&lt;br /&gt;K1A 0E8&lt;/td&gt;
 					&lt;/tr&gt;
 				&lt;/tbody&gt;
 			&lt;/table&gt;
@@ -506,14 +512,14 @@
 </section>
 
 <section>
-	<h2>Carte WMS - Exemple WMS</h2>
-	<p>Geomap peut être configuré pour utiliser une carte de base de type WMS. L'item basemap dans le fichier de configuration permet de définir le WMS à utiliser.</p>
+	<h2>WMS Map example</h2>
+	<p>Geomap can be configured to use a WMS map as basemap. Configuration can be made in the config file in basemap property.</p>
 
 	<!-- GeomapStart -->
 	<div id="wms_map"
 		class="wb-geomap"
 		data-wb-geomap='{
-			"layersFile": "demo/configwms-en{{environment.suffix}}.js"
+			"layersFile": "v4.0.30/demo/configwms-en{{environment.suffix}}.js"
 		}'>
 		<div class="row">
 			<div class="col-md-4">
@@ -522,7 +528,8 @@
 				<!-- Insert Map End -->
 			</div>
 			<!-- Insert Layer Data Start (mandatory) -->
-			<div class="wb-geomap-layers col-md-4"></div>
+			<div class="wb-geomap-layers col-md-4">
+			</div>
 			<!-- Insert Layer Data End -->
 		</div>
 	</div>
@@ -531,12 +538,12 @@
 		<section>
 		<h3>Code</h3>
 		<details class="mrgn-tp-lg">
-			<summary>Visualiser le code</summary>
+			<summary>View code</summary>
 			<pre><code>&lt;!-- GeomapStart --&gt;
 &lt;div id=&quot;location_map&quot;
 	class=&quot;wb-geomap&quot;
 	data-wb-geomap='{
-		&quot;layersFile&quot;: &quot;demo/configwms-fr{{environment.suffix}}.js&quot;
+		&quot;layersFile&quot;: &quot;v4.0.30/demo/configwms-en{{environment.suffix}}.js&quot;
 	}'&gt;
 	&lt;div class=&quot;row&quot;&gt;
 		&lt;div class=&quot;col-md-4&quot;&gt;
@@ -553,10 +560,10 @@
 		</details>
 
 		<details class="mrgn-tp-lg">
-			<summary>Visualiser le fichier de configuration</summary>
+			<summary>View config file</summary>
 			<pre><code>
 			var wet_boew_geomap = {
-				// OPTIONNEL: Géomap va fournir une carte de base par défaut si aucune carte de base n"est spécifié ici.
+				// OPTIONAL: note that Geomap will provide a default basemap if not specified here.
 				basemap : {
 					title: &quot;WMS-Toporama&quot;,
 					type: &quot;wms&quot;,
@@ -582,14 +589,14 @@
 </section>
 
 <section>
-	<h2>Exemple de carte ESRI REST</h2>
-	<p>Geomap peut être configuré pour utiliser une carte de base de type ESRI REST. L'item basemap dans le fichier de configuration permet de définir le service à utiliser.</p>
+	<h2>ESRI REST basemap example</h2>
+	<p>Geomap can be configured to use an ESRI REST service as basemap. Configuration can be made in the config file in basemap property.</p>
 
 	<!-- GeomapStart -->
 	<div id="esri_map"
 		class="wb-geomap"
 		data-wb-geomap='{
-			"layersFile": "demo/config-esri-fr{{environment.suffix}}.js"
+			"layersFile": "v4.0.30/demo/config-esri-en{{environment.suffix}}.js"
 		}'>
 		<div class="row">
 			<div class="col-md-4">
@@ -607,12 +614,12 @@
 		<section>
 		<h3>Code</h3>
 		<details class="mrgn-tp-lg">
-			<summary>Visualiser le code</summary>
+			<summary>View code</summary>
 			<pre><code>&lt;!-- GeomapStart --&gt;
 &lt;div id=&quot;esri_map&quot;
 	class=&quot;wb-geomap&quot;
 	data-wb-geomap='{
-		&quot;layersFile&quot;: &quot;demo/config-esri-fr{{environment.suffix}}.js&quot;
+		&quot;layersFile&quot;: &quot;v4.0.30/demo/config-esri-en{{environment.suffix}}.js&quot;
 	}'&gt;
 	&lt;div class=&quot;row&quot;&gt;
 		&lt;div class=&quot;col-md-4&quot;&gt;
@@ -629,7 +636,7 @@
 		</details>
 
 		<details class="mrgn-tp-lg">
-			<summary>Visualiser le fichier de configuration</summary>
+			<summary>View config file</summary>
 			<pre><code>
 			var wet_boew_geomap = {
 				basemap : {
@@ -654,15 +661,15 @@
 </section>
 
 <section>
-	<h2>Exemple de carte de base OSM</h2>
-	<p>Geomap peut être configuré pour utiliser un service de tuiles OSM (ex : MapQuest) comme carte de base. La configuration peut être effectuée dans le paramètre <code>basemap</code> du fichier config.</p>
+	<h2>OSM basemap example</h2>
+	<p>Geomap can be configured to use an OSM Tile service (e.g. MapQuest) as basemap. Configuration can be made in the config file in basemap property.</p>
 
 	<!-- GeomapStart -->
 	<div id="osm_map"
 		class="wb-geomap"
 		data-wb-geomap='{
-			"layersFile": "demo/config-osm-en{{environment.suffix}}.js",
-			"attribution": { "text":"Les tuiles sont une courtoisies de &lt;a href=\"http://www.mapquest.com/\" target=\"_blank\"&gt;MapQuest&lt;/a&gt;", "href":"" }
+			"layersFile": "v4.0.30/demo/config-osm-en{{environment.suffix}}.js",
+			"attribution": { "text":"Tiles Courtesy of &lt;a href=\"http://www.mapquest.com/\" target=\"_blank\"&gt;MapQuest&lt;/a&gt;", "href":"" }
 		}'>
 		<div class="row">
 			<div class="col-md-4">
@@ -680,12 +687,12 @@
 		<section>
 		<h3>Code</h3>
 		<details class="mrgn-tp-lg">
-			<summary>Visualiser le code</summary>
+			<summary>View code</summary>
 			<pre><code>&lt;!-- GeomapStart --&gt;
 &lt;div id=&quot;osm_map&quot;
 	class=&quot;wb-geomap&quot;
 	data-wb-geomap='{
-		&quot;layersFile&quot;: &quot;demo/config-osm-fr.js&quot;
+		&quot;layersFile&quot;: &quot;v4.0.30/demo/config-osm-en.js&quot;
 	}'&gt;
 	&lt;div class=&quot;row&quot;&gt;
 		&lt;div class=&quot;col-md-4&quot;&gt;
@@ -702,7 +709,7 @@
 		</details>
 
 		<details class="mrgn-tp-lg">
-			<summary>Visualiser le fichier de configuration</summary>
+			<summary>View config file</summary>
 			<pre><code>
 			var wet_boew_geomap = {
 				title:"MapQuest OSM Map",

@@ -125,6 +125,12 @@ var componentName = "wb-geomap",
 						// configuration file (through wet_boew_geomap)
 						settings = $.extend( settings, wet_boew_geomap );
 
+						// Support OSM basemap as defined prior v4.0.30, to be removed in v5.0
+						// Check if the basemap type is defined to xyz, if so change it to osm
+						if ( settings && settings.basemap && settings.basemap.type && settings.basemap.type === "xyz" ) {
+							settings.basemap.type = "osm";
+						}
+
 						// Create Geomap Object and add to map array
 						mapArray.push( new Geomap( { target: $elm, settings: settings } ) );
 
@@ -931,6 +937,39 @@ var componentName = "wb-geomap",
 
 		// Once the map is rendered fire ready event
 		map.once( "postrender", function() {
+
+			// v4.0.x transition function to support static map.
+			// The following makes assumption the geometry only inlude a point and it is WKT format
+			// The following should be removed in WET 5
+			map.getLayer = function( strSelector ) {
+
+				var geometryElm = document.querySelector( strSelector + " [data-geometry][data-type]" ),
+					geometry = geometryElm.dataset.geometry,
+					geometryType = geometryElm.dataset.type,
+					latitudes, longitudes;
+
+				// Provide support wkt with a POINT geometry, like the demo of the Static map with open layer 2
+				if ( geometryType === "wkt" && geometry.indexOf( "POINT" ) !== -1 ) {
+					geometry = geometry.replace( /,/, "" );
+					geometry = geometry.substring( geometry.indexOf( "(" ) + 1,  geometry.indexOf( ")" ) );
+					geometry = geometry.split( " " );
+
+					latitudes = parseFloat( geometry[ 0 ] );
+					longitudes = parseFloat( geometry[ 1 ] );
+
+				}
+				return {
+					getDataExtent: function() {
+						return [ latitudes, longitudes ];
+					}
+				};
+			};
+
+			map.zoomToExtent = function( layerCoordinates ) {
+				map.getView().setCenter( ol.proj.transform( [ layerCoordinates[ 0 ], layerCoordinates[ 1 ] ], "EPSG:4326", "EPSG:3978" ) );
+				map.getView().setZoom( 5 );
+			};
+
 			wb.ready( $( "#" + geomap.id ), componentName, [ map ] );
 		} );
 
