@@ -214,6 +214,7 @@ wb.i18nDict = {
 	"geo-aoi-south": "@geo-aoi-south@",
 	"geo-aoi-west": "@geo-aoi-west@",
 	"geo-aoi-instructions": "@geo-aoi-instructions@",
+	"geo-aoi-title": "@geo-aoi-title@",
 	"geo-aoi-btndraw": "@geo-aoi-btndraw@",
 	"geo-aoi-btnclear": "@geo-aoi-btnclear@",
 	"geo-geoloc-btn": "@geo-geoloc-btn@",

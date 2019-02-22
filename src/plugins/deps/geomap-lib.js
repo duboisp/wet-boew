@@ -87,6 +87,7 @@ var componentName = "wb-geomap",
 					aoiSouth: i18n( "geo-aoi-south" ),
 					aoiWest: i18n( "geo-aoi-west" ),
 					aoiInstructions: i18n( "geo-aoi-instructions" ),
+					aoiTitle: i18n( "geo-aoi-title" ),
 					aoiBtnDraw: i18n( "geo-aoi-btndraw" ),
 					aoiBtnClear: i18n( "geo-aoi-btnclear" ),
 					aoiBtnClose: i18n( "close" ),
@@ -106,7 +107,8 @@ var componentName = "wb-geomap",
 				useMapControls: className.indexOf( "static" ) !== -1 ? false : true,
 				useGeocoder: className.indexOf( "geocoder" ) !== -1 ? true : false,
 				useGeolocation: className.indexOf( "geolocation" ) !== -1 ? true : false,
-				useAOI: className.indexOf( "aoi" ) !== -1 ? true : false
+				useAOI: className.indexOf( "aoi" ) !== -1 ? true : false,
+				useAOIOpen: className.indexOf( "aoi-open" ) !== -1 ? true : false
 			};
 
 			// Merge default settings with overrides from the selected plugin element.
@@ -1079,7 +1081,11 @@ var componentName = "wb-geomap",
 
 		interaction.setActive( false );
 
-		geomap.mapDiv.before( "<div class='geomap-aoi panel panel-default'><div id='geomap-aoi-" + geomap.id + "' class='panel-body'></div></div>" );
+		if ( geomap.settings.useAOIOpen ) {
+			geomap.mapDiv.before( "<div class='geomap-aoi panel panel-default'><div id='geomap-aoi-" + geomap.id + "' class='panel-body'></div></div>" );
+		} else {
+			geomap.mapDiv.before( "<details class='geomap-aoi'><summary>" + i18nText.aoiTitle + "</summary><div id='geomap-aoi-" + geomap.id + "'></div></details>" );
+		}
 
 		var aoiDiv = $( "#geomap-aoi-" + geomap.id ),
 			extent, left, bottom, right, top, geomProj;
@@ -1122,8 +1128,7 @@ var componentName = "wb-geomap",
 				"</div>" +
 				"<input type='hidden' id='geomap-aoi-extent-" + geomap.id + "'></input>" +
 				"<input type='hidden' id='geomap-aoi-extent-lonlat-" + geomap.id + "'></input>" +
-			"</fieldset>" +
-		"</div>" );
+			"</fieldset>" );
 
 		$( "#geomap-aoi-btn-clear-" + geomap.id ).after( "<button id='geomap-aoi-toggle-mode-draw-" + geomap.id +
 				"' href='#' class='btn btn-sm btn-default geomap-geoloc-aoi-btn' title='" + i18nText.aoiBtnDraw +
