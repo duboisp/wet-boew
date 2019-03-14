@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.0">
+<Document>
+<name>TIGed Class Map</name>
+<description>TIGed Class Map</description>
+<Style id="green">
+	<IconStyle>
+		<Icon>
+			<href>https://www.tigweb.org/images/projects/tiged/maps/green.png</href>
+		</Icon>
+		<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+	</IconStyle>
+</Style>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p>
+<p>Project: Cleaning up Gardom Lake and shoreline</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-119.2017672,50.601284813,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p>
+<p>Project: Setting up an archery range</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-112.7644245,51.660068215,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Installation and beautification of a sign and trail clean up&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-75.35814376,45.259122151,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Campground beautification&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-111.2057813,51.528535350,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Started creating a trail for a local conservation organization&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-80.24401326,43.596854080,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Community barbecue and installation of benches</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-65.51204938,45.723340993,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.</p><p>Project: Trail clean up and installation of birdhouses</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-113.8500124,54.152596320,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Cleaned up the day use area of Raven Brood Trout Station</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-114.7401367,52.093924434,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Garden party with residents of a local retirement home</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-52.71728881,47.560404677,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.</p><p>Project: Built new benches for a local seniors home</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-113.7292399,52.463414500,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.</p><p>Project: Constructed a bee/butterfly garden with raised beds</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-96.84264344,49.885914200,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Created a community checkerboard&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-99.83776416,50.246567232,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.</p><p>Project: Built and installed kestrel birdhouses for the local watershed organization</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.68967306,46.257351621,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Set up games room at a local seniors home and hung out with the residents</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-96.84238803,49.938881813,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Cleaned up the local dunes and replanted vegetation&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-64.72455841,46.472612936,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Cleared invasive species from a local park&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-122.4947491,52.982087715,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Made frozen meals for a local organization, assisted a local community member with gardening, assisted the local conservation to prune tree limbs and painted the ticket booth for the local fairboard</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.86599094,44.583482419,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Hosted a fun day for a local refugee children&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-98.00342551,49.929355482,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.</p><p>Project: Built a 4-H themed covered picnic area at the local fairgrounds</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-65.56430252,43.564350740,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Helped out at a local soup kitchen and made hygiene kits for vulnerable people.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-99.95312769,49.847468384,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by Youth Service Leaders and groups participating in the Club to Club Exchange.&nbsp;</p>
+<p>Project: Revitalized Dunn Memorial Scout Camp</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-74.15960225,45.007363308,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by youth service leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Painted a mural for their local community</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-76.95142401,44.247983119,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by youth service leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Making bee houses and a bee educational kit</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-111.9332910,52.231293485,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service projects carried out by youth service leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Helped out Gleaners food bank and trail clean up in Batawa.&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-77.38942880,44.161151026,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service project carried out by youth service leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Painted race track at the local fairgrounds</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-112.0637355,53.504974295,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[4-H Canada Youth Service Leaders]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Community service project carried out by youth service leaders and groups participating in the Club to Club Exchange.&nbsp;</p><p>Project: Clean up of Cass Bridge South Nation Conservation area and built and donated picnic tables</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-75.35336944,45.091599636,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+</Document>
+</kml>

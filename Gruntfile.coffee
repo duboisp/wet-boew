@@ -36,7 +36,7 @@ module.exports = (grunt) ->
 			"checkDependencies"
 			"clean:dist"
 			"assets"
-			"sprites"
+			# "sprites"
 			"css"
 			"js"
 			"string-replace"

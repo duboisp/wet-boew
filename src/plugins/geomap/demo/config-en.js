@@ -29,6 +29,17 @@ var wet_boew_geomap = {
 	},*/
 	overlays: [
 		{
+			"title": "TIGed",
+			"caption": "TIGed Class Map</a> publication.",
+			"type": "kml",
+			"url": "https://www.tigweb.org/tiged/getmap.html?MapID=10011&ClassID=13273&load=81&flUnapproved=true",
+			"visible": true,
+			"datatable": true,
+			"tooltips": true,
+			"tooltipText": "Operation",
+			"popups": true
+		},
+		{
 			title: "WMS",
 			caption: "This is a sample WMS service loaded by Geomap.",
 			type: "wms",

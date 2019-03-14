@@ -1,0 +1,1217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.0">
+<Document>
+<name>TIGed Class Map</name>
+<description>TIGed Class Map</description>
+<Style id="blue">
+	<IconStyle>
+		<Icon>
+			<href>https://www.tigweb.org/images/projects/tiged/maps/blue.png</href>
+		</Icon>
+		<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+	</IconStyle>
+</Style>
+	<Placemark>
+		<name><![CDATA[Airdrie Boys and Girls Club]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-113.9914370,51.295772879,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Áísínai'pi/Writing-on-Stone Provincial Park]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>One of the Stage Two Service Learning Placements</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-111.6195917,49.085896902,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Edmonton RISE Cohort 1]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-113.4942626,53.541939535,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Edmonton RISE Cohort 2]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-113.503219,53.548268,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Montreal RISE Cohort 1]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.57818603,45.493833740,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Montreal RISE Cohort 2]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.57818603,45.493833740,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Nunavut RISE Cohort 3]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-68.503644,63.745580,,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Ottawa RISE Cohort 1]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-75.70129394,45.417732423,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Ottawa RISE Cohort 2]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-75.687327,45.402262,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Apathy is Boring Toronto RISE Cohort 2]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.410794,43.663379,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Club of Dawson]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.61663818,45.491908391,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Club of Kamloops]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-120.3502279,50.680953028,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Club of Lethbridge]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-112.8428039,49.707165402,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Club of London]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-81.01318359,42.913711035,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Club of Summerside]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.79494869,46.396476776,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs - Okanagan]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP program&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-119.5697021,49.994956376,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs Big Brothers Big Sisters of Edmonton]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead&nbsp;UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-99.31640625,44.093028605,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of Calgary]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-114.0607659,51.057379349,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of Hamilton]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead&nbsp;UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.84863281,43.218706716,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of Kawartha Lakes]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-78.89282226,44.525413636,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of Ottawa]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-75.71030633,45.391650552,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of South Coast BC]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-123.0842502,49.250551537,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of Victoria]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-123.3789635,48.433506211,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of West Scarborough]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP program&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.34326171,43.655471868,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Boys and Girls Clubs of Winnipeg]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-97.16080811,49.905254852,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Calgary Katimavik House]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts one and two. 11 youth in each cohort.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-113.9938889,51.043332195,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Canadian Roots Exchange - Kamloops YRI Team]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>The Kamloops YRI Team from Canadian Roots Exchange hosted a Blanket Exercise with the Hills of Peace&nbsp;Lutheran Church & Lil Michif Otipemiwisiwak Family & Community Services. Youth were provided with supper and learned about the colonial history of Canada</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-120.3619113,50.697494005,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Canadian Roots Exchange - Kamloops YRI Team]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Youth from Kamloops, BC attended CRE's 7th National Youth Gathering&nbsp; fromNov. 15-17, 2018 at the University of Saskatchewan. 2 of the Kamloops YRI  facilitated a workshop and the other 3 were participants during the gathering. <br></p></div>
+		]]>
+		</description>
+		<Point><coordinates>-106.6373562,52.131900879,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Castle Provincial Park]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Stage two partner for Canadian Conservation Corps&nbsp;&nbsp;</p><p>This partner is focusing on creating the Castle Provincial Park&nbsp; including an indigenous garden.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-114.1101837,49.411419948,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE-1801]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Offrir un service de soins et de garderie d'animaux de cie aux gens temporairement hospitalisés ou handicapés.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.70925345,45.560837198,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1816]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Mettre en place un piano public</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.92649258,45.531732816,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1825]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Le projet consiste alors à offrir des cours d’art gratuits pour les enfants dans des centres communautaires ou des organisations qui ont pour but d’aider des familles, parents, ou enfants qui normalement ne pourraient pas bénéficier de ces cours. Le projet débute avec moi, mais avec du temps, il y a beaucoup de centres où il pourrait être implémenté et plusieurs nouveaux étudiants en art pourraient offrir des cours afin d’aider plus de jeunes et enrichir leurs CV dans le domaine où ils veulent travailler plus tard.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.54536225,45.460170430,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1828]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Hosting a leadership retreat on a mountain top</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.79325137,43.728428497,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1829]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Développer une aile jeunesse au RQDS</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.12512862,46.818881890,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1831]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Préparer les jardins des gens âgés avec des gens loins du marché du travail, faire un réseautage de cultures.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.25307369,45.443561402,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1832]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Organiser un curriculum axé sur le développement de soi et le leadership que l'on présentera dans des écoles défavorisées</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.79310841,45.522436656,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1838]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Organise an event to push the ideas of business environment in the highschools and</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.24317596,43.894917682,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1840]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Monter une équipe de personnes avisées pour accompagner des jeunes marginalisés lors d'un voyage parascolaire.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-72.60239362,45.375749747,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1841]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>An intercultural cooperative workcamp</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-64.79655826,46.096367602,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1842]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Développer un jardin vertical intérieur et apprendre aux jeunes d'une école secondaire à en prendre soin et à bien s'alimenter.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.59408710,45.519642030,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1844]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Offrir des care package a des femmes en situation d'itinérance avec des diva cup et autres produits santé/beauté</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.57848287,45.500931912,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1846]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Des ateliers de créations auprès d'élèves.&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.55456491,45.531866767,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1847]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Faire du biocarbure avec du compost</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.45241033,45.468094912,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1848]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Faire des ateliers de cuisine communautaire</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.54603278,45.555849982,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1849]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>AGIS au Cégep Laurendeau</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.60523512,45.436330613,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CE1850]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Campagne de sac à dos à remettre aux étudiants appauvris</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.47723191,45.455034385,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Chantiers d'entrepreneuriat]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Le&nbsp; projet s'appelle Life Academy. C'est une plateforme d'éducation où les jeunes peuvent donner et reçevoir des cours pratiques (gestion des finances, taxes, gestion du temps, etc.) Il existe un besoin pressant chez les jeunes de ma communauté d'apprendre ces compétences qui ne sont pas offertes dans le système d'éducation. De plus, entreprendre des cours et des projets permettraient aux jeunes d'éxplorer une passion (nécessaire au CEGEP), de développer leur CV et de construire un réseau professionel dans leur champs d'intérêt.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.58745418,45.489637410,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Chantiers d'entrepreneuriat -1806]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Salon de soins corporels pour les femmes vivant en situation d'itinérance</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.99404421,45.401666024,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Chantiers d'entrepreneuriat -1806]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Salon de soins corporels pour les femmes vivant en situation d'itinérance</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.99404421,45.401666024,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CJ social entrepreneurship project]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>On April 15th, a team of 4 volunteers from a collegial social work class brought together twenty homeless women  to  offer them a day of care. They spared no effort to pamper the women targeted by the project. In addition to makeup artists and volunteers on site, they had collected clothes  and prepared a dinner for them. At the end of the day, the women were given a bag full of hygiene items. Several beneficiaries have asked for this event to come back next year.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.88951015,45.399768321,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC : Stage 2 Partner: Bienenstock Natural Playgrounds]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts 4 & 5</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.91930684,43.253947610,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Cohort 1]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>The first cohort of Canadian Conservation Corps took place at Camp Kandalore in February 2017.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-78.79802227,45.112360674,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Cohort 2]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>CCC Group 2 Expedition held in Saint John NB. Camp Yoho in&nbsp;Fredericton was used for the training weeks.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-66.53759792,46.024658141,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Cohort 3]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>CCC Group 3: Sea Kayaking expedition. Tribune Bay campsite on Hornby Island- June 2018.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-124.9054782,49.621415415,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Cohort 4]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Canoeing expedition in Huntsville.&nbsp; Campsite: Haliburton Scout Reserve, September 2018</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.21593049,45.316490334,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Cohort 5]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Rockies backpacking expedition&nbsp; Canmore/Kananaskis Country. Girl Guide Camp,&nbsp;September 2018.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-115.4099569,51.001668622,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Cohort 6]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Winter camping, dogsledding and snow shoe&nbsp;expedition.&nbsp; Camp Kandalore, January 2019</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.24962346,45.320324904,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC McGill University: Gault Nature Reserve]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohort 2, 4 &&nbsp;5 stage 2 fieldwork placement partner.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.19098135,45.551805113,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 Partner: AB Parks]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohort 1</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-112.7296622,49.890432020,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 partner: American Eels program]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Participant stage 2 activities: working with American Eel team at CWF, assisting with CWF's bat &&nbsp;turtle programs.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-75.85356215,45.251541455,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 Partner: Calgary Zoo]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts 3-6</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-114.2591843,51.091759894,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 Partner: Ducks Unlimited]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Stage 2 fieldwork placement: Oak Hammock Marsh Intrepretive Centre.&nbsp;Cohort 6.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-97.28996929,50.127381549,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 Partner: Hope for Wildlife]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts 4-6</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.63300105,44.645725482,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 Partner: Lake Huron Centre for Coastal Conservation]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohort 6</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-81.74374574,43.751753361,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 Partner: Ontario Federation for Anglers &amp; Hunters (OFAH)]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohort 4.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-78.27333738,44.282039833,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC Stage 2 Placement: Sea Turtle Network]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohort 2.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.60803874,44.603325707,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC: Stage 2 Partner SCALES Nature Park]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts 1-3</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.39465343,44.622050768,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC: Stage 2 Partner: G3E/EWAG]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Stage 2 partner for cohort 5.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.21433282,46.984302416,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC: Stage 2 partner: Group for Research and Education on Marine Mammals (GREMM)]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Stage 2 partner for cohort 4.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-69.70707566,48.140716238,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC: Stage 2 Partner: Halifax Discovery Centre]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts 4 -6.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.61605728,44.595115880,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC: Stage 2 Partner: Parks Canada Fort Rod Hill]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts 4 &&nbsp;5.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-123.4995268,48.427325687,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[CWF CCC: Stage 2 Partner: Parks Canada- Pacific Rim Coastal area]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts 4, 5 &&nbsp; 6</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-125.5792418,48.940948028,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Eastview Toronto Boys and Girls Club]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.29407082,43.666923213,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Entrepreneurship project 1804]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Ateliers pour les nouveaux arrivants sur l'appropriation des codes de séduction en contexte québécois</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.45877335,45.461251346,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Gander Boys and Girls Club]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-54.61451017,48.954343304,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Le P'tit Bonheur Workcamp]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>May 22nd - June 8th</p>
+<p>15 volunteers will participate in the reconstruction of a Yurt-shaped kitchenette, renovate an activity site called the Fortress and help in the kitchen. Their work will improve the quality of activities and social environment of the campers. </p>
+<p>Le P'tit Bonheur is an non for profit outdoor base. <br></p></div>
+		]]>
+		</description>
+		<Point><coordinates>-74.36909437,46.150643060,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Moncton Katimavik House (The Mance)]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts one and two. 11 youth in each cohort.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-64.78030732,46.089475136,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Nanaimo Katimavik House]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts one and two. 11 youth in each cohort.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-123.9703974,49.180688645,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Ocean Bridge 2018 Cohort]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Haida Gwaii immersive service expedition<br>May 20th - 30th</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-132.0804932,53.955826701,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Ocean Bridge 2018 Cohort]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>2018 Ocean Literacy Service: October 11-15th</p><p>- Nautical Library: A night of Ocean Autobiographies</p><p>-&nbsp;AquaVan Takeover</p><p>- Parlons Océans</p><p>- Seawall Plog-a-thon</p><p>- Ocean Health Fair</p><p>- Ocean Arcade</p><p>- Promenades sur l'eau</p><p>- Ocean Literacy through an Indigenous Lens</p><p>- Ocean Art Installations</p><p>- Ocean Bridge Outreach at the Vancouver Aquarium</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-123.1309461,49.300809401,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Ocean Bridge Cohort 2018]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>2018 Ocean Bridge Marine Protected Area Expedition</p><p>- A 3 day sailing expedition through the proposed National Marine Conservation Area Reserve of the Southern Strait of Georgia</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-123.1803770,48.794659446,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Quebec City Katimavik House]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts one and two. 11 youth in each cohort.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.29429973,46.761687603,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[RMDJQ - Neuville]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.65804728,46.767329981,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Saskatchewan Wildlife Federation]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Canadian Conservation Corps Stage 2 Partner</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-105.5192079,50.413926364,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[St. Boniface Katimavik House]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts one and two. 11 youth in each cohort.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-97.09890087,49.878118048,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Stettler Boys and Girls Club]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Lead UP project</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-112.7280840,52.324545075,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Sudbury Katimavik House]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Cohorts one and two. 11 youth in each cohort.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-80.99170697,46.485132104,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#green</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[The Duke of Edinburgh's International Award Passion to Purpose]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p><em>Passion to Purpose</em> is a 5 day youth forum where participants take part in inspirational keynotes, workshops, team building exercises and outdoor activities that develop their passions for change into a concrete action plan that will be executed within their communities.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-104.5885562,50.415518704,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Tool library]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Un atelier communautaire/bibliothèque à outils pour Hochelaga/Maisonneuve, Je veux aider les gens à devenir plus autonomes, encourager le partage et diminuer la consommation, favoriser le transfert de savoir et aider les gens qui ont des projets de bricolages mais pas de garage en banlieue à les réaliser.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.54986720,45.544472163,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Workcamp II in Ste-Thérèse]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>15 volunteers will bring out the ecological and natural character of the Jardin des sources. They will be working with youth from the Ste-Théreèse youth club who will help clean up paths, plant trees and clean the lake and rivers surrounding the site.</p><p>-&gt;  July 28th - August 12th</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.84254455,45.642247965,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Workcamp in Les éboulements]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Volunteers will participate in the general maintenance of a camp ground and its buildings, redesign a walking trail, paint some camp buildings, build modules for adventurous trails. They will also take part in the organization of an open-house day event of the beautiful site.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-70.35850524,47.478232163,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Workcamp in Saint-Bruno-de-Kamouraska]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>Volunteers from Canada and abroad with the help of local volunteers, will work on the relaying of an intergenerational park : repair park benches, redesign walking paths and floral arrangements to enrich the lives of this community of 540 people.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-69.75923538,47.497952000,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Workcamp in Saint-Zénon]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>The volunteers will build walking trails and wooden belvederes at the Sept-Chutes Regional Park. They will be contributing to the development of the site so that visitors can enjoy the beautiful landscapes as well as the wildlife and floral diversity. </p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.72169494,46.471295636,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[Workcamp in Sainte-Thérèse]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>volunteers will bring out the ecological and natural character of the Jardin des sources. They will be working with youth from the Ste-Théreèse youth club who will help clean up paths, plant trees and clean the lake and rivers surrounding the site. </p>
+<p>-&gt; June 30th- July 22nd</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.84254455,45.642247965,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Calgary]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Calgary&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-114.0826885,51.039117554,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Charlottetown]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Charlottetown</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.24791125,46.345625099,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Halifax]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Halifax</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.57692764,44.632679052,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Moncton]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Moncton</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-64.88454883,46.026666014,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Montreal]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Montreal&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-73.75861206,45.493121080,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Quebec City]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Quebec City</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-71.05971815,46.828327603,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Saskatoon]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Saskatoon&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-106.6501895,52.147671574,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN St. John]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN St. John&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-66.18064933,45.306150798,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Sudbury]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Sudbury</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-80.94640202,46.529895033,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Toronto]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Toronto&nbsp;</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-79.51756238,43.757146885,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Vancouver]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Vancouver&nbsp;Service Project - Spring 2018 cohort</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-122.8125362,49.199832339,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[YMCA YCAN Winnipeg]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>YMCA YCAN Winnipeg</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-97.12842340,49.947451606,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[youthexperts team (mindyourmind)]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>We worked in partnership with Sea to Sky Community Services in Squamish, BC. The youth created a mental health trivia game and mental health e-learning modules.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-123.1570960,49.700232613,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[youthexperts team (mindyourmind)]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>We partnered with Laing House and Heartwood Centre for Youth Community Development in Halifax, NS. The youth created a mental health workbook and a video.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-63.57037885,44.640713461,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+	<Placemark>
+		<name><![CDATA[youthexperts team (mindyourmind)]]></name>
+		<description>
+		<![CDATA[
+			<div class="map-description" style="min-width: 150px; min-height: 50px;"><p>We partnered with&nbsp;Hôtel-Dieu Grace Healthcare in Windsor, ON. The youth will create a mental health workbook and online personality quiz.</p></div>
+		]]>
+		</description>
+		<Point><coordinates>-83.06388258,42.281992161,0</coordinates></Point>
+		<mapID>10011</mapID>
+						<styleUrl>#blue</styleUrl>
+				</Placemark>
+</Document>
+</kml>
