@@ -1,0 +1,74 @@
+%_sprites_share_scss {
+    background: url("#{$wb-assets-path}/sprites_share.png") no-repeat;
+ }
+
+%bitly {
+    @extend %_sprites_share_scss;
+    background-position: 0 0;
+}
+
+%blogger {
+    @extend %_sprites_share_scss;
+    background-position: 0 -32px;
+}
+
+%digg {
+    @extend %_sprites_share_scss;
+    background-position: 0 -64px;
+}
+
+%diigo {
+    @extend %_sprites_share_scss;
+    background-position: 0 -96px;
+}
+
+%facebook {
+    @extend %_sprites_share_scss;
+    background-position: 0 -128px;
+}
+
+%feed {
+    @extend %_sprites_share_scss;
+    background-position: 0 -160px;
+}
+
+%gmail {
+    @extend %_sprites_share_scss;
+    background-position: 0 -192px;
+}
+
+%linkedin {
+    @extend %_sprites_share_scss;
+    background-position: 0 -224px;
+}
+
+%myspace {
+    @extend %_sprites_share_scss;
+    background-position: 0 -256px;
+}
+
+%pinterest {
+    @extend %_sprites_share_scss;
+    background-position: 0 -288px;
+}
+
+%reddit {
+    @extend %_sprites_share_scss;
+    background-position: 0 -320px;
+}
+
+%tumblr {
+    @extend %_sprites_share_scss;
+    background-position: 0 -352px;
+}
+
+%twitter {
+    @extend %_sprites_share_scss;
+    background-position: 0 -384px;
+}
+
+%yahoomail {
+    @extend %_sprites_share_scss;
+    background-position: 0 -416px;
+}
+

@@ -1,0 +1,14 @@
+%_sprites_geomap_scss {
+    background: url("#{$wb-assets-path}/sprites_geomap.png") no-repeat;
+ }
+
+%locate-active {
+    @extend %_sprites_geomap_scss;
+    background-position: 0 0;
+}
+
+%locate {
+    @extend %_sprites_geomap_scss;
+    background-position: 0 -40px;
+}
+
