@@ -33,7 +33,7 @@ var $document = wb.doc,
 			var userInputs;
 			if ( elm.dataset.bgimgSrcset ) {
 				userInputs = elm.dataset.bgimgSrcset.split( "," );
-			};
+			}
 
 			var i_len = userInputs.length;
 			inputs[ elm.id ] = [];
@@ -53,7 +53,7 @@ var $document = wb.doc,
 
 			selectImage();
 
-				// Identify that initialization has completed
+			// Identify that initialization has completed
 			wb.ready( $( elm ), componentName );
 		}
 	},
@@ -90,10 +90,10 @@ var $document = wb.doc,
 
 $window.on( "resize", selectImage );
 
-	// Bind the init event of the plugin
+// Bind the init event of the plugin
 $document.on( "timerpoke.wb wb-init." + componentName, selector, init );
 
-	// Add the timer poke to initialize the plugin
+// Add the timer poke to initialize the plugin
 wb.add( selector );
 
 } )( jQuery, wb );
