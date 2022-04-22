@@ -6,6 +6,8 @@
  * @author @duboisp
  */
 
+console.log( "Hello world" );
+
 console.log( "Running unit testing" );
 
 // Test runner setting
