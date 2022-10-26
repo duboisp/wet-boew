@@ -1,0 +1,11 @@
+{
+	"pageHeadings": [
+		"title h3 text 1",
+		"title h3 text 2",
+		"title h3 text 3",
+		"title h3 text 4"
+	],
+	"pageTitle": "Titre de la page",
+	"submissionPage": "https://www.example.com"
+}
+
