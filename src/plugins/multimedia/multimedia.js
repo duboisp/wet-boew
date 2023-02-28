@@ -512,9 +512,11 @@ var componentName = "wb-mltmd",
 			} else {
 				this.object.unMute();
 			}
+
 			setTimeout( function() {
 				$media.trigger( "volumechange" );
-			}, 50 );
+				console.log( wb.isReady );
+			}, ( wb.isReady ? 50 : 500 ) );
 			break;
 		case "getVolume":
 			return this.object.getVolume() / 100;
@@ -551,6 +553,10 @@ var componentName = "wb-mltmd",
 	 * @param {object} event The event object fior the triggered event
 	 */
 	youTubeEvents = function( event ) {
+
+
+	console.log( event );
+
 		var media = event.target.getIframe(),
 			$media = $( media ),
 			timeline = function() {
@@ -563,6 +569,24 @@ var componentName = "wb-mltmd",
 			$media
 				.trigger( "canplay" )
 				.trigger( "durationchange" );
+
+
+			$mltmPlayerElm = $media.parentsUntil( selector ).parent().get( 0 );
+
+			console.log( $mltmPlayerElm );
+			console.log( $mltmPlayerElm.putMutedOnInit );
+
+			if ( $mltmPlayerElm.putMutedOnInit ) {
+
+				$mltmPlayerElm.player( "setMuted", true );
+
+				// There is a racing condition issue, we just need to wait a little bit
+				//setTimeout( function() {
+					//$mltmPlayerElm.object.mute();
+					//$media.trigger( "volumechange" );
+				//}, 500 );
+
+			}
 			break;
 		case -1:
 			event.target.unMute();
@@ -579,10 +603,32 @@ var componentName = "wb-mltmd",
 				$mltmPlayerElm = $media.parentsUntil( selector ).parent();
 				youTubeApi.call( $mltmPlayerElm.get( 0 ), "setCaptionsVisible", $mltmPlayerElm.hasClass( captionClass ) );
 			}
+			$mltmPlayerElm = $media.parentsUntil( selector ).parent().get( 0 );
 			$media
 				.trigger( "canplay" )
 				.trigger( "play" )
 				.trigger( "playing" );
+
+
+				/*
+			if ( $mltmPlayerElm.putMutedOnInit ) {
+				//this.player.call( "setMuted", true );
+				//window.trymute = data.ytPlayer;
+				//window.trymedia = $media;
+				//data.ytPlayer.mute();
+				$mltmPlayerElm.player( "setMuted", true );
+				$media.trigger( "volumechange" );
+
+	//			 setTimeout( function() {
+		//			data.ytPlayer.mute();
+			//		//youTubeApi( "setMuted", true );
+				//}, 1500 );
+			//} else if ( !data.ytPlayer && $media.get( 0 ).muted ) {
+				//$media.trigger( "volumechange" );
+			}
+*/
+
+
 			media.timeline = setInterval( timeline, 250 );
 			break;
 		case 2:
@@ -670,6 +716,9 @@ $document.on( initializedEvent, selector, function( event ) {
 
 			// lets set the flag for the call back
 			data.youTubeId = url.params.v ? url.params.v : url.pathname.substr( 1 );
+
+			// Defaults config set on the video element
+			data.isInitMuted = $media.get( 0 ).muted;
 
 			if ( youTube.ready === false ) {
 				$document.one( youtubeReadyEvent, function() {
@@ -843,6 +892,29 @@ $document.on( renderUIEvent, selector, function( event, type, data ) {
 				.insertBefore( $media.parent() )
 				.trigger( "wb-init.wb-share" );
 		}
+
+		// Initialize the UI for the muted state
+
+		console.log( data.ytPlayer );
+		console.log( data.isInitMuted );
+		console.log( data.foo );
+		console.log( $media.get( 0 ).muted );
+
+		if ( data.isInitMuted ) {
+			this.putMutedOnInit = true;
+			//this.player.call( "setMuted", true );
+			window.trymute = data.ytPlayer;
+			window.trymedia = $media;
+			//data.ytPlayer.mute();
+
+//			 setTimeout( function() {
+	//			data.ytPlayer.mute();
+		//		//youTubeApi( "setMuted", true );
+			//}, 1500 );
+		} else if ( !data.ytPlayer && $media.get( 0 ).muted ) {
+			$media.trigger( "volumechange" );
+		}
+
 
 		if ( data.captions === undef ) {
 			return 1;
