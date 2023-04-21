@@ -26,6 +26,9 @@ var componentName = "wb-jsonmanager",
 	datasetCacheSettings = {},
 	dsDelayed = {},
 	dsPostponePatches = {},
+	dsFetching = {},
+	dsFetchIsArray = {},
+	dsFetchMerged = {},
 	$document = wb.doc,
 	defaults = {
 		ops: [
@@ -290,22 +293,30 @@ var componentName = "wb-jsonmanager",
 
 					if ( url ) {
 
-						// Fetch the JSON
-						$elm.trigger( {
-							type: "json-fetch.wb",
-							fetch: {
-								url: url,
-								nocache: elmData.nocache,
-								nocachekey: elmData.nocachekey,
-								data: elmData.data,
-								contentType: elmData.contenttype,
-								method: elmData.method
-							}
-						} );
+						url = typeof url === "string" ? [ url ] : url;
+						i_len = url.length;
 
-						// If the URL is a dataset, make it ready
-						if ( url.charCodeAt( 0 ) === 35 && url.charCodeAt( 1 ) === 91 ) {
-							wb.ready( $elm, componentName );
+						dsFetching[ dsName ] = i_len;
+
+						for( i = 0; i !== i_len; i ++ ) {
+
+							// Fetch the JSON
+							$elm.trigger( {
+								type: "json-fetch.wb",
+								fetch: {
+									url: url[ i ],
+									nocache: elmData.nocache,
+									nocachekey: elmData.nocachekey,
+									data: elmData.data,
+									contentType: elmData.contenttype,
+									method: elmData.method
+								}
+							} );
+
+							// If the URL is a dataset, make it ready
+							if ( url[ i ].charCodeAt( 0 ) === 35 && url[ i ].charCodeAt( 1 ) === 91 ) {
+								wb.ready( $elm, componentName );
+							}
 						}
 					} else if ( !url && elmData.extractor ) {
 						$elm.trigger( {
@@ -643,6 +654,38 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 	if ( elm === event.currentTarget ) {
 		settings = wb.getData( $elm, componentName );
 
+		// Ensure the response is an independant clone
+		if ( isArrayResponse ) {
+			JSONresponse = $.extend( true, [], JSONresponse );
+		} else {
+			JSONresponse = $.extend( true, {}, JSONresponse );
+		}
+
+		dsName = settings.name;
+		dsFetching[ dsName ] --;
+
+		// Ensure that we do have fetched and merged all urls everything before to move ahead
+		dsFetchIsArray[ dsName ] = dsFetchIsArray[ dsName ] ? dsFetchIsArray[ dsName ] : isArrayResponse;
+
+		if ( dsFetchIsArray[ dsName ] !== isArrayResponse ) {
+			throw "Can't merge, incompatible JSON type (array vs object)";
+		}
+
+		if (! dsFetchMerged[ dsName ] ) {
+			dsFetchMerged[ dsName ] = JSONresponse;
+		} else if ( settings.concat && isArrayResponse && dsFetchMerged[ dsName ] ) {
+			dsFetchMerged[ dsName ] = dsFetchMerged[ dsName ].concat( JSONresponse );
+		} else {
+			dsFetchMerged[ dsName ] = $.extend( dsFetchMerged[ dsName ], JSONresponse );
+		}
+
+		// Quit and wait for the next fetch
+		if ( dsFetching[ dsName ] ) {
+			return;
+		}
+
+		JSONresponse = dsFetchMerged[ dsName ];
+
 		extractor = settings.extractor;
 		if ( extractor ) {
 			if ( !$.isArray( extractor ) ) {
@@ -652,7 +695,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 
 		}
 
-		dsName = "[" + settings.name + "]";
+		dsName = "[" + dsName + "]";
 		patches = settings.patches || [];
 		filterPath = settings.fpath;
 		filterTrueness = settings.filter || [];
@@ -660,12 +703,6 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 
 		if ( !$.isArray( patches ) ) {
 			patches = [ patches ];
-		}
-
-		if ( isArrayResponse ) {
-			JSONresponse = $.extend( true, [], JSONresponse );
-		} else {
-			JSONresponse = $.extend( true, {}, JSONresponse );
 		}
 
 		// Apply a filtering
@@ -684,6 +721,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		if ( patches.length ) {
 			jsonpatch.apply( JSONresponse, patches );
 		}
+
 		if ( settings.debug ) {
 			debugPrintOut( $elm, "initEvent", JSONresponse, patches );
 		}
