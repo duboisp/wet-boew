@@ -1,0 +1,8 @@
+{
+  "anArray": [
+    { "name": "Item 1a", "prop": "xred" },
+    { "name": "Item 2a", "prop": "xblue" },
+    { "name": "Item 3a", "prop": "xyellow" },
+    { "name": "Item 4a", "prop": "xpurple" }
+  ]
+}

@@ -19,7 +19,10 @@ var $document = wb.doc,
 	fetchEvent = component + ".wb",
 	jsonCache = { },
 	jsonCacheBacklog = { },
-	completeJsonFetch = function( callerId, refId, response, status, xhr, selector ) {
+	jsonQuoeudNbFetch = { },
+	jsonQuoeudMerged = { },
+	jsonQuoeudUrls = { },
+	completeJsonFetch = function( callerId, refId, response, status, xhr, selector, fetchUrl ) {
 		if ( !window.jsonpointer ) {
 
 			// JSON pointer library is loaded but not executed in memory yet, we need to wait a tick before to continue
@@ -28,10 +31,59 @@ var $document = wb.doc,
 			}, 100 );
 			return false;
 		}
-		if ( selector ) {
-			response = jsonpointer.get( response, selector );
+
+		// Get the requestId 
+		var requestId,
+			requestIds = jsonQuoeudUrls[ fetchUrl ],
+			i,
+			i_len,
+			requestIdsToKeep = [];
+
+		i_len = requestIds.length;
+
+		for( i = 0; i !== i_len; i += 1 ) {
+			requestId = requestIds[ i ];
+			jsonQuoeudNbFetch[ requestId ] = jsonQuoeudNbFetch[ requestId ] - 1;
+
+			if ( !jsonQuoeudMerged[ requestId ] ) {
+				jsonQuoeudMerged[ requestId ] = $.isArray( response ) ? [ ] : { };
+			}
+
+			jsonQuoeudMerged[ requestId ] = $.extend( jsonQuoeudMerged[ requestId ], response );
+
+			// When the nb of fetch being quoeud are empty, trigger the fetched event
+			if ( !jsonQuoeudNbFetch[ requestId ] ) {
+
+				if ( selector ) {
+					jsonQuoeudMerged[ requestId ] = jsonpointer.get( jsonQuoeudMerged[ requestId ], selector );
+				}
+				$( "#" + callerId ).trigger( {
+					type: "json-fetched.wb",
+					fetch: {
+						response: jsonQuoeudMerged[ requestId ],
+						status: status,
+						xhr: xhr,
+						refId: refId
+					}
+				}, this );
+
+				delete jsonQuoeudMerged[ requestId ];
+				delete jsonQuoeudNbFetch[ requestId ];
+			} else {
+				requestIdsToKeep.push( requestId );
+			}
 		}
-		$( "#" + callerId ).trigger( {
+		jsonQuoeudUrls[ fetchUrl ] = requestIdsToKeep;
+
+		
+
+
+		//jsonQuoeudMerged[ ]
+
+		// Trigger the event only after we do have all the pieces, wait otherwise to fetch all
+		// jsonFetchQuoeud[ callerId ] = jsonFetchQuoeud[ callerId ] - 1; // Track when the fetch is multiple
+		// if ( !jsonFetchQuoeud[ callerId ] )
+		/*$( "#" + callerId ).trigger( {
 			type: "json-fetched.wb",
 			fetch: {
 				response: response,
@@ -39,33 +91,22 @@ var $document = wb.doc,
 				xhr: xhr,
 				refId: refId
 			}
-		}, this );
-	};
+		}, this );*/
+	},
+	fetchSingleUrl = function( callerId, fetchUrl, fetchOpts ){
 
-// Event binding
-$document.on( fetchEvent, function( event ) {
+		var urlParts = fetchUrl.split( "#" ),
+			url = urlParts[ 0 ],
+			fetchNoCache = fetchOpts.nocache,
+			fetchNoCacheKey = fetchOpts.nocachekey || wb.cacheBustKey || "wbCacheBust",
+			fetchNoCacheValue,
+			fetchCacheURL,
+			hashPart,
+			datasetName,
+			selector = urlParts[ 1 ] || false,
+			refId = fetchOpts.refId,
+			cachedResponse;
 
-	var caller = event.element || event.target,
-		fetchOpts = event.fetch || { url: "" },
-		urlParts = fetchOpts.url.split( "#" ),
-		url = urlParts[ 0 ],
-		fetchNoCache = fetchOpts.nocache,
-		fetchNoCacheKey = fetchOpts.nocachekey || wb.cacheBustKey || "wbCacheBust",
-		fetchNoCacheValue,
-		fetchCacheURL,
-		hashPart,
-		datasetName,
-		selector = urlParts[ 1 ] || false,
-		callerId, refId = fetchOpts.refId,
-		cachedResponse;
-
-	// Filter out any events triggered by descendants
-	if ( caller === event.target || event.currentTarget === event.target ) {
-
-		if ( !caller.id ) {
-			caller.id = wb.getId();
-		}
-		callerId = caller.id;
 
 		if ( selector ) {
 
@@ -107,91 +148,150 @@ $document.on( fetchEvent, function( event ) {
 			fetchOpts.url = url;
 		}
 
+		// Ensure this fetch has an URL. There is no URL when only using dataset name (a virtual JSON file).
+		if ( !url ) {
+			return;
+		}
+
+		if ( !fetchOpts.nocache ) {
+			cachedResponse = jsonCache[ url ];
+
+			if ( cachedResponse ) {
+				completeJsonFetch( callerId, refId, cachedResponse, "success", undefined, selector, fetchUrl );
+				return;
+			} else {
+				if ( !jsonCacheBacklog[ url ] ) {
+					jsonCacheBacklog[ url ] = [ ];
+				} else {
+					jsonCacheBacklog[ url ].push( {
+						"callerId": callerId,
+						"refId": refId,
+						"selector": selector,
+						"fetchUrl": fetchUrl
+					} );
+					return;
+				}
+			}
+		}
+
+		// Ensure we only receive JSON data and don't allow jsonp
+		// jQuery will raise an error if other data format is received
+		fetchOpts.dataType = "json";
+		if ( fetchOpts.jsonp ) {
+			fetchOpts.jsonp = false;
+		}
+
+		// Sending Data
+		if ( fetchOpts.data ) {
+			try {
+				fetchOpts.data = ( typeof fetchOpts.data === "string" ? fetchOpts.data : JSON.stringify( fetchOpts.data ) );
+			} catch ( err ) {
+				throw "JSON fetch - Data being sent to server - " + err;
+			}
+
+			fetchOpts.method = fetchOpts.method || "POST";
+			fetchOpts.contentType = fetchOpts.contentType || "application/json";
+		}
+
+		$.ajax( fetchOpts )
+			.done( function( response, status, xhr ) {
+				var i, i_len, i_cache, backlog;
+
+				if ( !fetchOpts.nocache ) {
+					try {
+						jsonCache[ url ] = response;
+					} catch ( error ) {
+						return;
+					}
+				}
+
+				completeJsonFetch( callerId, refId, response, status, xhr, selector, fetchUrl );
+
+				if ( jsonCacheBacklog[ url ] ) {
+					backlog = jsonCacheBacklog[ url ];
+
+					i_len = backlog.length;
+
+					for ( i = 0; i !== i_len; i += 1 ) {
+						i_cache = backlog[ i ];
+						completeJsonFetch( i_cache.callerId, i_cache.refId, response, status, xhr, i_cache.selector, i_cache.fetchUrl );
+					}
+				}
+
+			} )
+			.fail( function( xhr, status, error ) {
+				$( "#" + callerId ).trigger( {
+					type: "json-failed.wb",
+					fetch: {
+						xhr: xhr,
+						status: status,
+						error: error,
+						refId: refId
+					}
+				}, this );
+			}, this );
+	};
+
+// Event binding
+$document.on( fetchEvent, function( event ) {
+	var caller = event.element || event.target,
+		callerId,
+		fetchOpts = event.fetch || { url: [ "" ] },
+		refId = fetchOpts.refId || "",
+		url = fetchOpts.url;
+
+	// Filter out any events triggered by descendants
+	if ( caller === event.target || event.currentTarget === event.target ) {
+
+		if ( !caller.id ) {
+			caller.id = wb.getId();
+		}
+		callerId = caller.id;
+
 		Modernizr.load( {
 			load: "site!deps/jsonpointer" + wb.getMode() + ".js",
 			complete: function() {
 
-				// Ensure this fetch has an URL. There is no URL when only using dataset name (a virtual JSON file).
-				if ( !url ) {
-					return;
+
+				var urls = typeof url === "string" ? [ url ] : url,
+					i,
+					i_len = urls.length;
+
+				// Generate a request unique ID
+				var requestId = JSON.stringify( urls ) + callerId + refId;
+
+				// Initialize the request quoeud
+				if ( !jsonQuoeudNbFetch[ requestId ] ) {
+					jsonQuoeudNbFetch[ requestId ] = 0;
 				}
 
-				if ( !fetchOpts.nocache ) {
-					cachedResponse = jsonCache[ url ];
+				for ( i = 0; i !== i_len; i = i + 1 ) {
 
-					if ( cachedResponse ) {
-						completeJsonFetch( callerId, refId, cachedResponse, "success", undefined, selector );
-						return;
-					} else {
-						if ( !jsonCacheBacklog[ url ] ) {
-							jsonCacheBacklog[ url ] = [ ];
-						} else {
-							jsonCacheBacklog[ url ].push( {
-								"callerId": callerId,
-								"refId": refId,
-								"selector": selector
-							} );
-							return;
-						}
+					var fetchUrl = urls[ i ];
+
+					jsonQuoeudNbFetch[ requestId ] = jsonQuoeudNbFetch[ requestId ] + 1;
+
+					if ( !jsonQuoeudUrls[ fetchUrl ] ) {
+						jsonQuoeudUrls[ fetchUrl ] = [];
 					}
+					jsonQuoeudUrls[ fetchUrl ].push( fetchUrl );
+
+					fetchSingleUrl( callerId, fetchUrl, fetchOpts );
+
+					// Use the refId or define one. The refId identify this fetch request considering the callerId element could trigger multiple fetch event during the global wb init (ex when data-json and json-manager are set on the same element)
+	/*
+					var requestId; // A request URL signature
+
+					urls = typeof url === "string" ? [ url ] : url;
+
+					requestId = JSON.stringify( urls + callerId + refId );
+
+
+					jsonFetchQuoeud[ requestId ] = url.length || 1; // Defining number of individual URL fetching that is being quoeud to complete this fetch
+					jsonQuoeudMerged[ requestId ] = { }; // init the placeholder of merging all URL
+	*/
+					
 				}
-
-				// Ensure we only receive JSON data and don't allow jsonp
-				// jQuery will raise an error if other data format is received
-				fetchOpts.dataType = "json";
-				if ( fetchOpts.jsonp ) {
-					fetchOpts.jsonp = false;
-				}
-
-				// Sending Data
-				if ( fetchOpts.data ) {
-					try {
-						fetchOpts.data = ( typeof fetchOpts.data === "string" ? fetchOpts.data : JSON.stringify( fetchOpts.data ) );
-					} catch ( err ) {
-						throw "JSON fetch - Data being sent to server - " + err;
-					}
-
-					fetchOpts.method = fetchOpts.method || "POST";
-					fetchOpts.contentType = fetchOpts.contentType || "application/json";
-				}
-
-				$.ajax( fetchOpts )
-					.done( function( response, status, xhr ) {
-						var i, i_len, i_cache, backlog;
-
-						if ( !fetchOpts.nocache ) {
-							try {
-								jsonCache[ url ] = response;
-							} catch ( error ) {
-								return;
-							}
-						}
-
-						completeJsonFetch( callerId, refId, response, status, xhr, selector );
-
-						if ( jsonCacheBacklog[ url ] ) {
-							backlog = jsonCacheBacklog[ url ];
-
-							i_len = backlog.length;
-
-							for ( i = 0; i !== i_len; i += 1 ) {
-								i_cache = backlog[ i ];
-								completeJsonFetch( i_cache.callerId, i_cache.refId, response, status, xhr, i_cache.selector );
-							}
-						}
-
-					} )
-					.fail( function( xhr, status, error ) {
-						$( "#" + callerId ).trigger( {
-							type: "json-failed.wb",
-							fetch: {
-								xhr: xhr,
-								status: status,
-								error: error,
-								refId: refId
-							}
-						}, this );
-					}, this );
 			}
 		} );
 	}
