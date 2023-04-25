@@ -20,6 +20,56 @@
 
 <p>Manage dataset and apply JSON Patch.</p>
 
+
+<h2>Importing node</h2>
+
+<div class="row">
+	<div class="col-sm-6">
+		<h3>Importing a single reference</h3>
+		<div data-wb-jsonmanager='{
+				"url": [
+					"demo/data-toMerge.json"
+				],
+				"name": "import1",
+				"imports" : "/toImport"
+			}'></div>
+
+		<p data-json-replace="#[import1]/toImport/product">N/A</p>
+		<ul data-wb-json='{
+				"url": "#[import1]/toImport/products",
+				"mapping": [
+					{ "selector": "li" }
+				]
+			}'>
+			<template>
+				<li></li>
+			</template>
+		</ul>
+	</div>
+	<div class="col-sm-6">
+		<h3>Importing an array of references</h3>
+		<div data-wb-jsonmanager='{
+				"url": [
+					"demo/data-toMerge.json"
+				],
+				"name": "import2",
+				"imports" : "/toImportArray"
+			}'></div>
+
+		<p data-json-replace="#[import2]/toImportArray/2/product">N/A</p>
+		<ul data-wb-json='{
+				"url": "#[import2]/toImportArray/2/products",
+				"mapping": [
+					{ "selector": "li" }
+				]
+			}'>
+			<template>
+				<li></li>
+			</template>
+		</ul>
+	</div>
+</div>
+
 <h2>Applying patch</h2>
 
 <div data-wb-jsonmanager='{

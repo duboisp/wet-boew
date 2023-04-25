@@ -1,5 +1,11 @@
 {
   "product": "Bonjour le monde",
+  "toImport": "//localhost:8000/unmin/demos/wb-data-json/demo/data-en.json",
+  "toImportArray": [
+    "//localhost:8000/unmin/demos/wb-data-json/demo/data-en.json",
+    "//localhost:8000/unmin/demos/wb-data-json/demo/data-en.json",
+    "//localhost:8000/unmin/demos/wb-data-json/demo/data-en.json"
+  ],
   "products": [
     "My alternate first product",
     "My alternate second product",

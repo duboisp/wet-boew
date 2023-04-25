@@ -29,6 +29,7 @@ var componentName = "wb-jsonmanager",
 	dsFetching = {},
 	dsFetchIsArray = {},
 	dsFetchMerged = {},
+	dsImporting = {},
 	$document = wb.doc,
 	defaults = {
 		ops: [
@@ -646,6 +647,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		settings,
 		dsName,
 		JSONresponse = event.fetch.response,
+		refId = event.fetch.refId,
 		isArrayResponse = $.isArray( JSONresponse ),
 		resultSet,
 		i, i_len, i_cache, backlog, selector,
@@ -662,37 +664,106 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		}
 
 		dsName = settings.name;
-		dsFetching[ dsName ] --;
 
-		// Ensure that we do have fetched and merged all urls everything before to move ahead
-		dsFetchIsArray[ dsName ] = dsFetchIsArray[ dsName ] ? dsFetchIsArray[ dsName ] : isArrayResponse;
+		if ( !dsImporting[ dsName ] ) {
+			dsFetching[ dsName ] --;
 
-		if ( dsFetchIsArray[ dsName ] !== isArrayResponse ) {
-			throw "Can't merge, incompatible JSON type (array vs object)";
-		}
+			// Ensure that we do have fetched and merged all urls everything before to move ahead
+			dsFetchIsArray[ dsName ] = dsFetchIsArray[ dsName ] ? dsFetchIsArray[ dsName ] : isArrayResponse;
 
-		if (! dsFetchMerged[ dsName ] ) {
-			dsFetchMerged[ dsName ] = JSONresponse;
-		} else if ( settings.concat && isArrayResponse && dsFetchMerged[ dsName ] ) {
-			dsFetchMerged[ dsName ] = dsFetchMerged[ dsName ].concat( JSONresponse );
-		} else {
-			dsFetchMerged[ dsName ] = $.extend( dsFetchMerged[ dsName ], JSONresponse );
-		}
-
-		// Quit and wait for the next fetch
-		if ( dsFetching[ dsName ] ) {
-			return;
-		}
-
-		JSONresponse = dsFetchMerged[ dsName ];
-
-		extractor = settings.extractor;
-		if ( extractor ) {
-			if ( !$.isArray( extractor ) ) {
-				extractor = [ extractor ];
+			if ( dsFetchIsArray[ dsName ] !== isArrayResponse ) {
+				throw "Can't merge, incompatible JSON type (array vs object)";
 			}
-			JSONresponse = $.extend( JSONresponse, extractData( extractor ) );
 
+			if (! dsFetchMerged[ dsName ] ) {
+				dsFetchMerged[ dsName ] = JSONresponse;
+			} else if ( settings.concat && isArrayResponse && dsFetchMerged[ dsName ] ) {
+				dsFetchMerged[ dsName ] = dsFetchMerged[ dsName ].concat( JSONresponse );
+			} else {
+				dsFetchMerged[ dsName ] = $.extend( dsFetchMerged[ dsName ], JSONresponse );
+			}
+
+			// Quit and wait for the next fetch
+			if ( dsFetching[ dsName ] ) {
+				return;
+			}
+
+			JSONresponse = dsFetchMerged[ dsName ];
+
+			extractor = settings.extractor;
+			if ( extractor ) {
+				if ( !$.isArray( extractor ) ) {
+					extractor = [ extractor ];
+				}
+				JSONresponse = $.extend( JSONresponse, extractData( extractor ) );
+
+			}
+
+			// Importing data, only once
+			var imports = settings.imports;
+			if ( imports ) {
+				if ( !$.isArray( imports ) ) {
+					imports = [ imports ];
+				}
+
+				i_len = imports.length;
+				dsImporting[ dsName ] = [];
+				for ( i = 0; i !== i_len; i ++ ) {
+					var path = jsonpointer.get( JSONresponse, imports[ i ] );
+
+					if ( !$.isArray( path ) ) {
+
+						// Fetch the single referenced JSON
+						dsImporting[ dsName ][ imports[ i ] ] = true;
+						$elm.trigger( {
+							type: "json-fetch.wb",
+							fetch: {
+								url: path,
+								refId: imports[ i ]
+							}
+						} );
+					} else {
+
+						// Fetch an array of referenced JSON
+						var j, j_len = path.length;
+						for ( j = 0; j !== j_len; j++ ) {
+							dsImporting[ dsName ][ imports[ i ] + "/" + j ] = true;
+							$elm.trigger( {
+								type: "json-fetch.wb",
+								fetch: {
+									url: path[ j ],
+									refId: imports[ i ] + "/" + j
+								}
+							} );
+						}
+					}
+
+				}
+			}
+		} else {
+
+			// This is an importation (Note: refId contains the path of the property to update)
+			if ( dsImporting[ dsName ][ refId ] ) {
+				var obj = jsonpointer.get( dsFetchMerged[ dsName ], refId );
+
+				// Replace the fetched value
+				jsonpatch.apply( dsFetchMerged[ dsName ], [ { 
+					"op": "replace",
+					"path": refId,
+					"value": JSONresponse
+				} ] );
+
+				// Relink the root data of the dataset
+				JSONresponse = dsFetchMerged[ dsName ];
+
+				// Mark this importation completed
+				delete dsImporting[ dsName ][ refId ];
+			}
+
+			// Wait if there is additional imports
+			if ( dsImporting[ dsName ].length ) {
+				return;
+			}
 		}
 
 		dsName = "[" + dsName + "]";
