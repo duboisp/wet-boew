@@ -34,6 +34,21 @@ var componentName = "wb-jsonmanager",
 	defaults = {
 		ops: [
 			{
+				name: "patches",
+				fn: function( obj, key, tree ) {
+					var path = this.path,
+						patches = this.patches,
+						newTree = jsonpointer.get( tree, path );
+
+					patches.forEach( ( patchConf ) => {
+						patchConf.mainTree = tree;
+						patchConf.pathParent = path;
+
+						jsonpatch.apply( newTree, [ patchConf ] );
+					} );
+				}
+			},
+			{
 				name: "wb-count",
 				fn: function( obj, key, tree ) {
 					var countme = obj[ key ],
@@ -171,7 +186,37 @@ var componentName = "wb-jsonmanager",
 						] );
 					}
 				}
+			},
+			// This is temporary until Garneauma PR to add this feature is added
+			{
+				name: "wb-swap",
+				fn: function( obj, key, tree ) {
+					var val = obj[ key ],
+						ref = this.ref,
+						mainTree = this.mainTree,
+						path = this.path,
+						newVal;
+
+					if ( val ) {
+						if ( Array.isArray( val ) ) {
+							val.forEach( ( item, i ) => {
+								item = item.replaceAll( "~", "~0").replaceAll( "/", "~1" ); // Escape slashed and tilde in val when the key is an IRI
+								newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + item ) : jsonpointer.get( tree, ref + "/" + item );
+								if ( newVal ) {
+									applyPatch( tree, "replace", path + "/" + i, newVal );
+								}
+							} );
+						} else if ( typeof val === "string" ) {
+							val = val.replaceAll( "~", "~0").replaceAll( "/", "~1" ); // Escape slashed and tilde in val when the key is an IRI
+							newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + val ) : jsonpointer.get( tree, ref + "/" + val );
+							if ( newVal ) {
+								applyPatch( tree, "replace", path, newVal );
+							}
+						}
+					}
+				}
 			}
+
 		],
 		opsArray: [
 			{
@@ -211,11 +256,41 @@ var componentName = "wb-jsonmanager",
 						}
 					}
 				}
+			},
+			// This is temporary until Garneauma PR to add this feature is added
+			{
+				name: "wb-swap",
+				fn: function( arr ) {
+					arr.forEach( ( item, i ) => {
+						jsonpatch.apply( arr, [
+							{ op: "wb-swap", path: "/" + i + this.path, ref: this.ref, mainTree: this.mainTree }
+						] );
+					} );
+				}
+			},
+			// This is temporary until Garneauma PR to add this feature is added
+			{
+				name: "patches",
+				fn: function( arr ) {
+					arr.forEach( ( item, i ) => {
+						jsonpatch.apply( this.mainTree || arr, [
+							{ op: "patches", path: ( this.pathParent || "" ) + "/" + i + this.path, patches: this.patches }
+						] );
+					} );
+				}
 			}
 		],
 		opsRoot: [],
 		settings: { },
 		docMapKeys: { "referer": document.referrer, "locationHref": location.href }
+	},
+
+	// This is temporary until Garneauma PR to add this feature is added
+	// Utility function to apply a JSON patch
+	applyPatch = function( tree, op, path, value ) {
+		jsonpatch.apply( tree, [
+			{ op: op, path: path, value: value }
+		] );
 	},
 
 	// Add debug information after the JSON manager element
@@ -747,7 +822,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 				var obj = jsonpointer.get( dsFetchMerged[ dsName ], refId );
 
 				// Replace the fetched value
-				jsonpatch.apply( dsFetchMerged[ dsName ], [ { 
+				jsonpatch.apply( dsFetchMerged[ dsName ], [ {
 					"op": "replace",
 					"path": refId,
 					"value": JSONresponse

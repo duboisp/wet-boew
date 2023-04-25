@@ -1,0 +1,179 @@
+---
+{
+	"title": "Assessment d'accessibilité - Ajout au calendrier",
+	"language": "fr",
+	"tag": "acr",
+	"parentdir": "acr",
+	"parentPage": "Rapport de conformité à l'accessibilité",
+	"parentPageURL": "acr",
+	"altLangPage": "addcal-assessment-wcag21-en.html",
+	"dateModified": "2023-05-08",
+	"layout": "default.hbs",
+	"reportURL": "addcal-assessment-wcag21.json"
+}
+---
+
+{{#if page.description }}
+	<p property="description">{{ page.description }}</p>
+{{/if}}
+
+<nav>
+	<h2>Sur cette page</h2>
+	<ul>
+		<li><a href="#sommaire">Sommaire</a></li>
+		<li><a href="#acr">Détails de l'évaluation</a></li>
+	</ul>
+</nav>
+
+<div id="ds-a11y" data-wb-jsonmanager='{
+	"url": [
+		"labels.json",
+		"{{ page.reportURL }}"
+	],
+	"name": "a11y",
+	"patches": [
+		{
+			"op": "patches", "path": "/earl:result", "patches": [
+				{ "op": "wb-swap", "path": "/earl:test", "ref": "/labels/earl:TestCriterion/fr" },
+				{ "op": "wb-swap", "path": "/earl:outcome", "ref": "/labels/earl:OutcomeValue/fr" },
+				{ "op": "wb-swap", "path": "/earl:mode", "ref": "/labels/earl:TestMode/fr" },
+				{ "op": "wb-swap", "path": "/acr:relevancy", "ref": "/labels/acr:RelevancyValue/fr" },
+				{ "op": "wb-swap", "path": "/acr:severity", "ref": "/labels/acr:SeverityValue/fr" },
+				{
+					"op": "patches", "path": "/earl:result", "patches": [
+						{ "op": "wb-swap", "path": "/earl:test", "ref": "/labels/earl:TestCriterion/fr" },
+						{ "op": "wb-swap", "path": "/earl:outcome", "ref": "/labels/earl:OutcomeValue/fr" }
+					]
+				}
+			]
+		}
+	]
+}'></div>
+
+<h2 id="sommaire">Sommaire</h2>
+<p>Ce documents est une évaluation informelle d'un ensemble de règle de mise à l'essaie de l'accessibilité. Ceci ne doit pas être interprété comme un rapport de conformance à l'accessibilité. Ce dernier est publié séparement de l'évaluation et indiquera seulement si les exigences sont satisfait, pas satisfait ou si davantage de test sont requis tel que décrit par l'établissement de la conformance du WCAG 2.1. Cet évaluation pourrait contenir des faux positives, des faux négative ou être juste. L'interprétation de l'évaluation, via le rapport de conformité à l'accessibilité, pourrait prendre en compte d'autre évaluation indépendante afin d'établir la conformité s'il y a lieu.</p>
+<p>(<a href="{{ page.reportURL }}" type="application/ld+json" rel="alternate">Consulter le rapport dans son état d'origine en JSON-LD</a>)</p>
+<dl class="dl-horizontal">
+	<dt>Type</dt>
+	<dd>Évaluation de l'accessibilité</dd>
+	<dt>Évalué par:</dt>
+	<dd><a data-wb-json='[
+
+					{
+						"url": "#[a11y]/earl:assertedBy/earl:mainAssertor/foaf:homepage",
+						"type": "attr",
+						"attr": "href"
+					},
+					{
+						"url": "#[a11y]/earl:assertedBy/earl:mainAssertor/foaf:name",
+						"type": "replace"
+					}
+
+				]' href="#">Inconnu</a> sous <a data-wb-json='[
+
+					{
+						"url": "#[a11y]/earl:assertedBy/foaf:homepage",
+						"type": "attr",
+						"attr": "href"
+					},
+					{
+						"url": "#[a11y]/earl:assertedBy/foaf:name",
+						"type": "replace"
+					}
+
+				]' href="#" data-json-replace="#[a11y]/earl:assertedBy/foaf:name">Non disponible</a></dd>
+	<dt>Date:</dt>
+	<dd data-json-replace="#[a11y]/dct:date">Non disponible</dd>
+	<dt>Sujet:</dt>
+	<dd>
+		<ul class="list-unstyled">
+			<li><strong>À propos</strong>:
+				<span><a data-wb-json='[
+
+					{
+						"url": "#[a11y]/earl:subject/dct:references",
+						"type": "attr",
+						"attr": "href"
+					},
+					{
+						"url": "#[a11y]/earl:subject/dct:references",
+						"type": "replace"
+					}
+
+				]' href="#">Non spécifié</a></span>
+			</li>
+			<li><strong>Porté</strong>:
+				<span data-json-replace="#[a11y]/earl:subject/acr:applicability" lang="en"><span lang="fr">Non Définie</span></span>
+			</li>
+			<li><strong>Sélecteur CSS</strong>:
+				<code data-json-replace="#[a11y]/earl:subject/earl:pointer/@value">Pas applicable</code>
+			</li>
+		</ul>
+	</dd>
+	<dt>Sommaire:</dt>
+	<dd data-json-replace="#[a11y]/dct:description" lang="en"><span lang="fr">Aucune note</span></dd>
+</dl>
+
+<h2 id="acr">Détails de l'évaluation</h2>
+<table class="table">
+	<thead>
+		<tr>
+			<th class="col-md-3">Critères de succès</th>
+			<th class="col-md-2">Résultat</th>
+			<th>Commentaire</th>
+		</tr>
+	</thead>
+	<tbody data-wb-json='{
+		"url": "#[a11y]/earl:result",
+		"tobeclone": "tr",
+		"source": "#tmpl-result",
+		"mapping": [
+			{ "selector": "[data-label]", "value": "/earl:test" },
+			{ "selector": "[data-outcome]", "value": "/earl:outcome" },
+			{ "selector": "[data-applicability]", "value": "/earl:subject/acr:applicability" },
+			{ "selector": "[data-notes]", "value": "/dct:description" },
+			{ "selector": "[data-mode]", "value": "/earl:mode" },
+			{ "selector": "[data-severity]", "value": "/acr:severity" },
+			{ "selector": "[data-relevancy]", "value": "/acr:relevancy" },
+			{
+				"selector": "[data-specific-results]",
+				"value": "/earl:result",
+				"mapping": [
+					{ "selector": "[data-result-label]", "value": "/earl:test" },
+					{ "selector": "[data-result-outcome]", "value": "/earl:outcome" },
+					{ "selector": "[data-result-notes", "value": "/dct:description" }
+				]
+			}
+		]
+	}'>
+	</tbody>
+</table>
+
+<template id="tmpl-result">
+	<table>
+		<tr>
+			<th data-label lang="en"></th>
+			<td><span data-outcome lang="en"></span></td>
+			<td>
+				<p><strong>Porté</strong>: <span data-applicability lang="en"><span lang="fr">Pas re-précisé</span></span></p>
+				<ul class="list-inline clearfix">
+					<li>Vérification: <span data-mode></span></li>
+					<li class="pull-right clr-rght-md clr-rght-lg">Importance: <span data-severity></span></li>
+					<li class="pull-right clr-rght-md clr-rght-lg">Pertinence: <span data-relevancy></span></li>
+				</ul>
+				<p data-notes lang="en"></p>
+				<dl data-specific-results lang="en">
+					<template>
+						<dt data-result-label></dt>
+						<dd>(<em data-result-outcome></em>) <span data-result-notes></span></dd>
+					</template>
+				</dl>
+				<ul data-techniques>
+					<template>
+						<li><code></code></li>
+					</template>
+				</ul>
+			</td>
+		</tr>
+	</table>
+</template>
