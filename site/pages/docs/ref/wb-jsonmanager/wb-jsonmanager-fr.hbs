@@ -227,6 +227,16 @@
 		<td><code>{ "op": "wb-toDateTimeISO", "path": &lt;path&gt; }</code><br/> or<br/><code>{ "op": "wb-toDateTimeISO", "path": &lt;path&gt;, "set": &lt;path&gt; }</code></td>
 		<td>Format a date value to date time ISO and copy the value at a specified location. If <code>set</code> is not defined, it will be the value located at <code>path</code> that will be replaced.</td>
 	</tr>
+	<tr>
+		<td>Swap data with reference</td>
+		<td><code>{ "op": "wb-swap", "path": &lt;path to current value&gt;, "ref": &lt;path to reference value&gt; }</code></td>
+		<td>Swaps data from "path" with data from "ref" using the value as a key in the reference. The value from "path" can either be a string or an array.</td>
+	</tr>
+	<tr>
+		<td>Patches</td>
+		<td><code>{ "op": "patches", "path": &lt;path&gt;, "patches": [Array of patches] }</code></td>
+		<td>Executes list of patches defined in the "patches" array using a newly defined "path". This "path" must be located inside the JSON object defined at "url". Use if you need to execute patches to an array of objects but still need to have access to the global JSON object. For example, when using "wb-swap"</td>
+	</tr>
 </table>
 
 <p>It's is possible to add your own custom operations, like:</p>
