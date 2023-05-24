@@ -188,11 +188,25 @@ var componentName = "wb-tabs",
 					$panel = $panels.eq( i );
 					$panel
 						.addClass( groupClass )
-						.html(
+/*						.html(
 							$panel.html()
 								.replace( /(<\/summary>)/i, "$1<div class='tgl-panel'>" ) +
 							"</div>"
-						);
+						);*/
+
+					// $panel.wrapInner( "<div class='tgl-panel'></div>" );
+					// $panel.prepend( $panel.find( "summary") );
+
+					var $innerPanelElm = $panel.children();
+					var $innerPanel = $( "<div class='tgl-panel'></div>" );
+					$panel.append( $innerPanel );
+
+					$innerPanelElm.each( function( ) {
+						$innerPanel.get( 0 ).appendChild( this );
+					});
+
+					$panel.prepend( $panel.find( "summary") );
+
 
 					newId = $panel.attr( "id" );
 					if ( !newId ) {

@@ -17,6 +17,18 @@
 	<p>Dynamically stacks multiple sections of content, transforming them into a tabbed interface.</p>
 </section>
 
+
+
+<script>
+
+var button = document.getElementById( "yep" );
+
+button.addEventListener("click", (event) => {
+  button.textContent = `Click count: ${event.detail}`;
+});
+
+</script>
+
 <section>
 	<h2>Example 1</h2>
 	<p>With session storage to remember last tab viewed. (Default behaviour)</p>
@@ -41,6 +53,8 @@
 				between this vessel and the little ship Centurion in which Anson sailed
 				round the world.
 				</p>
+				<button id="yep">Click me</button>
+
 			</details>
 			<details id="details-panel2" open="open">
 				<summary>Example 2</summary>
