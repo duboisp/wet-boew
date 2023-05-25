@@ -190,18 +190,13 @@ var componentName = "wb-data-json",
 	// Apply the template as per the configuration
 	applyTemplate = function( elm, settings, content ) {
 
-		var mapping = settings.mapping || [ {} ],
-			mapping_len,
-			filterTrueness = settings.filter || [],
+		var filterTrueness = settings.filter || [],
 			filterFaslseness = settings.filternot || [],
-			queryAll = settings.queryall,
 			i, i_len, i_cache,
 			j, j_cache, j_cache_attr,
 			basePntr,
-			clone, selElements,
-			cached_node,
+			clone,
 			cached_textContent,
-			cached_value,
 			selectorToClone = settings.tobeclone,
 			elmClass = elm.className,
 			elmAppendTo = elm,
@@ -255,10 +250,6 @@ var componentName = "wb-data-json",
 		}
 		i_len = content.length;
 
-		if ( !$.isArray( mapping ) ) {
-			mapping = [ mapping ];
-		}
-		mapping_len = mapping.length;
 
 		if ( !template ) {
 			return;
@@ -286,58 +277,8 @@ var componentName = "wb-data-json",
 					clone = template.content.querySelector( selectorToClone ).cloneNode( true );
 				}
 
-				if ( queryAll ) {
-					selElements = clone.querySelectorAll( queryAll );
-				}
-
-				for ( j = 0; j < mapping_len || j === 0; j += 1 ) {
-					j_cache = mapping[ j ];
-
-					// Get the node used to insert content
-					if ( selElements ) {
-						cached_node = selElements[ j ];
-					} else if ( j_cache.selector ) {
-						cached_node = clone.querySelector( j_cache.selector );
-					} else {
-						cached_node = clone;
-					}
-					j_cache_attr = j_cache.attr;
-					if ( j_cache_attr ) {
-						if ( !cached_node.hasAttribute( j_cache_attr ) ) {
-							cached_node.setAttribute( j_cache_attr, "" );
-						}
-						cached_node = cached_node.getAttributeNode( j_cache_attr );
-					}
-
-					// Get the value
-					if ( typeof i_cache === "string" ) {
-						cached_value = i_cache;
-					} else if ( typeof j_cache === "string" ) {
-						cached_value = jsonpointer.get( content, basePntr + j_cache );
-					} else {
-						cached_value = jsonpointer.get( content, basePntr + j_cache.value );
-					}
-
-					// Go to the next mapping if the value of JSON node don't exist to ensure we keep the default text set in the template, but move ahead if empty or null
-					if ( cached_value === undefined ) {
-						continue;
-					}
-
-					// Placeholder text replacement if any
-					if ( j_cache.placeholder ) {
-						cached_textContent = cached_node.textContent || "";
-						cached_value = cached_textContent.replace( j_cache.placeholder, cached_value );
-					}
-
-					// Set the value to the node
-					if ( j_cache.isHTML ) {
-						cached_node.innerHTML = cached_value;
-					} else if ( $.isArray( cached_value ) || cached_value && !( cached_value instanceof String ) && typeof cached_value === "object" ) {
-						applyTemplate( cached_node, j_cache, cached_value );
-					} else {
-						cached_node.textContent = cached_value;
-					}
-				}
+				// processMapping
+				processMapping( clone, settings, typeof i_cache !== "string" ? jsonpointer.get( content, basePntr ) : i_cache );
 
 				if ( dataTableAddRow ) {
 
@@ -352,6 +293,174 @@ var componentName = "wb-data-json",
 		// Refresh the dataTable display
 		if ( dataTableAddRow ) {
 			dataTable.draw();
+		}
+	},
+
+	processMapping = function( clone, settings, content ) {
+
+		var mapping = settings.mapping || [ {} ],
+			mapping_len,
+			queryAll = settings.queryall,
+			selElements,
+			j, j_cache, j_cache_attr,
+			cached_node, cached_value;
+
+
+		if ( !$.isArray( mapping ) ) {
+			mapping = [ mapping ];
+		}
+		mapping_len = mapping.length;
+
+		if ( queryAll ) {
+			selElements = clone.querySelectorAll( queryAll );
+		}
+
+		for ( j = 0; j < mapping_len || j === 0; j += 1 ) {
+			j_cache = mapping[ j ];
+
+
+			if ( j_cache.test ) {
+
+				// If test is false, go next
+
+				if ( j_cache.test === "fn:isArray" ) {
+
+					if ( ! jsonpointer.get( content, j_cache.value ) ) {
+						continue;
+					}
+
+					var isArray = $.isArray( jsonpointer.get( content, j_cache.value ) );
+
+					if ( isArray  && j_cache.operand === "is" ) {
+						// Go
+
+					} else if ( !isArray && j_cache.operand === "isnt" ) {
+
+						// Go
+					} else {
+
+						// Skip
+						continue;
+					}
+
+				} else if ( j_cache.test === "fn:isObject" ) {
+
+					var value = jsonpointer.get( content, j_cache.value );
+
+					if ( !value && j_cache.operand === "isnt" ) {
+						// Go
+					} else if ( value  && j_cache.operand === "is" ) {
+						// Go
+
+					} else {
+
+						// Skip
+						continue;
+					}
+
+
+
+				} else if ( j_cache.test === "fn:isType" ) {
+
+					var value = jsonpointer.get( content, j_cache.value + "/@type" );
+
+					if ( $.isArray( value ) && value.indexOf( j_cache.expect ) !== -1 ) {
+						// Go
+
+					} else if ( value === j_cache.expect ) {
+						// Go
+
+					} else {
+
+						// Skip
+						continue;
+					}
+
+
+
+				} else {
+
+					// Skip
+					continue;
+				}
+
+
+				// If test is valid
+				var conditionalTemplateDOM = clone.querySelector( j_cache.template )
+				var conditionalTemplate = conditionalTemplateDOM.content.cloneNode( true );
+
+
+				processMapping( conditionalTemplate, j_cache, content );
+
+				// Add the node built from the process mapping
+				if ( conditionalTemplateDOM.parentNode ) {
+					conditionalTemplateDOM.parentNode.insertBefore( conditionalTemplate, conditionalTemplateDOM );
+				} else {
+					clone.appendChild( conditionalTemplate );
+				}
+
+				continue;
+			}
+
+
+			// Get the node used to insert content
+			if ( selElements ) {
+				cached_node = selElements[ j ];
+			} else if ( j_cache.selector ) {
+				cached_node = clone.querySelector( j_cache.selector );
+			} else {
+				cached_node = clone;
+			}
+
+
+			// If the update need to be applied on an attribute
+			j_cache_attr = j_cache.attr;
+			if ( j_cache_attr ) {
+				if ( !cached_node.hasAttribute( j_cache_attr ) ) {
+					cached_node.setAttribute( j_cache_attr, "" );
+				}
+				cached_node = cached_node.getAttributeNode( j_cache_attr );
+			}
+
+
+			// Get the value
+			if ( typeof content === "string" ) {
+				cached_value = content;
+			} else if ( typeof j_cache === "string" ) {
+				cached_value = jsonpointer.get( content, j_cache );
+			} else {
+				cached_value = jsonpointer.get( content, j_cache.value );
+			}
+
+			// Go to the next mapping if the value of JSON node don't exist to ensure we keep the default text set in the template, but move ahead if empty or null
+			if ( cached_value === undefined ) {
+				continue;
+			}
+
+
+			// Only if we are in JSON ld mode
+			// Check if the value are set under the JSON-LD parameter @value
+			if ( cached_value[ "@value" ] ) {
+				cached_value = cached_value[ "@value" ];
+			}
+
+			// Placeholder text replacement if any
+			if ( j_cache.placeholder ) {
+				cached_textContent = cached_node.textContent || "";
+				cached_value = cached_textContent.replace( j_cache.placeholder, cached_value );
+			}
+
+			// Set the value to the node
+			if ( j_cache.isHTML ) {
+				cached_node.innerHTML = cached_value;
+			} else if ( $.isArray( cached_value ) || cached_value && !( cached_value instanceof String ) && typeof cached_value === "object" ) {
+
+				console.log( cached_node );
+				console.log( cached_value );
+				applyTemplate( cached_node, j_cache, cached_value );
+			} else {
+				cached_node.textContent = cached_value;
+			}
 		}
 	},
 
