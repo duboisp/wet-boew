@@ -338,21 +338,35 @@ var componentName = "wb-jsonmanager",
 
 						for ( i = 0; i !== i_len; i++ ) {
 
-							// Fetch the JSON
-							$elm.trigger( {
-								type: "json-fetch.wb",
-								fetch: {
-									url: url[ i ],
+							// Save info for data mapping into the dataset
+							var fetchUrl,
+							savingPath;
+
+							if ( !url[ i ].url ) {
+								fetchUrl = url[ i ];
+							} else {
+								fetchUrl = url[ i ].url;
+								savingPath = url[ i ].path || "";
+							}
+							
+							var fetchOpts = {
+									url: fetchUrl,
 									nocache: elmData.nocache,
 									nocachekey: elmData.nocachekey,
 									data: elmData.data,
 									contentType: elmData.contenttype,
-									method: elmData.method
-								}
+									method: elmData.method,
+									savingPath: savingPath
+								};
+
+							// Fetch the JSON
+							$elm.trigger( {
+								type: "json-fetch.wb",
+								fetch: fetchOpts
 							} );
 
 							// If the URL is a dataset, make it ready
-							if ( url[ i ].charCodeAt( 0 ) === 35 && url[ i ].charCodeAt( 1 ) === 91 ) {
+							if ( fetchUrl.charCodeAt( 0 ) === 35 && fetchUrl.charCodeAt( 1 ) === 91 ) {
 								wb.ready( $elm, componentName );
 							}
 						}
@@ -689,15 +703,55 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 	var elm = event.target,
 		$elm = $( elm ),
 		settings,
+		fetchedOpts = event.fetch.fetchOpts,
 		dsName,
 		JSONresponse = event.fetch.response,
-		isArrayResponse = Array.isArray( JSONresponse ),
+		isArrayResponse,
 		resultSet,
 		i, i_len, i_cache, backlog, selector,
 		patches, filterTrueness, filterFaslseness, filterPath, extractor;
 
 	if ( elm === event.currentTarget ) {
 		settings = wb.getData( $elm, componentName );
+
+console.log( event )
+console.log( fetchedOpts )
+		// Is the fetched JSON need to be wrap in another plain object
+		if ( fetchedOpts && fetchedOpts.savingPath ) {
+			var split = fetchedOpts.savingPath.split( "/" );
+				var wrapObj = {},
+					refObjIterator,
+					lastKey;
+/*
+				lastKey = split[ 1 ];
+				wrapObj[ lastKey ] = {};
+				refObjIterator = wrapObj[ lastKey ];
+
+				for ( i = 2; i <= split.length; i++ ) {
+					lastKey = split[ i ];
+					refObjIterator[ lastKey ] = {};
+
+					if ( i !== split.length - 1 ) {
+						refObjIterator = refObjIterator[ lastKey ];
+					}
+				}
+
+				refObjIterator[ lastKey ] = JSONresponse;
+
+				JSONresponse = wrapObj;*/
+
+				for ( i = split.length - 1; i > 0; i-- ) {
+					if ( !split[ i ] ) {
+						continue;
+					}
+					wrapObj = {};
+					wrapObj[ split[ i ] ] = JSONresponse;
+					JSONresponse = wrapObj;
+				}
+		}
+
+		// Determine if the response is an array
+		isArrayResponse = Array.isArray( JSONresponse );
 
 		// Ensure the response is an independant clone
 		if ( isArrayResponse ) {
@@ -715,6 +769,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		if ( dsFetchIsArray[ dsName ] !== isArrayResponse ) {
 			throw "Can't merge, incompatible JSON type (array vs object)";
 		}
+
 
 		if ( !dsFetchMerged[ dsName ] ) {
 			dsFetchMerged[ dsName ] = JSONresponse;

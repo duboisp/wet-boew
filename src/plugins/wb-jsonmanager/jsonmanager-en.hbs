@@ -518,6 +518,49 @@
 }</code></pre>
 </details>
 
+<h3>Example 3</h3>
+<p>This example show an advance configuration of loading and mapping multiple datasource into a JSON manager dataset.<p>
+
+<div data-wb-jsonmanager='{
+	"name": "mappingDataSource",
+	"url": [
+		"demo/data-en.json",
+		{
+			"url": "demo/data-fr.json#/produits",
+			"path": "/français/liste"
+		}
+	]
+}'>
+
+<div class="row">
+	<div class="col-md-6">
+		<p>List of English products</p>
+		<ul data-wb-json='{
+			"url": "#[mappingDataSource]/products",
+			"mapping": [
+				{ "selector": "li" }
+			]
+		}'>
+			<template>
+				<li></li>
+			</template>
+		</ul>
+	</div>
+	<div class="col-md-6">
+		<p>List of French products</p>
+		<ul lang="fr" data-wb-json='{
+			"url": "#[mappingDataSource]/français/liste",
+			"mapping": [
+				{ "selector": "li" }
+			]
+		}'>
+			<template>
+				<li></li>
+			</template>
+		</ul>
+	</div>
+</div>
+
 <h2>Displaying result from a JSON RESTful API</h2>
 
 <details>
