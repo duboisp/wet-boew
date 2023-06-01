@@ -157,6 +157,21 @@
 			{ "selector": "[data-outcome]", "value": "/earl:outcome" },
 			{ "selector": "[data-applicability]", "value": "/earl:subject/dct:description" },
 			{ "selector": "[data-notes]", "value": "/dct:description" },
+
+
+			{ 
+				"source": "[data-asset-array]",
+				"test": "fn:isArray",
+				"value": "/acr:asset",
+				"mapping": [
+					{ "selector": "[data-label]", "value": "/earl:test" }
+					
+
+				]
+			},
+
+
+
 			{ "selector": "[data-mode]", "value": "/earl:mode" },
 			{ "selector": "[data-severity]", "value": "/acr:severity" },
 			{ "selector": "[data-relevancy]", "value": "/acr:relevancy" },
@@ -173,6 +188,16 @@
 			}
 		]
 	}'>
+	<!--
+		{ 
+						"selector": "[data-asset]",
+						"value": "/acr:asset",
+						"mapping": [
+							{ "selector": "a", "type": "attr", "attr": "href", "value": "/acr:content" },
+							{ "selector": "a", "value": "/dct:title" }
+						]
+					}
+				-->
 	</tbody>
 </table>
 
@@ -189,6 +214,51 @@
 					<li class="pull-right clr-rght-md clr-rght-lg">Relevance: <span data-relevancy>Not specified</span></li>
 				</ul>
 				<p data-notes></p>
+				<template data-asset-array>
+					<p data-label></p>
+					<ul data-asset>
+						<template>
+							<li><a href></a></li>
+						</template>
+					</ul>
+				</template>
+
+				<template data-if="/acr:asset" data-cond="fn:isArray">
+					<p>Supporting documents:</p>
+					<ul>
+						<template data-iterate="/acr:asset">
+							<li>
+								<template data-if="@type" data-operand="eq" data-value="acr:Attachment">
+									<a href="acr:content">dct:title</a>
+								</template>
+								<template data-if="@type" data-operand="eq" data-value="acr:AttachmentImage">
+									<img src="acr:content" alt="dct:title" />
+								</template>
+								<template data-if="@type" data-operand="eq" data-value="acr:AttachmentSourceCode">
+									<p>dct:title</p>
+									<pre><code>acr:content</code></pre>
+								</template>
+								<template data-if="@type" data-operand="eq" data-value="acr:AttachmentJson">
+									<p>dct:title</p>
+									<pre><code>acr:content | jsonToString</code></pre>
+								</template>
+								<template data-if="@type" data-operand="eq" data-value="acr:AttachmentHtml">
+									<p>dct:title</p>
+									<pre><code>acr:content | DOM Purify Safe</code></pre>
+								</template>
+							</li>
+						</template>
+					</ul>
+				</template>
+				<template data-if="/acr:asset" data-cond="fn:isLiteral">
+					<p>Supporting document:</p>
+					<template data-if="@type" data-operand="eq" data-value="acr:AttachmentImage">
+						<img src="acr:content" alt="dct:title" />
+					</template>
+					<template data-if="@type" data-operand="neq" data-value="acr:AttachmentImage">
+						<p><a href="acr:content">dct:title</a></p>
+					</template>
+				</template>
 				<dl data-specific-results>
 					<template>
 						<dt data-result-label></dt>

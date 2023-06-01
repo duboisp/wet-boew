@@ -209,6 +209,49 @@ var componentName = "wb-data-json",
 			dataTableAddRow,
 			template = settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" );
 
+		if ( !$.isArray( mapping ) ) {
+			mapping = [ mapping ];
+		}
+		mapping_len = mapping.length;
+
+		if ( settings.appendto ) {
+			elmAppendTo = $( settings.appendto ).get( 0 );
+		}
+/*
+		// Is the current mapping is a test
+		if ( settings.test ) {
+			console.log( "This is a test condition" );
+			console.log( settings );
+
+			if ( settings.test === "fn:isArray" ) {
+
+				if ( !selectorToClone ) {
+					clone = template.content.cloneNode( true );
+				} else {
+					clone = template.content.querySelector( selectorToClone ).cloneNode( true );
+				}
+
+				console.log( clone );
+				console.log( content );
+
+				for ( j = 0; j < mapping_len || j === 0; j += 1 ) {
+					j_cache = mapping[ j ];
+					console.log( "TEST -- j_cache" );
+					console.log( j_cache );
+					applyTemplate( clone, j_cache, content );
+				}
+
+				elmAppendTo.appendChild( clone );
+
+			}
+
+			console.log( "TEST finished");
+			return;
+
+
+		}
+*/
+
 		// If combined with wb-tables plugin
 		if ( elm.tagName === "TABLE" && elmClass.indexOf( "wb-tables" ) !== -1 ) {
 
@@ -255,10 +298,6 @@ var componentName = "wb-data-json",
 		}
 		i_len = content.length;
 
-		if ( !$.isArray( mapping ) ) {
-			mapping = [ mapping ];
-		}
-		mapping_len = mapping.length;
 
 		if ( !template ) {
 			return;
@@ -267,10 +306,6 @@ var componentName = "wb-data-json",
 		// Needed when executing sub-template that wasn't polyfill, like in IE11
 		if ( !template.content ) {
 			wb.tmplPolyfill( template );
-		}
-
-		if ( settings.appendto ) {
-			elmAppendTo = $( settings.appendto ).get( 0 );
 		}
 
 		for ( i = 0; i < i_len; i += 1 ) {
@@ -315,6 +350,10 @@ var componentName = "wb-data-json",
 					} else if ( typeof j_cache === "string" ) {
 						cached_value = jsonpointer.get( content, basePntr + j_cache );
 					} else {
+						//console.log( "Get value item" );
+						//console.log( content );
+						//console.log( basePntr + j_cache.value );
+
 						cached_value = jsonpointer.get( content, basePntr + j_cache.value );
 					}
 
@@ -332,6 +371,22 @@ var componentName = "wb-data-json",
 					// Set the value to the node
 					if ( j_cache.isHTML ) {
 						cached_node.innerHTML = cached_value;
+					} else if ( j_cache.test ) {
+						console.log( "Testing locally" );
+
+					console.log( j_cache )
+					console.log( jsonpointer.get( content, basePntr ) )
+					console.log( cached_value )
+
+
+						// Clone and then run the template
+						var conditionalTemplate = cached_node.querySelector( j_cache.source ).cloneNode( true );
+						cached_node.appendChild( conditionalTemplate );
+
+						delete j_cache.source;
+
+						applyTemplate( conditionalTemplate, j_cache, jsonpointer.get( content, basePntr ) );
+
 					} else if ( $.isArray( cached_value ) || cached_value && !( cached_value instanceof String ) && typeof cached_value === "object" ) {
 						applyTemplate( cached_node, j_cache, cached_value );
 					} else {
