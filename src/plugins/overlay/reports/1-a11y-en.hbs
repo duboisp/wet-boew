@@ -235,68 +235,57 @@
 					},
 					{
 						"about": "When the value is an array of items",
+						"template": "[data-asset-array]",
 						"test": "fn:isArray",
 						"operand": "is",
 						"value": "/acr:asset",
 						"mapping": [
+
 							{
-								"about": "Check what kind of type is contained in the array. Literal vs Object",
-								"@type": "rdf:Alt",
+								"about": "Navigate in each item",
+								"value": "/acr:asset",
 								"mapping": [
 									{
-										"template": "[data-asset-array-literal]",
-										"test": "fn:isLiteral",
-										"operand": "is",
-										"value": "/acr:asset/0",
+										"about": "Evaluate each item type",
+										"@type": "rdf:Alt",
 										"mapping": [
 											{
-												"about": "Navigate in each item",
-												"__asdfadfa_template": "[data-download-link]",
-												"value": "/acr:asset",
-
+												"template": "[data-download-link]",
+												"test": "fn:guestType",
+												"operand": "is",
+												"value": "/@value",
+												"expect": "xsd:anyURI",
 												"mapping": [
-													{
-														"@type": "rdf:Alt",
-														"mapping": [
-															{
-																"template": "[data-download-link]",
-																"test": "fn:guestType",
-																"operand": "is",
-																"value": "/@value",
-																"expect": "xsd:anyURI",
-																"mapping": [
-																	{ "selector": "a", "value": "/@value", "attr": "href" }
-																]
-															},
-															{
-																"template": "[data-source-code]",
-																"test": "fn:guestType",
-																"operand": "is",
-																"value": "/@value",
-																"expect": "xsd:string",
-																"mapping": [
-																	{ "selector": "code", "value": "/@value" }
-																]
-															}
-														]
-													}
+													{ "selector": "a", "value": "/@value", "attr": "href" }
+												]
+											},
+											{
+												"template": "[data-source-code]",
+												"test": "fn:guestType",
+												"operand": "is",
+												"value": "/@value",
+												"expect": "xsd:string",
+												"mapping": [
+													{ "selector": "code", "value": "/@value" }
+												]
+											},
+											{
+												"template": "[data-asset-image]",
+												"test": "fn:guestType",
+												"operand": "is",
+												"value": "/@value",
+												"expect": "acr:AttachmentImage",
+												"mapping": [
+													{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
+													{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
+													{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
+
 												]
 											}
-										]
-									},
-									{
-										"template": "[data-asset-code]",
-										"test": "fn:guestType",
-										"operand": "is",
-										"value": "/acr:asset",
-										"expect": "xsd:string",
-										"mapping": [
-											{ "selector": "code", "value": "/acr:asset" }
 										]
 									}
 								]
 							}
-
 						]
 					}
 				]
@@ -347,7 +336,7 @@
 
 
 
-				<template data-asset-array-literal>
+				<template data-asset-array>
 					<p>Attachments:</p>
 					<ul>
 						<template data-download-link>
@@ -355,6 +344,12 @@
 						</template>
 						<template data-source-code>
 							<li><pre><code></code></pre></li>
+						</template>
+						<template data-asset-image>
+							<li>
+								<p>Image (<a href download>Download</a>):</p>
+								<img class="img-responsive" src alt lang="en">
+							</li>
 						</template>
 					</ul>
 				</template>
