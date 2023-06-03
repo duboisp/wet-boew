@@ -166,16 +166,139 @@
 
 
 			{
-				"template": "[data-asset-image]",
-				"test": "fn:isType",
-				"operand": "is",
-				"value": "/acr:asset",
-				"expect": "acr:AttachmentImage",
+				"@type": "rdf:Alt",
 				"mapping": [
-					{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
-					{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
-					{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
+					{
+						"test": "fn:isLiteral",
+						"operand": "is",
+						"value": "/acr:asset",
+						"mapping": [
+							{
+								"@type": "rdf:Alt",
+								"mapping": [
+									{
+										"template": "[data-asset-literal]",
+										"test": "fn:guestType",
+										"operand": "is",
+										"value": "/acr:asset",
+										"expect": "xsd:anyURI",
+										"mapping": [
+											{ "selector": "a", "value": "/acr:asset", "attr": "href" }
+										]
+									},
+									{
+										"template": "[data-asset-code]",
+										"test": "fn:guestType",
+										"operand": "is",
+										"value": "/acr:asset",
+										"expect": "xsd:string",
+										"mapping": [
+											{ "selector": "code", "value": "/acr:asset" }
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"template": "[data-asset-image]",
+						"test": "fn:guestType",
+						"operand": "is",
+						"value": "/acr:asset",
+						"expect": "acr:AttachmentImage",
+						"mapping": [
+							{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
+							{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
+							{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
 
+						]
+					},
+					{
+						"template": "[data-asset-literal]",
+						"test": "fn:guestType",
+						"operand": "is",
+						"value": "/acr:asset",
+						"expect": "xsd:anyURI",
+						"mapping": [
+							{ "selector": "a", "value": "/acr:asset", "attr": "href" }
+						]
+					},
+					{
+						"template": "[data-asset-code]",
+						"test": "fn:guestType",
+						"operand": "is",
+						"value": "/acr:asset",
+						"expect": "xsd:string",
+						"mapping": [
+							{ "selector": "code", "value": "/acr:asset" }
+						]
+					},
+					{
+						"about": "When the value is an array of items",
+						"test": "fn:isArray",
+						"operand": "is",
+						"value": "/acr:asset",
+						"mapping": [
+							{
+								"about": "Check what kind of type is contained in the array. Literal vs Object",
+								"@type": "rdf:Alt",
+								"mapping": [
+									{
+										"template": "[data-asset-array-literal]",
+										"test": "fn:isLiteral",
+										"operand": "is",
+										"value": "/acr:asset/0",
+										"mapping": [
+											{
+												"about": "Navigate in each item",
+												"__asdfadfa_template": "[data-download-link]",
+												"value": "/acr:asset",
+
+												"mapping": [
+													{
+														"@type": "rdf:Alt",
+														"mapping": [
+															{
+																"template": "[data-download-link]",
+																"test": "fn:guestType",
+																"operand": "is",
+																"value": "/@value",
+																"expect": "xsd:anyURI",
+																"mapping": [
+																	{ "selector": "a", "value": "/@value", "attr": "href" }
+																]
+															},
+															{
+																"template": "[data-source-code]",
+																"test": "fn:guestType",
+																"operand": "is",
+																"value": "/@value",
+																"expect": "xsd:string",
+																"mapping": [
+																	{ "selector": "code", "value": "/@value" }
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									},
+									{
+										"template": "[data-asset-code]",
+										"test": "fn:guestType",
+										"operand": "is",
+										"value": "/acr:asset",
+										"expect": "xsd:string",
+										"mapping": [
+											{ "selector": "code", "value": "/acr:asset" }
+										]
+									}
+								]
+							}
+
+						]
+					}
 				]
 			},
 
@@ -211,12 +334,29 @@
 					<li class="pull-right clr-rght-md clr-rght-lg">Relevance: <span data-relevancy>Not specified</span></li>
 				</ul>
 				<p data-notes></p>
-				<template data-asset-unique>
-					<p><a href="acr:content">dct:title</a></p>
+				<template data-asset-literal>
+					<p><a href download>Télécharger l'attachement</a></p>
+				</template>
+				<template data-asset-code>
+					<pre><code></code></pre>
 				</template>
 				<template data-asset-image>
 					<p>Image (<a href download>Download</a>):</p>
 					<img class="img-responsive" src alt lang="en">
+				</template>
+
+
+
+				<template data-asset-array-literal>
+					<p>Attachments:</p>
+					<ul>
+						<template data-download-link>
+							<li><a href download>Télécharger l'attachement</a></li>
+						</template>
+						<template data-source-code>
+							<li><pre><code></code></pre></li>
+						</template>
+					</ul>
 				</template>
 
 

@@ -188,7 +188,7 @@ var componentName = "wb-data-json",
 	},
 
 	// Apply the template as per the configuration
-	applyTemplate = function( elm, settings, content ) {
+	applyTemplate = function( elm, settings, content, tmpl ) {
 
 		var filterTrueness = settings.filter || [],
 			filterFaslseness = settings.filternot || [],
@@ -202,7 +202,7 @@ var componentName = "wb-data-json",
 			elmAppendTo = elm,
 			dataTable,
 			dataTableAddRow,
-			template = settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" );
+			template = tmpl || settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" );
 
 		// If combined with wb-tables plugin
 		if ( elm.tagName === "TABLE" && elmClass.indexOf( "wb-tables" ) !== -1 ) {
@@ -296,7 +296,7 @@ var componentName = "wb-data-json",
 		}
 	},
 
-	processMapping = function( clone, settings, content ) {
+	processMapping = function( clone, settings, content, behavioural ) {
 
 		var mapping = settings.mapping || [ {} ],
 			mapping_len,
@@ -315,9 +315,19 @@ var componentName = "wb-data-json",
 			selElements = clone.querySelectorAll( queryAll );
 		}
 
+		if ( !behavioural ) {
+			behavioural = {};
+		}
+
 		for ( j = 0; j < mapping_len || j === 0; j += 1 ) {
 			j_cache = mapping[ j ];
 
+			// check if we are in Alternative mode
+			if ( j_cache[ '@type' ] === "rdf:Alt" ) {
+
+				processMapping( clone, j_cache, content, { mode: "alt" } );
+				continue;
+			}
 
 			if ( j_cache.test ) {
 
@@ -343,22 +353,26 @@ var componentName = "wb-data-json",
 						continue;
 					}
 
-				} else if ( j_cache.test === "fn:isObject" ) {
+				} else if ( j_cache.test === "fn:isLiteral" ) {
 
 					var value = jsonpointer.get( content, j_cache.value );
 
-					if ( !value && j_cache.operand === "isnt" ) {
-						// Go
-					} else if ( value  && j_cache.operand === "is" ) {
-						// Go
+					// Only if we are in JSON ld mode
+					// Check if the value are set under the JSON-LD parameter @value
+					if ( value && value[ "@value" ] ) {
+						value = value[ "@value" ];
+					}
 
+
+					if ( j_cache.operand === "is" && value && typeof value !== "object" ) {
+						// Go
+					} else if ( j_cache.operand === "isnt" && value && typeof value === "object" ) {
+						// Go
 					} else {
 
 						// Skip
 						continue;
 					}
-
-
 
 				} else if ( j_cache.test === "fn:isType" ) {
 
@@ -376,42 +390,173 @@ var componentName = "wb-data-json",
 						continue;
 					}
 
+				} else if ( j_cache.test === "fn:guestType" ) {
+
+					var value,
+						endWithAtValue = j_cache.value.match( /\/@value$/ );
 
 
-				} else {
+					try {
+						value = jsonpointer.get( content, j_cache.value );
+					} catch ( ex ) {
+
+						try {
+							if ( endWithAtValue && typeof content === "string" ) {
+
+								// The content is the value
+								value = content;
+							} else if ( endWithAtValue ) {
+
+								// Try without
+								value = jsonpointer.get( content, j_cache.value.substring( j_cache.value - 7 ) );
+							} else {
+
+								// Try with
+								value = jsonpointer.get( content, j_cache.value + "/@value" )
+							}
+						} catch ( ex2 ) {
+							console.error( content );
+							console.log( j_cache );
+							throw "Unable to find the value: " + j_cache.value;
+						}
+					}
+
+
+					var guestType;
+
+					if ( !value ) {
+						guestType = "undefined"
+					} else if ( value[ "@type" ] ) {
+						guestType = value[ "@type" ];
+					} else if ( value[ "@value" ] ) {
+
+						// Only if we are in JSON ld mode
+						// Check if the value are set under the JSON-LD parameter @value
+						value = value[ "@value" ];
+
+					}
+
+
+					if ( !guestType ) {
+						if ( typeof value === "string" && value.match( /^([a-z][a-z0-9+\-.]*):/ ) ) {
+							guestType = "xsd:anyURI";
+						} else if ( typeof value === "string" ) {
+							guestType = "xsd:string";
+						} else if ( typeof value === "boolean" ) {
+							guestType = "xsd:boolean";
+						} else if ( typeof value === "number" ) {
+							guestType = "xsd:double";
+						} else if ( typeof value === "undefined" ) {
+							guestType = "undefined";
+						} else if ( $.isArray( value ) ) {
+							guestType = "rdfs:Container";
+						} else {
+
+							// Log an error and skip
+							console.error( "Unable to guest the @type" );
+							console.error( jsonpointer.get( content, j_cache.value ) );
+							continue;
+						}
+					}
+
+
+					if ( $.isArray( guestType ) && guestType.indexOf( j_cache.expect ) !== -1 ) {
+
+						if ( j_cache.operand === "is" ) {
+							// Go
+
+						} else {
+							continue;
+						}
+
+					} else if ( guestType === j_cache.expect ) {
+
+						if ( j_cache.operand === "is" ) {
+							// Go
+
+
+						} else {
+							continue;
+						}
+
+					} else {
+
+						// Skip
+						continue;
+					}
+
+					console.log( "Match" )
+					console.log( j_cache )
+					console.log( clone )
+
+				}
+
+
+
+
+
+				else {
 
 					// Skip
 					continue;
 				}
 
 
-				// If test is valid
-				var conditionalTemplateDOM = clone.querySelector( j_cache.template )
-				var conditionalTemplate = conditionalTemplateDOM.content.cloneNode( true );
+				if ( j_cache.template ) {
+					// If test is valid
+					var conditionalTemplateDOM = clone.querySelector( j_cache.template );
 
+					// If a template was specified but is not found
+					if ( !conditionalTemplateDOM ) {
+						console.info( j_cache );
+						console.info( clone );
+						throw "Template not found. Selector: " + j_cache.template;
+					}
+					var conditionalTemplate = conditionalTemplateDOM.content.cloneNode( true );
 
-				processMapping( conditionalTemplate, j_cache, content );
+					processMapping( conditionalTemplate, j_cache, content, behavioural );
 
-				// Add the node built from the process mapping
-				if ( conditionalTemplateDOM.parentNode ) {
-					conditionalTemplateDOM.parentNode.insertBefore( conditionalTemplate, conditionalTemplateDOM );
+					// Add the node built from the process mapping
+					if ( conditionalTemplateDOM.parentNode ) {
+						conditionalTemplateDOM.parentNode.insertBefore( conditionalTemplate, conditionalTemplateDOM );
+					} else {
+						clone.appendChild( conditionalTemplate );
+					}
 				} else {
-					clone.appendChild( conditionalTemplate );
+					processMapping( clone, j_cache, content, behavioural );
+				}
+
+				if ( behavioural.mode === "alt" ) {
+					return;
 				}
 
 				continue;
 			}
 
+			var conditionalTemplateDOM_cached_node;
 
 			// Get the node used to insert content
 			if ( selElements ) {
 				cached_node = selElements[ j ];
 			} else if ( j_cache.selector ) {
 				cached_node = clone.querySelector( j_cache.selector );
+			} else if ( j_cache.template ) {
+
+				// If test is valid
+				conditionalTemplateDOM_cached_node = clone.querySelector( j_cache.template );
+
+				// If a template was specified but is not found
+				if ( !conditionalTemplateDOM_cached_node ) {
+					console.info( j_cache );
+					throw "Template not found. Selector: " + j_cache.template;
+				}
+
+				// Clone the user specified inner template
+				cached_node = conditionalTemplateDOM_cached_node.content.cloneNode( true );
+
 			} else {
 				cached_node = clone;
 			}
-
 
 			// If the update need to be applied on an attribute
 			j_cache_attr = j_cache.attr;
@@ -453,13 +598,45 @@ var componentName = "wb-data-json",
 			// Set the value to the node
 			if ( j_cache.isHTML ) {
 				cached_node.innerHTML = cached_value;
+			} else if ( !j_cache.selector && !j_cache.template && $.isArray( cached_value ) ) {
+
+				console.log( clone );
+				console.log( j_cache );
+				console.log( content );
+				console.log( cached_value );
+				console.log( "_____" );
+
+				var i, i_len = cached_value.length;
+				for ( i = 0; i < i_len; i ++ ) {
+
+					processMapping( clone, j_cache, cached_value[ i ] );
+
+				}
+
+				//processMapping( clone, j_cache, cached_value );
+				//applyTemplate( cached_node, j_cache, cached_value, clone );
+
 			} else if ( $.isArray( cached_value ) || cached_value && !( cached_value instanceof String ) && typeof cached_value === "object" ) {
 
-				console.log( cached_node );
-				console.log( cached_value );
+				// console.log( cached_node );
+				// console.log( cached_value );
 				applyTemplate( cached_node, j_cache, cached_value );
 			} else {
 				cached_node.textContent = cached_value;
+			}
+
+
+			// Add the node built from the process mapping
+			if ( conditionalTemplateDOM_cached_node && conditionalTemplateDOM_cached_node.parentNode ) {
+				conditionalTemplateDOM_cached_node.parentNode.insertBefore( cached_node, conditionalTemplateDOM_cached_node );
+
+
+				console.log( j_cache );
+				console.log( cached_node );
+				console.log( cached_value );
+
+			} else if ( conditionalTemplateDOM_cached_node ) {
+				clone.appendChild( cached_node );
 			}
 		}
 	},
