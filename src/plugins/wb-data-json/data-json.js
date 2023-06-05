@@ -396,31 +396,40 @@ var componentName = "wb-data-json",
 						endWithAtValue = j_cache.value.match( /\/@value$/ );
 
 
-					try {
-						value = jsonpointer.get( content, j_cache.value );
-					} catch ( ex ) {
+					// Situation
+					// Content === object
+					// Content === string
+
+					if ( typeof content === "string" && ( j_cache.value === "/" || j_cache.value === "/@value" ) ) {
+						value = content;
+					} else {
 
 						try {
-							if ( endWithAtValue && typeof content === "string" ) {
+							value = jsonpointer.get( content, j_cache.value );
+						} catch ( ex ) {
 
-								// The content is the value
-								value = content;
-							} else if ( endWithAtValue ) {
+							try {
+								if ( endWithAtValue ) {
 
-								// Try without
-								value = jsonpointer.get( content, j_cache.value.substring( j_cache.value - 7 ) );
-							} else {
+									// Try without
+									value = jsonpointer.get( content, j_cache.value.substring( j_cache.value - 7 ) );
+								} else {
 
-								// Try with
-								value = jsonpointer.get( content, j_cache.value + "/@value" )
+									// Try with
+									value = jsonpointer.get( content, j_cache.value + "/@value" )
+								}
+							} catch ( ex2 ) {
+								console.info( content );
+								console.info( j_cache );
+								console.warn( "Unable to find the value: " + j_cache.value );
 							}
-						} catch ( ex2 ) {
-							console.error( content );
-							console.log( j_cache );
-							throw "Unable to find the value: " + j_cache.value;
 						}
 					}
 
+
+					if ( j_cache.value === "/" || j_cache.value === "/@value"  ){
+						console.log( "--------------------++++++++++++++++++++++");
+					}
 
 					var guestType;
 
@@ -471,11 +480,13 @@ var componentName = "wb-data-json",
 
 					} else if ( guestType === j_cache.expect ) {
 
+						console.log( "check: " + guestType + " is equal to " + j_cache.expect )
 						if ( j_cache.operand === "is" ) {
 							// Go
 
 
 						} else {
+							console.log( "nope");
 							continue;
 						}
 
@@ -485,7 +496,7 @@ var componentName = "wb-data-json",
 						continue;
 					}
 
-					console.log( "Match" )
+					console.log( "Match: " + guestType )
 					console.log( j_cache )
 					console.log( clone )
 
@@ -609,9 +620,14 @@ var componentName = "wb-data-json",
 				var i, i_len = cached_value.length;
 				for ( i = 0; i < i_len; i ++ ) {
 
-					processMapping( clone, j_cache, cached_value[ i ] );
+					console.log( "Iteration: " + i );
+					console.log( cached_value[ i ] );
+					processMapping( clone, j_cache, cached_value[ i ], behavioural );
 
 				}
+
+				console.log( behavioural );
+				console.log( "END Iteration" );
 
 				//processMapping( clone, j_cache, cached_value );
 				//applyTemplate( cached_node, j_cache, cached_value, clone );
