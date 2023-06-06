@@ -213,7 +213,9 @@
             "earl:subject": "_:subject"
         }
       ],
-    "acr:asset": [
+
+    "acr:asset": "<hello>\n\nWorld</hello>",
+    "acr:asset_asdf": [
     "<hello>\n\nWorld</hello>",
     "<foo>\n\nbar</foo>",
     "http://helloworld.com/yep.html",

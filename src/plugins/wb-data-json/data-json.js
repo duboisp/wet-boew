@@ -343,6 +343,10 @@ var componentName = "wb-data-json",
 		}
 		i_len = content.length;
 
+
+		var cloneArray = [],
+			j, j_len;
+
 		// console.log( "Iterating" );
 		// console.log( content );
 
@@ -350,15 +354,32 @@ var componentName = "wb-data-json",
 			i_cache = content[ i ];
 
 			// process the conditional
+			if ( !mappingConfig.source ) {
+				console.log( "Condition 1");
+				cloneArray = processConditional( elm, i_cache, mappingConfig );
+			} else if ( mappingConfig.source && mappingConfig.tobeclone ) {
+				console.log( "Condition 2");
+				cloneArray = processConditional( document.querySelector( mappingConfig.source ).content.querySelector( mappingConfig.tobeclone ).cloneNode( true ), i_cache, mappingConfig );
+			} else if ( mappingConfig.source ) {
+				console.log( "Condition 3");
+				cloneArray = processConditional( document.querySelector( mappingConfig.source ).cloneNode( true ), i_cache, mappingConfig );
+			}
+
+			if ( !cloneArray ) {
+				cloneArray = [];
+			}
 
 			// process the mapping
-			clone = processMapping( elm, i_cache, mappingConfig );
+			cloneArray.push( processMapping( elm, i_cache, mappingConfig ) );
 
 			// Add the clone object
-			if ( dataTableAddRow ) {
-				dataTableAddRow( $( clone ) ); // If wb-tables, use its API to add rows
-			} else {
-				elmAppendTo.appendChild( clone );
+			for( j = 0, j_len = cloneArray.length; j !== j_len; j++ ) {
+				clone = cloneArray[ j ];
+				if ( dataTableAddRow ) {
+					dataTableAddRow( $( clone ) ); // If wb-tables, use its API to add rows
+				} else {
+					elmAppendTo.appendChild( clone );
+				}
 			}
 		}
 
@@ -370,6 +391,150 @@ var componentName = "wb-data-json",
 
 	},
 
+	processConditional = function( elm, content, mappingConfig, behavioural ) {
+
+		var conditions = mappingConfig.conditions,
+			i, i_cache,
+			i_len,
+			cloneArray = [];
+
+		if ( !conditions ) {
+			return;
+		}
+
+		if ( !behavioural ) {
+			behavioural = {};
+		}
+
+		i_len = conditions.length;
+
+		for ( i = 0; i < i_len || i === 0; i += 1 ) {
+			i_cache = conditions[ i ];
+
+
+			if ( i_cache[ "@type"] === "rdf:Alt" ) {
+
+				cloneArray.push( processMapping( elm, content, i_cache, { mode: "alt" } ) );
+				continue;
+			}
+
+			// Get the value to be tested
+			var value = getValue( content, i_cache.value );
+
+
+			// Get the function to use
+			var returnEval = functionForTest[ i_cache.test ].call( content, value, i_cache.expect );
+
+			// TODO: Run the operand
+
+			// If not true, go next
+			if ( !returnEval ) {
+				continue
+			}
+
+			console.log( "test" );
+			console.log( i_cache );
+			console.log( elm );
+			console.log( content );
+			console.log( value );
+			console.log( returnEval );
+
+
+			// Run mapping if satisfied
+			cloneArray.push( processMapping( elm, content, i_cache ) );
+
+			if ( behavioural.mode === "alt" ) {
+				return;
+			}
+
+		}
+
+		return cloneArray;
+
+
+	},
+
+	functionForTest = {
+
+		"fn:isArray": function( value ) {
+			return $.isArray( value );
+		},
+
+		"fn:isLiteral": function( value ) {
+
+			// Only if we are in JSON ld mode
+			// Check if the value are set under the JSON-LD parameter @value
+			if ( value && value[ "@value" ] ) {
+				value = value[ "@value" ];
+			}
+
+			if ( value && typeof value !== "object" ) {
+				return true;
+			}
+
+			return false;
+		},
+
+		"fn:isType": function( value, expect ) {
+
+			value = value[ "/@type" ] || typeof value;
+
+			if ( $.isArray( value ) && value.indexOf( expect ) !== -1 ) {
+				return true;
+			} else if ( value === expect ) {
+				return true;
+			}
+
+			return false;
+		},
+
+		"fn:guestType": function( value, expect ) {
+
+			var guestType;
+
+			if ( !value ) {
+				guestType = "undefined"
+			} else if ( value[ "@type" ] ) {
+				guestType = value[ "@type" ];
+			} else if ( value[ "@value" ] ) {
+
+				// Only if we are in JSON ld mode
+				// Check if the value are set under the JSON-LD parameter @value
+				value = value[ "@value" ];
+			}
+
+			if ( !guestType ) {
+				if ( typeof value === "string" && value.match( /^([a-z][a-z0-9+\-.]*):/ ) ) {
+					guestType = "xsd:anyURI";
+				} else if ( typeof value === "string" ) {
+					guestType = "xsd:string";
+				} else if ( typeof value === "boolean" ) {
+					guestType = "xsd:boolean";
+				} else if ( typeof value === "number" ) {
+					guestType = "xsd:double";
+				} else if ( typeof value === "undefined" ) {
+					guestType = "undefined";
+				} else if ( $.isArray( value ) ) {
+					guestType = "rdfs:Container";
+				} else {
+
+					// Log an error and skip
+					console.error( "Unable to guest the @type" );
+					console.error( value );
+					return false;
+				}
+			}
+
+			if ( $.isArray( guestType ) && guestType.indexOf( expect ) !== -1 ) {
+				return true;
+			} else if ( guestType === expect ) {
+				return true;
+			}
+
+			return false;
+		}
+
+	},
 
 	processMapping = function( elm, content, mappingConfig ){
 
@@ -384,8 +549,6 @@ var componentName = "wb-data-json",
 
 		// Check if there is some mapping configuration
 		if ( !mapping && !queryAll ) {
-			console.log( "no mapping" );
-			console.log( content );
 			return;
 		}
 
@@ -468,6 +631,7 @@ var componentName = "wb-data-json",
 
 			mapValue( cached_node, cached_value, j_cache );
 
+			// Deep dive into the content if a mapping exist
 			if ( j_cache.mapping || j_cache.queryall ) {
 				dataIterator( cached_node, cached_value, j_cache );
 			}
@@ -501,6 +665,10 @@ var componentName = "wb-data-json",
 
 
 	getValue = function ( source, pointer ) {
+
+
+		// var endWithAtValue = value.match( /\/@value$/ ); // See fn:guestType value extrator
+
 
 		// Get the value
 		if ( typeof source === "string" ) {

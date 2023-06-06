@@ -56,7 +56,7 @@
 <h2 id="summary">Summary</h2>
 <p>This is an informal assessment based on an accessibility testing rule set. It cannot be seen as an accessibility conformance report. The latter is published separately from the assessment and only indicates if the requirements are satisfied, not satisfied, or if further testing is needed as specified by establishing the conformity described in WCAG 2.1. This assessment can contain false positives, false negatives, or be accurate. The assessment interpretation, via the accessibility conformance report, can consider other independent assessments in order to establish the conformance.</p>
 
-<p>(<a href="{{ page.reportURL }}" type="application/ld+json" rel="alternate">Consult the report in its native JSON-LD format</a>)</p>
+<p>(<a href="1-a11y.json" type="application/ld+json" rel="alternate">Consult the report in its native JSON-LD format</a>)</p>
 <dl class="dl-horizontal">
 	<dt>Type</dt>
 	<dd>Accessibility assessment</dd>
@@ -162,7 +162,22 @@
 			{ "selector": "[data-label]", "value": "/earl:test" },
 			{ "selector": "[data-outcome]", "value": "/earl:outcome" },
 			{ "selector": "[data-applicability]", "value": "/earl:subject/dct:description" },
-			{ "selector": "[data-notes]", "value": "/dct:description" }
+			{ "selector": "[data-notes]", "value": "/dct:description" },
+
+			{ "selector": "[data-mode]", "value": "/earl:mode" },
+			{ "selector": "[data-severity]", "value": "/acr:severity" },
+			{ "selector": "[data-relevancy]", "value": "/acr:relevancy" },
+			{
+				"selector": "[data-specific-results]",
+				"value": "/earl:result",
+				"mapping": [
+					{ "selector": "[data-result-label]", "value": "/earl:test" },
+					{ "selector": "[data-result-outcome]", "value": "/earl:outcome" },
+					{ "selector": "[data-result-severity]", "value": "/acr:severity" },
+					{ "selector": "[data-result-relevancy]", "value": "/acr:relevancy" },
+					{ "selector": "[data-result-notes", "value": "/dct:description" }
+				]
+			}
 		],
 		"conditions": [
 			{
@@ -288,21 +303,6 @@
 							}
 						]
 					}
-				]
-			},
-
-			{ "selector": "[data-mode]", "value": "/earl:mode" },
-			{ "selector": "[data-severity]", "value": "/acr:severity" },
-			{ "selector": "[data-relevancy]", "value": "/acr:relevancy" },
-			{
-				"selector": "[data-specific-results]",
-				"value": "/earl:result",
-				"mapping": [
-					{ "selector": "[data-result-label]", "value": "/earl:test" },
-					{ "selector": "[data-result-outcome]", "value": "/earl:outcome" },
-					{ "selector": "[data-result-severity]", "value": "/acr:severity" },
-					{ "selector": "[data-result-relevancy]", "value": "/acr:relevancy" },
-					{ "selector": "[data-result-notes", "value": "/dct:description" }
 				]
 			}
 		]
