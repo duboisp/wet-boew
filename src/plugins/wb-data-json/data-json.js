@@ -301,12 +301,13 @@ var componentName = "wb-data-json",
 	},
 
 
-	dataIterator = function( elm, content, mappingConfig ) {
+	dataIterator = function( elm, content, mappingConfig, useClone ) {
 
 		var i, i_len, i_cache,
 			elmAppendTo = elm,
 			clone,
-			dataTable, dataTableAddRow;
+			dataTable, dataTableAddRow,
+			templateRef;
 
 		if ( mappingConfig.appendto ) {
 			elmAppendTo = $( mappingConfig.appendto ).get( 0 );
@@ -353,36 +354,118 @@ var componentName = "wb-data-json",
 		for ( i = 0; i < i_len; i += 1 ) {
 			i_cache = content[ i ];
 
+			//
+			// Get the template (if applicable)
+			//
+
+			if ( !clone && useClone ) {
+
+				// ( !clone && useClone ) => this is a Grouping template
+				console.log( "Create template in dataIterator" );
+				console.log( elm );
+				console.log( content );
+				console.log( mappingConfig );
+				console.log( useClone );
+				console.log( "__" ) ;
+
+				clone = useClone;
+				/*
+				templateRef = useClone.querySelector( mappingConfig.template );
+
+				if ( !mappingConfig.tobeclone ) {
+					clone = templateRef.content.cloneNode( true );
+				} else {
+					clone = templateRef.content.querySelector( mappingConfig.tobeclone ).cloneNode( true );
+				}
+
+				console.log( templateRef );
+				*/
+			}
+
+			if ( !useClone ) {
+				clone = getTemplateClone( elm, mappingConfig, templateRef );
+			}
+
+
+
+			if ( !clone || clone.nodeType === 11 ) {
+				console.log( "Empty clone...");
+				console.log( useClone );
+				console.log( clone );
+				console.log( elm );
+				console.log( mappingConfig );
+			}
+
+			processConditional( elm, clone, i_cache, mappingConfig );
+
+
+
 			// process the conditional
-			if ( !mappingConfig.source ) {
+			/*if ( !mappingConfig.source ) {
 				console.log( "Condition 1");
-				cloneArray = processConditional( elm, i_cache, mappingConfig );
+				cloneArray = processConditional( elm, clone, i_cache, mappingConfig );
 			} else if ( mappingConfig.source && mappingConfig.tobeclone ) {
 				console.log( "Condition 2");
-				cloneArray = processConditional( document.querySelector( mappingConfig.source ).content.querySelector( mappingConfig.tobeclone ).cloneNode( true ), i_cache, mappingConfig );
+				var node_toAppend = document.querySelector( mappingConfig.source ).content.querySelector( mappingConfig.tobeclone ).cloneNode( true );
+
+				cloneArray = processConditional( node_toAppend, clone, i_cache, mappingConfig );
+
 			} else if ( mappingConfig.source ) {
 				console.log( "Condition 3");
-				cloneArray = processConditional( document.querySelector( mappingConfig.source ).cloneNode( true ), i_cache, mappingConfig );
+				var node_toAppend = document.querySelector( mappingConfig.source ).cloneNode( true )
+
+				cloneArray = processConditional( node_toAppend, clone, i_cache, mappingConfig );
 			}
 
 			if ( !cloneArray ) {
 				cloneArray = [];
+			}*/
+
+
+
+
+			// process the mapping, return value is the new clone object if applicable
+			var tmpClone;
+			tmpClone = processMapping( elm, clone, i_cache, mappingConfig );
+
+			// Remove the template flag, to ensure we do reuse it for the subsequent iteration
+			if ( tmpClone ) {
+				delete mappingConfig.template;
+				clone = tmpClone;
 			}
 
-			// process the mapping
-			cloneArray.push( processMapping( elm, i_cache, mappingConfig ) );
-
 			// Add the clone object
-			for( j = 0, j_len = cloneArray.length; j !== j_len; j++ ) {
-				clone = cloneArray[ j ];
+			//for( j = 0, j_len = cloneArray.length; j !== j_len; j++ ) {
+			//	clone = cloneArray[ j ];
 				if ( dataTableAddRow ) {
 					dataTableAddRow( $( clone ) ); // If wb-tables, use its API to add rows
 				} else {
-					elmAppendTo.appendChild( clone );
+					if ( !useClone ) {
+						elmAppendTo.appendChild( clone );
+					}
 				}
-			}
+			//}
 		}
 
+		/*
+		if ( useClone ) {
+
+			console.log( "Save template in dataIterator" );
+
+			console.log( useClone )
+			console.log( clone )
+			console.log( clone.parentNode )
+			console.log( templateRef )
+
+			if ( templateRef.parentNode ) {
+
+				//template.parentNode.insertBefore( clone, template );
+				templateRef.parentNode.insertBefore( clone, templateRef );
+				//outerClone.appendChild( clone );
+			} else {
+				useClone.appendChild( clone );
+			}
+		}*/
 
 		// Refresh the dataTable display (if applicable)
 		if ( dataTableAddRow ) {
@@ -391,7 +474,7 @@ var componentName = "wb-data-json",
 
 	},
 
-	processConditional = function( elm, content, mappingConfig, behavioural ) {
+	processConditional = function( elm, clone, content, mappingConfig, behavioural ) {
 
 		var conditions = mappingConfig.conditions,
 			i, i_cache,
@@ -414,7 +497,7 @@ var componentName = "wb-data-json",
 
 			if ( i_cache[ "@type"] === "rdf:Alt" ) {
 
-				cloneArray.push( processMapping( elm, content, i_cache, { mode: "alt" } ) );
+				processConditional( elm, clone, content, i_cache, { mode: "alt" } );
 				continue;
 			}
 
@@ -426,6 +509,7 @@ var componentName = "wb-data-json",
 			var returnEval = functionForTest[ i_cache.test ].call( content, value, i_cache.expect );
 
 			// TODO: Run the operand
+
 
 			// If not true, go next
 			if ( !returnEval ) {
@@ -439,9 +523,14 @@ var componentName = "wb-data-json",
 			console.log( value );
 			console.log( returnEval );
 
+			// Run conditions check
+			processConditional( elm, clone, content, i_cache );
+
 
 			// Run mapping if satisfied
-			cloneArray.push( processMapping( elm, content, i_cache ) );
+			processMapping( elm, clone, value, i_cache );
+
+			GlobalIsArrayTrue = false;
 
 			if ( behavioural.mode === "alt" ) {
 				return;
@@ -454,9 +543,13 @@ var componentName = "wb-data-json",
 
 	},
 
+	GlobalIsArrayTrue = false,
+
+
 	functionForTest = {
 
 		"fn:isArray": function( value ) {
+			GlobalIsArrayTrue = true;
 			return $.isArray( value );
 		},
 
@@ -504,7 +597,7 @@ var componentName = "wb-data-json",
 			}
 
 			if ( !guestType ) {
-				if ( typeof value === "string" && value.match( /^([a-z][a-z0-9+\-.]*):/ ) ) {
+				if ( typeof value === "string" && value.match( /^([a-z][a-z0-9+\-.]*):/i ) ) {
 					guestType = "xsd:anyURI";
 				} else if ( typeof value === "string" ) {
 					guestType = "xsd:string";
@@ -536,19 +629,39 @@ var componentName = "wb-data-json",
 
 	},
 
-	processMapping = function( elm, content, mappingConfig ){
+	processMapping = function( elm, clone, content, mappingConfig ){
+
+		console.log( "Processing the mapping of....." );
+		console.log( elm );
+		console.log( clone );
+		console.log( content );
+		console.log( mappingConfig );
+		console.log( "END ++++++++++++++++++++Processing the mapping of....." );
+
 
 		var j, j_cache,
 			cached_node, cached_value,
 			queryAll = mappingConfig.queryall,
 			selElements,
-			clone,
 			mapping = mappingConfig.mapping,
-			mapping_len;
+			mapping_len,
+			upstreamClone, template;
 
 
 		// Check if there is some mapping configuration
 		if ( !mapping && !queryAll ) {
+			return;
+		}
+
+		// Is content an array?
+		if ( $.isArray( content ) ) {
+			console.log( "THIS IS an array");
+
+			/*if( mappingConfig.template ) {
+				mappingConfig.ingnoreTemplate = true;
+			}*/
+
+			dataIterator( clone, content, mappingConfig, clone );
 			return;
 		}
 
@@ -562,11 +675,60 @@ var componentName = "wb-data-json",
 		mapping_len = mapping.length;
 
 
-		//
-		// Get the template (if applicable)
-		//
+		// If there is a "template" property, get the inner template
+		if ( mappingConfig.template ) { //&& !mappingConfig.ingnoreTemplate ) {
+			template = clone.querySelector( mappingConfig.template );
 
-		clone = getTemplateClone( elm, mappingConfig );
+			console.log( "hummmmm" );
+			console.log( clone );
+			console.log( template );
+			console.log( mappingConfig.template );
+
+			upstreamClone = clone; // Keep reference of the top clone
+
+			//if ( !mappingConfig.tobeclone ) {
+				clone = template.content.cloneNode( true );
+			//} else {
+			//	clone = template.content.querySelector( mappingConfig.tobeclone ).cloneNode( true );
+			//}
+
+			console.log( "Override clone" );
+			console.log( clone );
+		}
+
+		if ( mappingConfig.template === "[data-download-link]" ) {
+			console.log( "Specific logging....");
+			console.log( mappingConfig );
+			console.log( upstreamClone );
+			console.log( clone );
+		}
+
+
+
+		// console.log( "Content " );
+		// console.log( content );
+		//if ( $.isArray( content ) ) {
+
+		/*
+			// Deep dive into the content if a mapping exist
+			if ( mappingConfig.mapping || mappingConfig.queryall ) {
+				dataIterator( clone, content, mappingConfig );
+
+				if ( outerClone && template ) {
+					if ( template.parentNode ) {
+						template.parentNode.insertBefore( clone, template );
+					} else {
+						outerClone.appendChild( clone );
+					}
+				}
+
+				return;
+			}
+		*/
+		//}
+
+
+
 		/*if ( !selectorToClone ) {
 			clone = template.content.cloneNode( true );
 		} else {
@@ -601,6 +763,7 @@ var componentName = "wb-data-json",
 		// Process the mapping
 		//
 
+		if ( !$.isArray( content ) ){
 
 		for ( j = 0; j < mapping_len || j === 0; j += 1 ) {
 			j_cache = mapping[ j ];
@@ -615,6 +778,34 @@ var componentName = "wb-data-json",
 				console.log( clone );
 			}
 
+			var innerTemplate, outerClone;
+
+			// If there is a "template" property, get the inner template
+			/*if ( j_cache.template && !j_cache.ingnoreTemplate ) {
+				innerTemplate = clone.querySelector( j_cache.template );
+
+				outerClone = clone; // Keep reference of the outer clone
+
+				if ( !innerTemplate ) {
+					console.log( "noInner template" );
+					console.log( innerTemplate );
+					console.log( clone );
+					console.log( j_cache );
+					console.log( clone.querySelector( "ul > [data-source-code]" ) );
+
+					console.log( "template not found, check your template selector: " + j_cache.template );
+					console.warn( j_cache );
+					continue;
+				}
+
+				//if ( !mappingConfig.tobeclone ) {
+					clone = innerTemplate.content.cloneNode( true );
+				//} else {
+				//	clone = template.content.querySelector( mappingConfig.tobeclone ).cloneNode( true );
+				//}
+			}*/
+
+
 			if ( j_cache.selector ) {
 				cached_node = clone.querySelector( j_cache.selector );
 			} else {
@@ -624,26 +815,230 @@ var componentName = "wb-data-json",
 
 			cached_value = getValue( content, j_cache );
 
+
+			if ( template || !cached_node ) {
+				console.log( "value" );
+				console.log( template );
+				console.log( cached_node );
+				console.log( cached_value );
+				console.log( j_cache );
+				console.log( content );
+
+			}
+
+
 			// Go to the next mapping if the value of JSON node don't exist to ensure we keep the default text set in the template, but move ahead if empty or null
-			if ( cached_value === undefined ) {
+			if ( typeof cached_value === "undefined" ) {
 				continue;
 			}
 
-			mapValue( cached_node, cached_value, j_cache );
+
 
 			// Deep dive into the content if a mapping exist
-			if ( j_cache.mapping || j_cache.queryall ) {
-				dataIterator( cached_node, cached_value, j_cache );
+			if ( $.isArray( cached_value ) && ( j_cache.mapping || j_cache.queryall ) ) {
+
+				console.log( "calling dataIterator isArray" );
+				console.log( cached_node );
+				console.log( cached_value );
+				console.log( j_cache );
+				console.log( outerClone );
+				console.log( innerTemplate );
+				console.log( clone );
+
+				if ( !outerClone ) {
+					console.log( "no outerClone" );
+					dataIterator( cached_node, cached_value, j_cache );
+				} else {
+					console.log( "with outerClone" );
+					dataIterator( cached_node, cached_value, j_cache,  );
+				}
+			} else if ( j_cache.mapping || j_cache.queryall ) {
+
+				console.log( "Deep diving, value is literal" );
+				console.log( cached_node );
+				console.log( cached_value );
+				console.log( j_cache );
+				console.log( outerClone );
+				console.log( upstreamClone );
+				console.log( innerTemplate );
+				console.log( clone );
+
+				//processMapping( upstreamClone, cached_node, cached_value, j_cache );
+				processMapping( template, cached_node, cached_value, j_cache );
+			} else {
+
+				mapValue( cached_node, cached_value, j_cache );
 			}
+
+			/*
+			if ( outerClone && innerTemplate ) {
+				if ( innerTemplate.parentNode ) {
+
+					console.log( "template AJOUTER Inner++" );
+
+					//template.parentNode.insertBefore( clone, template );
+					innerTemplate.parentNode.insertBefore( clone, innerTemplate );
+					//outerClone.appendChild( clone );
+				} else {
+					outerClone.appendChild( clone );
+				}
+
+				clone = outerClone;
+				console.error (clone );
+			}*/
+
 		}
 
+		}
+
+		//if ( upstreamClone && template ) {
+		if ( template ) {
+			if ( template.parentNode ) {
+
+				console.log( "template AJOUTER" );
+
+				//template.parentNode.insertBefore( clone, template );
+				template.parentNode.insertBefore( clone, template );
+				//upstreamClone.appendChild( clone );
+			} else {
+				upstreamClone.appendChild( clone );
+			}
+
+			return elm;
+
+		}
+
+
+
+
 		// Return the newly created clone
-		return clone;
+		//return clone;
 	},
 
-	getTemplateClone = function( elm, mappingConfig ){
+	/* work with this setting on the HTML file
 
-		var template, clone;
+
+	<tbody data-wb-json='{
+		"url": "#[a11y]/earl:result",
+		"tobeclone": "tr",
+		"source": "#tmpl-result",
+		"mapping": [
+			{ "selector": "[data-label]", "value": "/earl:test" },
+			{ "selector": "[data-outcome]", "value": "/earl:outcome" },
+			{ "selector": "[data-applicability]", "value": "/earl:subject/dct:description" },
+			{ "selector": "[data-notes]", "value": "/dct:description" },
+
+			{ "selector": "[data-mode]", "value": "/earl:mode" },
+			{ "selector": "[data-severity]", "value": "/acr:severity" },
+			{ "selector": "[data-relevancy]", "value": "/acr:relevancy" },
+			{
+				"selector": "[data-specific-results]",
+				"value": "/earl:result",
+				"mapping": [
+					{ "selector": "[data-result-label]", "value": "/earl:test" },
+					{ "selector": "[data-result-outcome]", "value": "/earl:outcome" },
+					{ "selector": "[data-result-severity]", "value": "/acr:severity" },
+					{ "selector": "[data-result-relevancy]", "value": "/acr:relevancy" },
+					{ "selector": "[data-result-notes", "value": "/dct:description" }
+				]
+			}
+		],
+		"conditions": [
+			{
+				"@type": "rdf:Alt",
+				"conditions": [
+					{
+						"test": "fn:isLiteral",
+						"operand": "is",
+						"value": "/acr:asset",
+						"conditions": [
+							{
+								"@type": "rdf:Alt",
+								"conditions": [
+									{
+										"template": "[data-asset-literal]",
+										"test": "fn:guestType",
+										"operand": "is",
+										"value": "/acr:asset",
+										"expect": "xsd:anyURI",
+										"mapping": [
+											{ "selector": "a", "value": "/acr:asset", "attr": "href" }
+										]
+									},
+									{
+										"template": "[data-asset-code]",
+										"test": "fn:guestType",
+										"operand": "is",
+										"value": "/acr:asset",
+										"expect": "xsd:string",
+										"mapping": [
+											{ "selector": "code", "value": "/acr:asset" }
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"template": "[data-asset-image]",
+						"test": "fn:guestType",
+						"operand": "is",
+						"value": "/acr:asset",
+						"expect": "acr:AttachmentImage",
+						"mapping": [
+							{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
+							{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
+							{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
+
+						]
+					},
+					{
+						"template": "[data-asset-literal]",
+						"test": "fn:guestType",
+						"operand": "is",
+						"value": "/acr:asset",
+						"expect": "xsd:anyURI",
+						"mapping": [
+							{ "selector": "a", "value": "/acr:asset", "attr": "href" }
+						]
+					},
+					{
+						"template": "[data-asset-code]",
+						"test": "fn:guestType",
+						"operand": "is",
+						"value": "/acr:asset",
+						"expect": "xsd:string",
+						"mapping": [
+							{ "selector": "code", "value": "/acr:asset" }
+						]
+					},
+					{
+						"about": "When the value is an array of items",
+						"template": "[data-asset-array]",
+						"test": "fn:isArray",
+						"operand": "is",
+						"value": "/acr:asset",
+						"mapping": [
+								{
+									"template": "[data-download-link]",
+									"value": "/",
+									"mapping": [
+										{ "selector": "a", "value": "/@value", "attr": "href" }
+									]
+
+								}
+						]
+					}
+				]
+			}
+		]
+	}'>
+	</tbody>
+	*/
+
+	getTemplateClone = function( elm, mappingConfig, template ){
+
+		var clone;
 
 		if ( mappingConfig.source ) {
 			template = document.querySelector( mappingConfig.source )
@@ -666,18 +1061,25 @@ var componentName = "wb-data-json",
 
 	getValue = function ( source, pointer ) {
 
-
+		var value;
 		// var endWithAtValue = value.match( /\/@value$/ ); // See fn:guestType value extrator
 
 
 		// Get the value
 		if ( typeof source === "string" ) {
-			return source;
+			value = source;
 		} else if ( typeof pointer === "string" ) {
-			return jsonpointer.get( source, pointer );
+			value = jsonpointer.get( source, pointer );
 		} else {
-			return jsonpointer.get( source, pointer.value );
+			value = jsonpointer.get( source, pointer.value );
 		}
+
+		// for JSON-LD @value support
+		if ( typeof value === "object" && value[ "@value" ] ) {
+			value = value[ "@value" ];
+		}
+
+		return value;
 	},
 
 	mapValue = function( element, value, mappingConfig ) {
