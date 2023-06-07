@@ -262,6 +262,7 @@
 									"operand": "is",
 									"value": "/",
 									"expect": "xsd:anyURI",
+									"append": true,
 									"mapping": [
 										{ "selector": "a", "value": "/@value", "attr": "href" }
 									]
@@ -272,6 +273,7 @@
 									"operand": "is",
 									"value": "/",
 									"expect": "xsd:string",
+									"append": true,
 									"mapping": [
 										{ "selector": "code", "value": "/@value" }
 									]
@@ -282,6 +284,7 @@
 									"operand": "is",
 									"value": "/",
 									"expect": "acr:AttachmentImage",
+									"append": true,
 									"mapping": [
 										{ "selector": "img", "value": "/acr:content/@value", "attr": "src" },
 										{ "selector": "a", "value": "/acr:content/@value", "attr": "href" },
@@ -298,219 +301,6 @@
 	</tbody>
 </table>
 
-
-<!--
-
-
-
-
-{
-									"template": "[data-download-link]",
-									"value": "/",
-									"mapping": [
-										{ "selector": "a", "value": "/@value", "attr": "href" }
-									]
-
-								}
-
-{
-									"template": "[data-source-code]",
-									"value": "/",
-									"mapping": [
-										{ "selector": "code", "value": "/@value" }
-									]
-								}
-
-
-
-
-
-{
-								"about": "Navigate in each item",
-								"value": "/acr:asset",
-								"conditions": [
-									{
-										"about": "Evaluate each item type",
-										"@type": "rdf:Alt",
-										"conditions": [
-											{
-												"template": "[data-download-link]",
-												"test": "fn:guestType",
-												"operand": "is",
-												"value": "/",
-												"expect": "xsd:anyURI",
-												"mapping": [
-													{ "selector": "a", "value": "/@value", "attr": "href" }
-												]
-											},
-											{
-												"template": "[data-source-code]",
-												"test": "fn:guestType",
-												"operand": "is",
-												"value": "/",
-												"expect": "xsd:string",
-												"mapping": [
-													{ "selector": "code", "value": "/@value" }
-												]
-											},
-											{
-												"template": "[data-asset-image]",
-												"test": "fn:guestType",
-												"operand": "is",
-												"value": "/",
-												"expect": "acr:AttachmentImage",
-												"mapping": [
-													{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
-													{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
-													{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
-
-												]
-											}
-										]
-									}
-								]
-							}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{
-				"@type": "rdf:Alt",
-				"conditions": [
-					{
-						"test": "fn:isLiteral",
-						"operand": "is",
-						"value": "/acr:asset",
-						"conditions": [
-							{
-								"@type": "rdf:Alt",
-								"conditions": [
-									{
-										"template": "[data-asset-literal]",
-										"test": "fn:guestType",
-										"operand": "is",
-										"value": "/acr:asset",
-										"expect": "xsd:anyURI",
-										"mapping": [
-											{ "selector": "a", "value": "/acr:asset", "attr": "href" }
-										]
-									},
-									{
-										"template": "[data-asset-code]",
-										"test": "fn:guestType",
-										"operand": "is",
-										"value": "/acr:asset",
-										"expect": "xsd:string",
-										"mapping": [
-											{ "selector": "code", "value": "/acr:asset" }
-										]
-									}
-								]
-							}
-						]
-					},
-					{
-						"template": "[data-asset-image]",
-						"test": "fn:guestType",
-						"operand": "is",
-						"value": "/acr:asset",
-						"expect": "acr:AttachmentImage",
-						"mapping": [
-							{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
-							{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
-							{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
-
-						]
-					},
-					{
-						"template": "[data-asset-literal]",
-						"test": "fn:guestType",
-						"operand": "is",
-						"value": "/acr:asset",
-						"expect": "xsd:anyURI",
-						"mapping": [
-							{ "selector": "a", "value": "/acr:asset", "attr": "href" }
-						]
-					},
-					{
-						"template": "[data-asset-code]",
-						"test": "fn:guestType",
-						"operand": "is",
-						"value": "/acr:asset",
-						"expect": "xsd:string",
-						"mapping": [
-							{ "selector": "code", "value": "/acr:asset" }
-						]
-					},
-					{
-						"about": "When the value is an array of items",
-						"template": "[data-asset-array]",
-						"test": "fn:isArray",
-						"operand": "is",
-						"value": "/acr:asset",
-						"mapping": [
-
-							{
-								"about": "Navigate in each item",
-								"value": "/acr:asset",
-								"conditions": [
-									{
-										"about": "Evaluate each item type",
-										"@type": "rdf:Alt",
-										"conditions": [
-											{
-												"template": "[data-download-link]",
-												"test": "fn:guestType",
-												"operand": "is",
-												"value": "/",
-												"expect": "xsd:anyURI",
-												"mapping": [
-													{ "selector": "a", "value": "/@value", "attr": "href" }
-												]
-											},
-											{
-												"template": "[data-source-code]",
-												"test": "fn:guestType",
-												"operand": "is",
-												"value": "/",
-												"expect": "xsd:string",
-												"mapping": [
-													{ "selector": "code", "value": "/@value" }
-												]
-											},
-											{
-												"template": "[data-asset-image]",
-												"test": "fn:guestType",
-												"operand": "is",
-												"value": "/",
-												"expect": "acr:AttachmentImage",
-												"mapping": [
-													{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
-													{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
-													{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
-
-												]
-											}
-										]
-									}
-								]
-							}
-						]
-					}
-				]
-			}
-
-			-->
 <template id="tmpl-result">
 	<table>
 		<tr>

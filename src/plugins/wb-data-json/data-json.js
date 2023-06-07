@@ -781,7 +781,11 @@ var componentName = "wb-data-json",
 
 
 					//template.parentNode.insertBefore( clone, template );
-					template.parentNode.insertBefore( clone, template );
+					if ( !mappingConfig.append ) {
+						template.parentNode.insertBefore( clone, template );
+					} else {
+						template.parentNode.appendChild( clone );
+					}
 					//upstreamClone.appendChild( clone );
 				} else {
 					upstreamClone.appendChild( clone );
@@ -998,7 +1002,11 @@ var componentName = "wb-data-json",
 				//console.log( "template AJOUTER" );
 
 				//template.parentNode.insertBefore( clone, template );
-				template.parentNode.insertBefore( clone, template );
+				if ( !mappingConfig.append ) {
+					template.parentNode.insertBefore( clone, template );
+				} else {
+					template.parentNode.appendChild( clone );
+				}
 				//upstreamClone.appendChild( clone );
 			} else {
 				upstreamClone.appendChild( clone );
