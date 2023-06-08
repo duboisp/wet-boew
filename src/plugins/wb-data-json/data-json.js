@@ -318,9 +318,9 @@ var componentName = "wb-data-json",
 			if ( !useClone ) {
 
 				if ( mappingConfig.source ) {
-					template = document.querySelector( mappingConfig.source )
-				} else if ( mappingConfig.template ){
-					template = elm.querySelector( mappingConfig.template )
+					template = document.querySelector( mappingConfig.source );
+				} else if ( mappingConfig.template ) {
+					template = elm.querySelector( mappingConfig.template );
 				} else {
 					template = elm.querySelector( "template" );
 				}
@@ -407,7 +407,6 @@ var componentName = "wb-data-json",
 			var mapping = mappingConfig.mapping,
 				i, i_cache,
 				i_len = mapping.length,
-				canProcess,
 				value = content;
 
 			for ( i = 0; i < i_len || i === 0; i += 1 ) {
@@ -468,7 +467,7 @@ var componentName = "wb-data-json",
 			var guestType;
 
 			if ( !value ) {
-				guestType = "undefined"
+				guestType = "undefined";
 			} else if ( value[ "@type" ] ) {
 				guestType = value[ "@type" ];
 			} else if ( value[ "@value" ] ) {
@@ -489,8 +488,6 @@ var componentName = "wb-data-json",
 					guestType = [ "xsd:double", "rdfs:Literal" ];
 				} else if ( typeof value === "undefined" ) {
 					guestType = "undefined";
-				} else if ( typeof value === "null" ) {
-					guestType = "null";
 				} else if ( $.isArray( value ) ) {
 					guestType = "rdfs:Container";
 				} else {
@@ -516,8 +513,8 @@ var componentName = "wb-data-json",
 			if ( $.isArray( value ) && !$.isArray( expect ) && value.indexOf( expect ) !== -1 ) {
 				return true;
 			} else if ( $.isArray( value ) &&  $.isArray( expect ) ) {
-				i_len = expect.length
-				for( i = 0; i !== i_len; i++ ) {
+				i_len = expect.length;
+				for ( i = 0; i !== i_len; i++ ) {
 					if ( value.indexOf( expect[ i ] ) ) {
 						return true;
 					}
@@ -551,6 +548,8 @@ var componentName = "wb-data-json",
 
 		"is": function( value, expect ) {
 
+			var i;
+
 			if ( !expect ) {
 				console.error( "Expected value is missing. Defaulting to false." );
 				console.error( this );
@@ -560,8 +559,7 @@ var componentName = "wb-data-json",
 			if ( $.isArray( value ) && !$.isArray( expect ) && value.indexOf( expect ) !== -1 ) {
 				return true;
 			} else if ( $.isArray( value ) &&  $.isArray( expect ) ) {
-				i_len = expect.length
-				for( i = 0; i !== i_len; i++ ) {
+				for ( i = 0; i !== expect.length; i++ ) {
 					if ( value.indexOf( expect[ i ] ) ) {
 						return true;
 					}
@@ -576,12 +574,12 @@ var componentName = "wb-data-json",
 		},
 
 		"isnt": function( value, expect ) {
-			return !functionForOperand[ "is" ].call( this, value, expect );
+			return !functionForOperand.is.call( this, value, expect );
 		}
 	},
 
 	// Mapping the data into a template or into a node
-	processMapping = function( elm, clone, content, mappingConfig ){
+	processMapping = function( elm, clone, content, mappingConfig ) {
 
 		var j, j_cache,
 			cached_node, cached_value,
@@ -672,9 +670,9 @@ var componentName = "wb-data-json",
 
 			// Replicate this setting the in the mapping
 			for ( j = 0; j < selElements.length || j === 0; j += 1 ) {
-				if ( ! mapping[ j ].selector && queryAll.indexOf( "nth-child" ) === -1 ) {
+				if ( !mapping[ j ].selector && queryAll.indexOf( "nth-child" ) === -1 ) {
 					mapping[ j ].selector = queryAll + ":nth-child(" + ( j + 1 ) + ")";
-				} else if ( ! mapping[ j ].selector ) {
+				} else if ( !mapping[ j ].selector ) {
 					mapping[ j ].selector = queryAll;
 				}
 			}
@@ -686,8 +684,6 @@ var componentName = "wb-data-json",
 		//
 		for ( j = 0; j < mapping_len || j === 0; j += 1 ) {
 			j_cache = mapping[ j ];
-
-			var innerTemplate, outerClone;
 
 			// Get the element to be updated
 			if ( j_cache.selector ) {
@@ -741,7 +737,7 @@ var componentName = "wb-data-json",
 	},
 
 	// Extract the value of an JS object
-	getValue = function ( source, pointer ) {
+	getValue = function( source, pointer ) {
 
 		var value;
 
