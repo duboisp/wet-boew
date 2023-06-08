@@ -259,12 +259,12 @@ var componentName = "wb-data-json",
 		}
 	},
 
-
+	// Iterate over the dataset
 	dataIterator = function( elm, content, mappingConfig, useClone ) {
 
 		var i, i_len, i_cache,
 			elmAppendTo = elm,
-			clone,
+			clone, template,
 			dataTable, dataTableAddRow;
 
 		if ( mappingConfig.appendto ) {
@@ -316,7 +316,20 @@ var componentName = "wb-data-json",
 				clone = useClone;
 			}
 			if ( !useClone ) {
-				clone = getTemplateClone( elm, mappingConfig );
+
+				if ( mappingConfig.source ) {
+					template = document.querySelector( mappingConfig.source )
+				} else if ( mappingConfig.template ){
+					template = elm.querySelector( mappingConfig.template )
+				} else {
+					template = elm.querySelector( "template" );
+				}
+
+				if ( !mappingConfig.tobeclone ) {
+					clone = template.content.cloneNode( true );
+				} else {
+					clone = template.content.querySelector( mappingConfig.tobeclone ).cloneNode( true );
+				}
 			}
 
 			// process the mapping, return value is the new clone object if applicable
@@ -346,6 +359,7 @@ var componentName = "wb-data-json",
 
 	},
 
+	// Check if the mapping are met or not
 	canProcessMapping = function( content, mappingConfig ) {
 
 		var value,
@@ -385,6 +399,7 @@ var componentName = "wb-data-json",
 		return true;
 	},
 
+	// Special mapping typed function
 	functionForTypedMapping = {
 
 		"rdf:Alt": function( elm, clone, content, mappingConfig ) {
@@ -421,6 +436,7 @@ var componentName = "wb-data-json",
 		}
 	},
 
+	// Function called for testing the mapping condition, which can be extend via the js configuration
 	functionForTest = {
 
 		"fn:isArray": function( value ) {
@@ -491,6 +507,7 @@ var componentName = "wb-data-json",
 
 	},
 
+	// Operand used to evaluate the testable output from functionForTest to determine if the mapping condition is met or not, which can be extend via the js configuration
 	functionForOperand = {
 
 		"softEq": function( value, expect ) {
@@ -517,7 +534,7 @@ var componentName = "wb-data-json",
 
 		"eq": function( value, expect ) {
 
-			if ( value === expect ) {
+			if ( _equalsJSON( value, expect ) ) {
 				return true;
 			}
 
@@ -525,7 +542,7 @@ var componentName = "wb-data-json",
 		},
 
 		"neq": function( value, expect ) {
-			if ( value !== expect ) {
+			if ( !_equalsJSON( value, expect ) ) {
 				return true;
 			}
 
@@ -563,6 +580,7 @@ var componentName = "wb-data-json",
 		}
 	},
 
+	// Mapping the data into a template or into a node
 	processMapping = function( elm, clone, content, mappingConfig ){
 
 		var j, j_cache,
@@ -722,28 +740,7 @@ var componentName = "wb-data-json",
 
 	},
 
-
-	getTemplateClone = function( elm, mappingConfig ){
-
-		var clone, template;
-
-		if ( mappingConfig.source ) {
-			template = document.querySelector( mappingConfig.source )
-		} else if ( mappingConfig.template ){
-			template = elm.querySelector( mappingConfig.template )
-		} else {
-			template = elm.querySelector( "template" );
-		}
-
-		if ( !mappingConfig.tobeclone ) {
-			clone = template.content.cloneNode( true );
-		} else {
-			clone = template.content.querySelector( mappingConfig.tobeclone ).cloneNode( true );
-		}
-
-		return clone;
-	},
-
+	// Extract the value of an JS object
 	getValue = function ( source, pointer ) {
 
 		var value;
@@ -767,6 +764,7 @@ var componentName = "wb-data-json",
 		return value;
 	},
 
+	// Map a value into an HTML element or attribute
 	mapValue = function( element, value, mappingConfig ) {
 
 		var attributeName, placeholderText;
@@ -788,13 +786,6 @@ var componentName = "wb-data-json",
 		// Set the value to the node
 		if ( mappingConfig.isHTML ) {
 			element.innerHTML = value;
-		} else if ( $.isArray( value ) || value && !( value instanceof String ) && typeof value === "object" ) {
-/*
-			console.log( "Applying sub template" );
-			console.log( mappingConfig );
-			console.log( value );
-			dataIterator( element, value, mappingConfig );
-			// applyTemplate( element, mappingConfig, value );*/
 		} else {
 			element.textContent = value;
 		}
