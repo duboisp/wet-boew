@@ -215,7 +215,8 @@ var componentName = "wb-data-json",
 		var elmClass = elm.className,
 			dataTable,
 			dataTableAddRow,
-			template = settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" );
+			template = settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" ),
+			i, i_len, i_cache;
 
 		// If combined with wb-tables plugin
 		if ( elm.tagName === "TABLE" && elmClass.indexOf( "wb-tables" ) !== -1 ) {
@@ -251,6 +252,26 @@ var componentName = "wb-data-json",
 			wb.tmplPolyfill( template );
 		}
 
+		// Do we need to clean up?
+		elm[ componentName ] = elm[ componentName ] || [];
+		i_len = elm[ componentName ].length;
+		if ( settings.alwaysStartFresh && i_len ) {
+
+			for (i = i_len ; i !== 0; i-- ) {
+				i_cache = elm[ componentName ][ i - 1 ];
+				if ( i_cache.parentElement ) {
+					i_cache.parentElement.removeChild( i_cache );
+				} else {
+					console.log( i_cache );
+				}
+			}
+
+			// Reset the reference list
+			elm[ componentName ] =  [];
+			//elm[ wb
+		}
+
+		// Execute the mapping/iteration process
 		if ( !settings.streamline ) {
 			dataIterator( elm, content, settings );
 		} else {
@@ -362,6 +383,9 @@ var componentName = "wb-data-json",
 				dataTableAddRow( $( clone ) ); // If wb-tables, use its API to add rows
 			} else if ( !useClone && template ) {
 				elmAppendTo.appendChild( clone );
+
+				elm[ componentName ] = elm[ componentName ] || [];
+				elm[ componentName ].push( clone );
 			}
 		}
 
@@ -686,6 +710,9 @@ var componentName = "wb-data-json",
 					upstreamClone.appendChild( clone );
 				}
 
+				elm[ componentName ] = elm[ componentName ] || [];
+				elm[ componentName ].push( clone );
+
 				return elm;
 
 			}
@@ -782,6 +809,9 @@ var componentName = "wb-data-json",
 			} else {
 				upstreamClone.appendChild( clone );
 			}
+
+			elm[ componentName ] = elm[ componentName ] || [];
+			elm[ componentName ].push( clone );
 
 			return elm;
 		}

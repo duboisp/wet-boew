@@ -329,13 +329,12 @@ var componentName = "wb-jsonmanager",
 					dsNameRegistered.push( dsName );
 
 					url = elmData.url;
+					dsFetching[ dsName ] = {};
 
 					if ( url ) {
 
 						url = typeof url === "string" ? [ url ] : url;
 						i_len = url.length;
-
-						dsFetching[ dsName ] = i_len;
 
 						for ( i = 0; i !== i_len; i++ ) {
 
@@ -358,11 +357,17 @@ var componentName = "wb-jsonmanager",
 								fetchOpts.url = urlActual;
 							}
 
+							// Request URL alias
+							fetchOpts.alias = urlActual.alias || wb.getId();
+							dsFetching[ dsName ][ fetchOpts.alias ] = false;
+
 							// Fetch the JSON
-							$elm.trigger( {
-								type: "json-fetch.wb",
-								fetch: fetchOpts
-							} );
+							if ( fetchOpts.url ) {
+								$elm.trigger( {
+									type: "json-fetch.wb",
+									fetch: fetchOpts
+								} );
+							}
 
 							// If the URL is a dataset, make it ready
 							if ( fetchOpts.url.charCodeAt( 0 ) === 35 && fetchOpts.url.charCodeAt( 1 ) === 91 ) {
@@ -370,18 +375,32 @@ var componentName = "wb-jsonmanager",
 							}
 						}
 					} else if ( !url && elmData.extractor ) {
+
+						fetchOpts = {
+							response: {},
+							alias: componentName
+						}
+
+						dsFetching[ dsName ][ fetchOpts.alias ] = false;
+
 						$elm.trigger( {
 							type: "json-fetched.wb",
-							fetch: {
-								response: {}
-							}
+							fetch: fetchOpts
 						} );
 						wb.ready( $elm, componentName );
 
 					} else {
 
+						fetchOpts = {
+							url: "",
+							alias: componentName
+						}
+
+						dsFetching[ dsName ][ fetchOpts.alias ] = false;
+
 						$elm.trigger( {
-							type: "json-fetch.wb"
+							type: "json-fetch.wb",
+							fetch: fetchOpts
 						} );
 						wb.ready( $elm, componentName );
 					}
@@ -717,6 +736,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 
 		// Is the fetched JSON need to be wrap in another plain object
 		if ( fetchedOpts && fetchedOpts.savingPath ) {
+			console.log( fetchedOpts );
 			savingPathSplit = fetchedOpts.savingPath.split( "/" );
 
 			for ( i = savingPathSplit.length - 1; i > 0; i-- ) {
@@ -732,7 +752,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		// Determine if the response is an array
 		isArrayResponse = Array.isArray( JSONresponse );
 
-		// Ensure the response is an independant clone
+		// Ensure the response is an independent clone
 		if ( isArrayResponse ) {
 			JSONresponse = $.extend( true, [], JSONresponse );
 		} else {
@@ -740,7 +760,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		}
 
 		dsName = settings.name;
-		dsFetching[ dsName ]--;
+		// dsFetching[ dsName ]--;
 
 		// Ensure that we do have fetched and merged all urls everything before to move ahead
 		dsFetchIsArray[ dsName ] = dsFetchIsArray[ dsName ] ? dsFetchIsArray[ dsName ] : isArrayResponse;
@@ -748,6 +768,20 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		if ( dsFetchIsArray[ dsName ] !== isArrayResponse ) {
 			throw "Can't merge, incompatible JSON type (array vs object)";
 		}
+
+		// Check if we do have a alias match or not
+
+		if ( !fetchedOpts && dsFetching[ dsName ].length === 1 ) {
+			fetchedOpts = { alias: componentName }
+		}
+
+		console.log( dsName );
+		console.log( fetchedOpts );
+		console.log( event );
+		console.log( dsFetching[ dsName ] );
+		console.log( dsFetching[ dsName ][ fetchedOpts.alias ] );
+
+		dsFetching[ dsName ][ fetchedOpts.alias ] = JSONresponse;
 
 		if ( !dsFetchMerged[ dsName ] ) {
 			dsFetchMerged[ dsName ] = JSONresponse;
@@ -758,9 +792,22 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		}
 
 		// Quit and wait for the next fetch
-		if ( !isReloading && dsFetching[ dsName ] ) {
-			return;
+		//if ( isReloading ) {
+			// Reloading mode
+
+			// Need to identify each URL being fetch
+		//}
+
+		// Ensure that all URL has been loaded before to proceed.
+		for ( let ds in dsFetching[ dsName ] ) {
+			if ( !ds ) {
+				return;
+			}
 		}
+
+		//if ( !isReloading && dsFetching[ dsName ] ) {
+		//	return;
+		//}
 
 		JSONresponse = dsFetchMerged[ dsName ];
 
@@ -789,7 +836,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		}
 
 		// Apply the wraproot
-		if ( settings.wraproot  ) {
+		if ( settings.wraproot ) {
 			i_cache = { };
 			i_cache[ settings.wraproot ] = JSONresponse;
 			JSONresponse = i_cache;

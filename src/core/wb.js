@@ -524,6 +524,18 @@ Modernizr.load = function( options ) {
 		}
 	}
 	wb.modernizrLoad( options );
+
+	// Sometime, modernizr are unable to do a proper clean, let clean that up
+	setTimeout( function(){
+		var i, i_len,
+			objToRemove = document.querySelectorAll( "object[data^=http]" );
+		i_len = objToRemove.length;
+		for( i = ( i_len - 1 ); i >= 0; i-- ){
+			console.log( objToRemove );
+			objToRemove[ i ].parentElement.removeChild( objToRemove[ i ] );
+		}
+
+	}, 1001 );
 };
 
 /*-----------------------------

@@ -1,14 +1,36 @@
 ---
 {
-	"layout": "default.hbs"
+	"title": "Load assessment - Accessibility Conformance Report Methodology",
+	"language": "en",
+	"category": "Other",
+	"description": "",
+	"tag": "acr",
+	"parentdir": "acr",
+	"altLangPage": "assess-prep-fr.html",
+	"dateModified": "2023-05-09",
+	"js": ["demo/load"]
 }
 ---
 
-{{#if page.description }}
-	<p property="description">{{ page.description }}</p>
-{{/if}}
 
-{{>body}}
+<h2>1. Page that load JSON via file upload and then initiate a fetch event.</h2>
+
+
+<button type="button" id="mybutton">Upload and load</button>
+
+<!--
+<p>Upload an JSON: <input id="yep" type="file" accept=""></p>
+-->
+
+
+
+<h2>2. Show info from the report.</h2>
+
+
+
+<div id="setdata" data-wb-jsonmanager='{
+	"name": "uploaded"
+}'></div>
 
 <nav>
 	<h2>On this page</h2>
@@ -20,8 +42,8 @@
 
 <div id="ds-a11y" data-wb-jsonmanager='{
 	"url": [
-		"../../acr/demo-wcag21/labels.json",
-		"{{ page.reportURL }}"
+		"../acr/demo-wcag21/labels.json",
+		{ "url": "#[uploaded]", "alias": "assessment" }
 	],
 	"name": "a11y",
 	"patches": [
@@ -153,6 +175,7 @@
 		"alwaysStartFresh": true,
 		"tobeclone": "tr",
 		"source": "#tmpl-result",
+		"clearOnLoad": true,
 		"mapping": [
 			{ "selector": "[data-label]", "value": "/earl:test" },
 			{ "selector": "[data-outcome]", "value": "/earl:outcome" },

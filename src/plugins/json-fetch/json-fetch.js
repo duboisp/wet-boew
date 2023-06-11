@@ -37,6 +37,8 @@ var $document = wb.doc,
 				console.error( $( "#" + callerId ).get( 0 ) );
 			}
 		}
+		console.log( "fetchedOpts");
+		console.log( fetchedOpts);
 		$( "#" + callerId ).trigger( {
 			type: "json-fetched.wb",
 			fetch: {
@@ -66,8 +68,13 @@ $document.on( fetchEvent, function( event ) {
 		callerId, refId = fetchOpts.refId,
 		cachedResponse;
 
+		fetchOpts = $.extend(true, {}, fetchOpts );
 	// Filter out any events triggered by descendants
 	if ( caller === event.target || event.currentTarget === event.target ) {
+
+
+		console.log( "fetchedOpts FETCH");
+		console.log( fetchOpts );
 
 		if ( !caller.id ) {
 			caller.id = wb.getId();
