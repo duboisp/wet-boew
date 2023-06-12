@@ -121,6 +121,15 @@ var componentName = "wb-data-json",
 			i_len = lstCall.length;
 			for ( i = 0; i !== i_len; i += 1 ) {
 				i_cache = lstCall[ i ];
+
+				// Is it meetting the minimum requirement
+				// URL || data || mapping ??
+				if ( !( i_cache.url || i_cache.mapping || i_cache.data ) ) {
+					console.log( i_cache );
+					continue;
+				}
+
+				// Initiate
 				loadJSON( elm, i_cache.url, i, i_cache.nocache, i_cache.nocachekey, i_cache.data, i_cache.contenttype, i_cache.method );
 			}
 
@@ -159,9 +168,36 @@ var componentName = "wb-data-json",
 			showEmpty = itmSettings.showempty,
 			content = fetchObj.response,
 			typeOfContent = typeof content,
-			jQueryCaching;
+			jQueryCaching,
+			i, i_len, needCleanup ;
 
-		if ( showEmpty || typeOfContent !== "undefined" ) {
+		// Do we need to proceed for cleanup
+		elm[ componentName ] = elm[ componentName ] || [];
+		i_len = elm[ componentName ].length;
+		if ( i_len && elm.hasAttribute( "data-force-start-fresh" ) ) {
+			elm.removeAttribute( "data-force-start-fresh" );
+
+			console.log( "Cleaning UP jsonFetched" );
+			console.log( event );
+			console.trace();
+
+			for (i = i_len ; i !== 0; i-- ) {
+				if ( elm[ componentName ][ i - 1 ].parentElement ) {
+
+					elm[ componentName ][ i - 1 ].parentElement.removeChild( elm[ componentName ][ i - 1 ] );
+				}
+			}
+		}
+
+		if ( showEmpty || typeOfContent !== "undefined" || itmSettings.data ) {
+
+
+			if (elm[ componentName ] ) {
+				console.log( elm[ componentName ] );
+				console.log( event.target );
+				console.log( event.currentTarget );
+			}
+
 
 			if ( showEmpty && typeOfContent === "undefined" ) {
 				content = "";
@@ -212,11 +248,21 @@ var componentName = "wb-data-json",
 	// Apply the template as per the configuration
 	applyTemplate = function( elm, settings, content ) {
 
+		if ( elm.hasAttribute( "data-special" ) ) {
+			console.log( "Special Log" );
+			console.log( elm );
+			console.log( settings );
+			console.log( content );
+
+		}
+
 		var elmClass = elm.className,
 			dataTable,
 			dataTableAddRow,
 			template = settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" ),
-			i, i_len, i_cache;
+			i, i_len, i_cache,
+			data = settings.data,
+			isArrayResponse;
 
 		// If combined with wb-tables plugin
 		if ( elm.tagName === "TABLE" && elmClass.indexOf( "wb-tables" ) !== -1 ) {
@@ -243,19 +289,13 @@ var componentName = "wb-data-json",
 			settings.tobeclone = "tr"; // Only table row can be added
 		}
 
-		if ( !template ) {
-			return;
-		}
-
-		// Needed when executing sub-template that wasn't polyfill, like in IE11
-		if ( !template.content ) {
-			wb.tmplPolyfill( template );
-		}
-
 		// Do we need to clean up?
 		elm[ componentName ] = elm[ componentName ] || [];
 		i_len = elm[ componentName ].length;
-		if ( settings.alwaysStartFresh && i_len ) {
+		if ( i_len && ( settings.alwaysStartFresh || elm.hasAttribute( "data-force-start-fresh" ) ) ) {
+			elm.removeAttribute( "data-force-start-fresh" );
+
+			console.log( "Cleaning UP applyTemplate" );
 
 			for (i = i_len ; i !== 0; i-- ) {
 				i_cache = elm[ componentName ][ i - 1 ];
@@ -270,6 +310,45 @@ var componentName = "wb-data-json",
 			elm[ componentName ] =  [];
 			//elm[ wb
 		}
+
+		if ( !template ) {
+			return;
+		}
+
+		// Needed when executing sub-template that wasn't polyfill, like in IE11
+		if ( !template.content ) {
+			wb.tmplPolyfill( template );
+		}
+
+		// Are we extending from a baseline dataset passed through setting
+		if ( data ) {
+
+			// Determine if the response is an array
+			isArrayResponse = Array.isArray( data );
+
+			// Ensure the response is an independent clone
+			if ( isArrayResponse ) {
+				data = $.extend( true, [], data );
+			} else {
+				data = $.extend( true, {}, data );
+			}
+
+			if ( typeof content === "undefined" ) {
+				content = data;
+			} else if ( Array.isArray( content ) === isArrayResponse ) {
+
+				if ( isArrayResponse) {
+					content = data.concat( content );
+				} else {
+					content = $.extend( {}, content, data );
+				}
+
+			} else {
+				console.error( elm );
+				console.error( "Existing response incompatible with static data (array vs object)" );
+			}
+		}
+
 
 		// Execute the mapping/iteration process
 		if ( !settings.streamline ) {
@@ -684,6 +763,17 @@ var componentName = "wb-data-json",
 
 			upstreamClone = clone; // Keep reference of the top clone
 
+			// if ( !template ) {
+			//	template = elm.querySelector( mappingConfig.template );
+			//}
+
+			console.log( "Process Mapping" )
+			console.log( clone )
+			console.log( template )
+			console.log( elm )
+			console.log( mappingConfig )
+
+
 			clone = template.content.cloneNode( true );
 
 			// Ensure we don't recreated it if during a subsequent iteration
@@ -803,12 +893,16 @@ var componentName = "wb-data-json",
 
 				if ( !mappingConfig.append ) {
 					template.parentNode.insertBefore( clone, template );
+					clone = template.previousElementSibling;
 				} else {
 					template.parentNode.appendChild( clone );
+					clone = template.parentNode.lastElementChild;
 				}
 			} else {
 				upstreamClone.appendChild( clone );
+				clone = upstreamClone.lastElementChild;
 			}
+
 
 			elm[ componentName ] = elm[ componentName ] || [];
 			elm[ componentName ].push( clone );
@@ -1001,8 +1095,47 @@ var componentName = "wb-data-json",
 	};
 
 $document.on( "json-failed.wb", selector, function( event ) {
+
+	console.log( "FAILLING - datajson" );
+	console.log( event );
+
+	var elm = event.currentTarget,
+			$elm = $( elm ),
+			lstCall = $elm.data( dataQueue ),
+			fetchObj = event.fetch,
+			JSONresponse = event.fetch.response,
+			itmSettings = lstCall[ fetchObj.refId ],
+			failSettings = itmSettings.fail,
+			isArrayResponse,
+			data;
+
+	// Do an action, if configured defined
+
+
+	itmSettings = lstCall[ fetchObj.refId ];
+
+	// Do this data JSON contains special case for on failing?
+	if ( failSettings ) {
+
+		isArrayResponse = failSettings.data && Array.isArray( failSettings.data );
+
+		failSettings.streamline = failSettings.streamline || ( isArrayResponse ? false : true );
+		failSettings.alwaysStartFresh = failSettings.alwaysStartFresh || true;
+
+		setTimeout( function() {
+			// A remove and a set can not happen during the same "run"
+			elm.setAttribute( "data-force-start-fresh", "" );
+		}, 1 );
+		//elm.dataset.forceStartFresh = "true";
+
+		applyTemplate( elm, failSettings, data );
+
+	}
+
+	console.log( itmSettings );
+
 	console.info( event.currentTarget );
-	throw "Bad JSON Fetched from url in " + componentName;
+	console.error( "Bad JSON Fetched from url in " + componentName );
 } );
 
 // Load template polyfill

@@ -25,6 +25,7 @@ var componentName = "wb-jsonmanager",
 	datasetCache = {},
 	datasetCacheSettings = {},
 	dsDelayed = {},
+	dsRefManager = {},
 	dsPostponePatches = {},
 	dsFetching = {},
 	dsFetchIsArray = {},
@@ -276,7 +277,8 @@ var componentName = "wb-jsonmanager",
 			ops, opsArray, opsRoot,
 			i, i_len, i_cache,
 			url, urlActual, dsName,
-			fetchOpts = { };
+			fetchOpts = { },
+			fetchOptsArray = [];
 
 		if ( elm ) {
 			$elm = $( elm );
@@ -330,12 +332,14 @@ var componentName = "wb-jsonmanager",
 
 					url = elmData.url;
 					dsFetching[ dsName ] = {};
+					dsRefManager[ dsName ] = elm;
 
 					if ( url ) {
 
 						url = typeof url === "string" ? [ url ] : url;
 						i_len = url.length;
 
+						// Prepare the fetching config + dataset initialization
 						for ( i = 0; i !== i_len; i++ ) {
 
 							urlActual = url[ i ];
@@ -360,6 +364,14 @@ var componentName = "wb-jsonmanager",
 							// Request URL alias
 							fetchOpts.alias = urlActual.alias || wb.getId();
 							dsFetching[ dsName ][ fetchOpts.alias ] = false;
+
+							fetchOptsArray.push( fetchOpts );
+						}
+
+						// Fetch the urls
+						for ( i = 0; i !== i_len; i++ ) {
+
+							fetchOpts = fetchOptsArray[ i ];
 
 							// Fetch the JSON
 							if ( fetchOpts.url ) {
@@ -706,11 +718,49 @@ if ( wb.ie ) {
 
 $document.on( "json-failed.wb", selector, function( event ) {
 	var elm = event.target,
-		$elm;
+		$elm,
+		fetchedOpts = event.fetch.fetchedOpts,
+		settings, dsName,
+		i, i_len, i_cache, backlog;
+
+	console.error( elm );
+	console.log( event );
+	console.error( "Bad JSON fetch for the JSON manager" );
 
 	if ( elm === event.currentTarget ) {
 		$elm = $( elm );
 		$elm.addClass( jsonFailedClass );
+
+		settings = wb.getData( $elm, componentName );
+
+		dsName = settings.name;
+
+		// Let invalidate the graph represented by the alias
+		console.log( dsFetching );
+		if ( !dsFetching[ dsName ] ) {
+			dsFetching[ dsName ] = {};
+		}
+		dsFetching[ dsName ][ fetchedOpts.alias ] = false;
+
+		dsName = "[" + dsName + "]"; // Dataset unique name
+
+		// Notify the binded data-json of the failure and return the current compiled data
+		if ( dsDelayed[ dsName ] ) {
+			backlog = dsDelayed[ dsName ];
+			i_len = backlog.length;
+			for ( i = 0; i !== i_len; i += 1 ) {
+				i_cache = backlog[ i ];
+				$( "#" + i_cache.callerId ).trigger( {
+					type: "json-failed.wb",
+					fetch: {
+						response: dsFetchMerged[ dsName ] || {},
+						status: "400",
+						refId: i_cache.refId,
+						xhr: null
+					}
+				}, this );
+			}
+		}
 
 		// Identify that initialization has completed
 		wb.ready( $elm, componentName );
@@ -732,6 +782,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		patches, filterTrueness, filterFaslseness, filterPath, extractor;
 
 	if ( elm === event.currentTarget ) {
+
 		settings = wb.getData( $elm, componentName );
 
 		// Is the fetched JSON need to be wrap in another plain object
@@ -775,12 +826,6 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			fetchedOpts = { alias: componentName }
 		}
 
-		console.log( dsName );
-		console.log( fetchedOpts );
-		console.log( event );
-		console.log( dsFetching[ dsName ] );
-		console.log( dsFetching[ dsName ][ fetchedOpts.alias ] );
-
 		dsFetching[ dsName ][ fetchedOpts.alias ] = JSONresponse;
 
 		if ( !dsFetchMerged[ dsName ] ) {
@@ -791,23 +836,12 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			dsFetchMerged[ dsName ] = $.extend( dsFetchMerged[ dsName ], JSONresponse );
 		}
 
-		// Quit and wait for the next fetch
-		//if ( isReloading ) {
-			// Reloading mode
-
-			// Need to identify each URL being fetch
-		//}
-
 		// Ensure that all URL has been loaded before to proceed.
 		for ( let ds in dsFetching[ dsName ] ) {
-			if ( !ds ) {
+			if ( !dsFetching[ dsName ][ ds ] ) {
 				return;
 			}
 		}
-
-		//if ( !isReloading && dsFetching[ dsName ] ) {
-		//	return;
-		//}
 
 		JSONresponse = dsFetchMerged[ dsName ];
 
@@ -860,6 +894,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 
 		if ( isReloading ) {
 			elm.removeAttribute( reloadFlag );
+			elm.classList.remove( "jsonfail" );
 			i_cache = dsPostponePatches[ dsName ];
 			if ( i_cache ) {
 				$elm.trigger( i_cache );
@@ -982,7 +1017,8 @@ $document.on( postponeEvent, function( event ) {
 		callerId = jsonPostpone.callerId,
 		refId = jsonPostpone.refId,
 		selector = jsonPostpone.selector,
-		resultSet;
+		resultSet,
+		elm;
 
 	if ( !dsDelayed[ dsName ] ) {
 		dsDelayed[ dsName ] = [ ];
@@ -994,6 +1030,21 @@ $document.on( postponeEvent, function( event ) {
 		"refId": refId,
 		"selector": selector
 	} );
+
+	// When we in "FAIL" mode.
+	elm = dsRefManager[ dsName ];
+	if ( elm && elm.classList && elm.classList.contains( jsonFailedClass ) ) {
+		$( "#" + i_cache.callerId ).trigger( {
+			type: "json-failed.wb",
+			fetch: {
+				response: dsFetchMerged[ dsName ] || {},
+				status: "400",
+				refId: i_cache.refId,
+				xhr: null
+			}
+		}, this );
+		return;
+	}
 
 	// Send the data if the dataset is ready?
 	if ( datasetCache[ dsName ] && !datasetCacheSettings[ dsName ].wait ) {

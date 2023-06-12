@@ -1,7 +1,7 @@
 {
   "@context": "https://wet-boew.github.io/vocab/context/2023/conformance-report-en.json-ld",
 
-  "@type": "acr:ConformanceReport",
+  "@type": "acr:ConformanceReport"
 
   "earl:subject": {
     "@id": "_:subject",

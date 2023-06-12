@@ -183,7 +183,10 @@ window.Modernizr = function(e, t, n) {
 
                 if (!d && o(c.readyState) && (w.r = d = 1, !m && u(), c.onload = c.onreadystatechange = null, t)) {
                     "img" != e && h(function() {
-                        b.removeChild(c)
+
+						if ( b && c ) {
+							b.removeChild(c)
+						}
 						// console.log( "Rem" );
 						// console.log( c );
                     }, 50);

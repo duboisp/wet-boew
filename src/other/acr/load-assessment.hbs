@@ -16,21 +16,35 @@
 <h2>1. Page that load JSON via file upload and then initiate a fetch event.</h2>
 
 
+<!-- The button work like the action manager JSON load, but do a popup file upload -->
 <button type="button" id="mybutton">Upload and load</button>
 
-<!--
-<p>Upload an JSON: <input id="yep" type="file" accept=""></p>
--->
+<!-- Need to implement a mapping on failure -->
 
+
+<div data-special data-wb-json='{
+	"url": "#[a11y]/",
+	"fail": {
+		"data": { "message": "The select file for upload is an invalid JSON file, please select a valid JSON file." },
+		"template": "template",
+		"mapping": [
+			{
+				"selector": "p",
+				"value": "/message"
+			}
+		]
+	}
+}'>
+	<template>
+		<div class="alert alert-danger">
+			<p></p>
+		</div>
+	</template>
+</div>
 
 
 <h2>2. Show info from the report.</h2>
 
-
-
-<div id="setdata" data-wb-jsonmanager='{
-	"name": "uploaded"
-}'></div>
 
 <nav>
 	<h2>On this page</h2>
@@ -39,7 +53,6 @@
 		<li><a href="#acr">Assessement details</a></li>
 	</ul>
 </nav>
-
 <div id="ds-a11y" data-wb-jsonmanager='{
 	"url": [
 		"../acr/demo-wcag21/labels.json",
@@ -356,3 +369,4 @@
 	</table>
 </template>
 <p>Note: Based on the following ruleset: <code data-json-replace="#[a11y]/dct:source">Not available</code></p>
+
