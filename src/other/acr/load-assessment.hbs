@@ -190,6 +190,7 @@
 		"source": "#tmpl-result",
 		"clearOnLoad": true,
 		"mapping": [
+			{ "selector": "[testitm]", "value": "/iterator:index", "attr": "index" },
 			{ "selector": "[data-label]", "value": "/earl:test" },
 			{ "selector": "[data-outcome]", "value": "/earl:outcome" },
 			{ "selector": "[data-applicability]", "value": "/earl:subject/dct:description" },
@@ -321,7 +322,13 @@
 <template id="tmpl-result">
 	<table>
 		<tr>
-			<th data-label></th>
+			<th><button class="btn btn-default" data-index data-do-action="{ }">
+					<wb-config component="do-action">
+						<wb-config testitm action="saveitem" index></wb-config>
+					</wb-config>
+
+					Edit this SC
+				</button> <span data-label></span></th>
 			<td><span data-outcome></span></td>
 			<td>
 				<p><strong>Applicability</strong>: <span data-applicability>As defined</span></p>
