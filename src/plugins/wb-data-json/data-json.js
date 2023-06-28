@@ -305,6 +305,24 @@ var componentName = "wb-data-json",
 		}
 		i_len = content.length;
 
+		// Get the template to be iterated.
+		if ( !useClone ) {
+			if ( mappingConfig.source ) {
+				template = document.querySelector( mappingConfig.source );
+			} else if ( mappingConfig.template ) {
+				template = elm.querySelector( mappingConfig.template );
+			} else {
+				template = elm.querySelectorAll( ":scope > template" );
+				if ( template.length === 1 || template[ 0 ].attributes.length === 0 ) {
+					// Only when there is one choice or take the first one only if only there is no attribute set on the element
+					template = template[ 0 ];
+				} else {
+					// let the mapping instructions to define which template to use
+					template = false;
+				}
+			}
+		}
+
 		// Iterate the data array
 		for ( i = 0; i < i_len; i += 1 ) {
 			i_cache = content[ i ];
@@ -320,24 +338,6 @@ var componentName = "wb-data-json",
 				clone = useClone;
 			}
 			if ( !useClone ) {
-
-				if ( mappingConfig.source ) {
-					template = document.querySelector( mappingConfig.source );
-				} else if ( mappingConfig.template ) {
-					template = elm.querySelector( mappingConfig.template );
-				} else {
-					template = elm.querySelectorAll( "template" );
-
-					if ( template.length === 1 || template[ 0 ].attributes.length === 0 ) {
-
-						// Only when there is one choice or take the first one only if only there is no attribute set on the element
-						template = template[ 0 ];
-					} else {
-
-						// let the mapping instructions to define which template to use
-						template = false;
-					}
-				}
 
 				// Create a clone if one unique template is found
 				if ( template && !mappingConfig.tobeclone ) {
@@ -385,8 +385,14 @@ var componentName = "wb-data-json",
 		}
 
 		// Get the value to be tested
-		rawValue = getRawValue( content, mappingConfig.assess || mappingConfig.value );
-		value = getValue( rawValue );
+		try {
+			rawValue = getRawValue( content, mappingConfig.assess || mappingConfig.value );
+			value = getValue( rawValue );
+		} catch ( ex ) {
+			// If this is an error, the path probably don't exist
+			rawValue = undefined;
+			value = undefined;
+		}
 
 		// Get the function to use
 		if ( !functionForTest[ mappingConfig.test ] ) {
@@ -534,10 +540,8 @@ var componentName = "wb-data-json",
 					guestType = "rdfs:Container";
 				} else {
 
-					// Log an error and skip
-					console.error( "Unable to guest the @type" );
-					console.error( value );
-					return false;
+					// The type is a generic Object
+					guestType = "rdfs:Resource";
 				}
 			}
 
@@ -644,7 +648,7 @@ var componentName = "wb-data-json",
 		}
 
 		// Check if there is some mapping configuration
-		if ( !mapping && !queryAll ) {
+		if ( !mapping && !queryAll && !mappingConfig.template ) {
 			return;
 		}
 
@@ -738,7 +742,12 @@ var componentName = "wb-data-json",
 			}
 
 			// Get the value to be set
-			cached_value = getRawValue( content, j_cache );
+			try {
+				cached_value = getRawValue( content, j_cache );
+			} catch ( ex ) {
+				// The path don't exist, let continue to the next mapping item
+				continue;
+			}
 
 			// Go to the next mapping if the value of JSON node don't exist to ensure we keep the default text set in the template, but move ahead if empty or null
 			if ( typeof cached_value === "undefined" ) {
@@ -754,13 +763,44 @@ var componentName = "wb-data-json",
 			} else if ( j_cache.mapping || j_cache.queryall ) {
 
 				// Map the inner mapping
-				processMapping( template || elm, cached_node, cached_value, j_cache );
+				try {
+					processMapping( template || elm, cached_node, cached_value, j_cache );
+				} catch ( ex ) {
+					if ( ex === "cached_node: null" && typeof cached_value === "object" ) {
+						console.log( "Let's try to iterate the cached_value because the node was not found when processMapping" );
+						// If it fail, let try to iterate if the cached_value object
+						dataIterator( cached_node, cached_value, j_cache );
+					}
+				};
+			} else if ( cached_value[ "@value" ] && cached_value[ "@type" ] && $.isArray( cached_value[ "@type" ] ) && cached_value[ "@type" ].indexOf( "@id" ) !== -1 ) {
+				// Is it an import ??
+				console.log( "We have an IMPORT instruction.....");
+				console.log( cached_value );
+				if ( cached_value[ "@type" ].indexOf( "rdf:HTML" ) ) {
+					console.log( "The import is in the HTML form" );
+					// Add data-ajax on the element and let it trigger
+					//$( element ).attr( "" )
+					/*
+					 <elm data-wb-ajax='{
+						"url": "samples/sample-1.html",
+						"type": "replace",
+						"encode": true
+					}'>
+					*/
+					cached_node.dataset.wbAjax = JSON.stringify( {
+						url: cached_value[ "@value" ],
+						type: "replace",
+						encode: j_cache.encode
+					} );
+				}
+			} else if ( !cached_node && typeof cached_value === "object" ) {
+				throw "cached_node: null";
 			} else {
 
 				cached_value = getValue( cached_value );
 
 				// Serialize the value if it is an JS object
-				if ( typeof	cached_value === "object" ) {
+				if ( typeof cached_value === "object" ) {
 					cached_value = JSON.stringify( cached_value );
 				}
 
@@ -838,6 +878,11 @@ var componentName = "wb-data-json",
 		if ( mappingConfig.placeholder ) {
 			placeholderText = element.textContent || "";
 			value = placeholderText.replace( mappingConfig.placeholder, value );
+		}
+
+		if ( !element ) {
+			console.log( "Element is null" );
+			console.log( element );
 		}
 
 		// Set the value to the node

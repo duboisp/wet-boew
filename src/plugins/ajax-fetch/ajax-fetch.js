@@ -81,6 +81,8 @@ $document.on( "ajax-fetch.wb", function( event ) {
 				fetchData.pointer = $( "<div id='" + wb.getId() + "' data-type='" + responseType + "'></div>" )
 					.append( responseType === "string" ? response : "" );
 
+				fetchData.plainResponse = response; // But I think it is also available through xhr
+
 				response = $( response );
 
 				fetchData.response = response;

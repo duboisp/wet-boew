@@ -178,11 +178,17 @@ var componentName = "wb-data-ajax",
 		var $elm = $( elm ),
 			ajxInfo = getAjxInfo( elm ),
 			ajaxType = ajxInfo.type,
-			content, jQueryCaching;
+			content, jQueryCaching,
+			settings = wb.getData( $( elm ), shortName ) || {};
 
 		// ajax-fetched event
 		content = fetchObj.response;
 		if ( content &&  content.length > 0 ) {
+
+			// If the fetched content need to be encoded
+			if ( settings.encode ) {
+				content = fetchObj.xhr.responseText.replaceAll( "<", "&lt;" );
+			}
 
 			//Prevents the force caching of nested resources
 			jQueryCaching = jQuery.ajaxSettings.cache;

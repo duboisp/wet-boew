@@ -168,20 +168,61 @@ var componentName = "wb-jsonmanager",
 						ref = this.ref,
 						mainTree = this.mainTree,
 						path = this.path,
-						newVal;
+						newVal,
+						refObject,
+						refIsArray,
+						i, i_len, i_cache;
 
 					if ( val ) {
+
+						refObject = jsonpointer.get( mainTree, ref );
+						refIsArray = $.isArray( refObject );
+
 						if ( Array.isArray( val ) ) {
-							val.forEach( ( item, i ) => {
-								item = item.replaceAll( "~", "~0" ).replaceAll( "/", "~1" ); // Escape slashed and tilde in val when the key is an IRI
-								newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + item ) : jsonpointer.get( tree, ref + "/" + item );
+							val.forEach( ( item, itmID ) => {
+								newVal = undefined; // Reinit
+								if ( !refIsArray ) {
+									item = item.replaceAll( "~", "~0" ).replaceAll( "/", "~1" ); // Escape slashed and tilde in val when the key is an IRI for JSON pointer compatibility
+									newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + item ) : jsonpointer.get( tree, ref + "/" + item );
+								} else {
+									// Iterate until we found a corresponding value in the property "@id"
+									i_len = refObject.length;
+									for ( i = 0; i !== i_len ; i ++ ) {
+										i_cache = refObject[ i ];
+										if ( i_cache[ "@id" ] && i_cache[ "@id" ] === item ) {
+											newVal = i_cache;
+											break;
+										}
+									}
+									if ( !newVal ) {
+										console.error( "wb-swap: Unable to find a corresponding value for: " + val + " in reference " + ref );
+										return;
+									}
+								}
 								if ( newVal ) {
-									applyPatch( tree, "replace", path + "/" + i, newVal );
+									applyPatch( tree, "replace", path + "/" + itmID, newVal );
 								}
 							} );
 						} else if ( typeof val === "string" ) {
-							val = val.replaceAll( "~", "~0" ).replaceAll( "/", "~1" ); // Escape slashed and tilde in val when the key is an IRI
-							newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + val ) : jsonpointer.get( tree, ref + "/" + val );
+							// If the ref is an array?
+							if ( !refIsArray ) {
+								val = val.replaceAll( "~", "~0" ).replaceAll( "/", "~1" ); // Escape slashed and tilde in val when the key is an IRI for JSON pointer compatibility
+								newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + val ) : jsonpointer.get( tree, ref + "/" + val );
+							} else {
+								// Iterate until we found a corresponding value in the property "@id"
+								i_len = refObject.length;
+								for ( i = 0; i !== i_len ; i ++ ) {
+									i_cache = refObject[ i ];
+									if ( i_cache[ "@id" ] && i_cache[ "@id" ] === val ) {
+										newVal = i_cache;
+										break;
+									}
+								}
+								if ( !newVal ) {
+									console.error( "wb-swap: Unable to find a corresponding value for: " + val + " in reference " + ref );
+									return;
+								}
+							}
 							if ( newVal ) {
 								applyPatch( tree, "replace", path, newVal );
 							}
