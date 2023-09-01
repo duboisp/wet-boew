@@ -3,19 +3,50 @@
 
   "@type": "acr:ConformanceReport",
 
-  "earl:subject": {
-    "@id": "_:subject",
-    "dct:references": "https://wet-boew.github.io/wet-boew/demos/overlay/overlay-en.html",
-    "@type": [
-      "earl:TestSubject",
-      "schema:WebPage"
-    ],
-    "dct:description": "The main content of the page which contains the overlay plugin HTML code and its transformation",
-    "earl:pointer": {
-      "@type": "oa:CssSelector",
-      "@value": "main"
-    }
-  },
+  "earl:subject": [
+	{
+	  "@id": "_:subject",
+	  "dct:references": [
+		"https://wet-boew.github.io/wet-boew/demos/overlay/overlay-en.html",
+		"https://wet-boew.github.io/wet-boew/demos/overlay/overlay-en.html?wbdisable=true"
+	  ],
+	  "@type": [
+		"earl:TestSubject",
+		"schema:WebPage"
+	  ],
+	  "dct:description": "The main content of the page which contains the overlay plugin HTML code and its transformation",
+	  "earl:pointer": {
+		"@type": "oa:CssSelector",
+		"@value": "main"
+	  },
+	  "oa:hasState": [
+		{
+		  "@type": "acr:MediaQueryList",
+		  "acr:mediaQuery": "(max-width: 479px)"
+		},
+		{
+		  "@type": "acr:MediaQueryList",
+		  "acr:mediaQuery": "(min-width: 480px) and (max-width: 767px)"
+		},
+		{
+		  "@type": "acr:MediaQueryList",
+		  "acr:mediaQuery": "(min-width: 768px) and (max-width: 991px)"
+		},
+		{
+		  "@type": "acr:MediaQueryList",
+		  "acr:mediaQuery": "(min-width: 992px) and (max-width: 1199px)"
+		},
+		{
+		  "@type": "acr:MediaQueryList",
+		  "acr:mediaQuery": "(min-width: 1200px) and (max-width: 1599px)"
+		},
+		{
+		  "@type": "acr:MediaQueryList",
+		  "acr:mediaQuery": "(min-width: 1600px)"
+		}
+	  ]
+	}
+  ],
 
   "earl:assertedBy": {
     "@id": "_:acrAssertor",
