@@ -242,16 +242,28 @@ $document.on( "timerpoke.wb " + initEvent + " " + updateEvent + " ajax-fetched.w
 
 // Re-run WET for elements that have just been loaded if WET is already done initializing
 $document.on( contentUpdatedEvent, function( event ) {
-	if ( !wb.isDisabled ) {
-		let updtElm = event.currentTarget;
 
-		$( updtElm )
+	// Push the exec for another time
+	clearTimeout( delayMe );
+	delayMe = setTimeout( processContentUpdatedEvent, 1000 );
+
+} );
+
+var delayMe;
+
+function processContentUpdatedEvent() {
+
+	if ( !wb.isDisabled ) {
+
+		//console.log( updtElm ); // it output HTMLDocument, so the whole docs is parsed and parsed for wb-init...
+
+		$( document )
 			.find( wb.allSelectors )
+			.filter( ":not( .wb-init )" )
 			.addClass( "wb-init" )
-			.filter( ":not(#" + updtElm.id + " .wb-init .wb-init)" )
 			.trigger( "timerpoke.wb" );
 	}
-} );
+}
 
 // Add the timerpoke to initialize the plugin
 for ( s = 0; s !== selectorsLength; s += 1 ) {
