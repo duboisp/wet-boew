@@ -10,7 +10,7 @@
 wb.getData = function( element, dataName ) {
 	var elm = !element.jquery ? element : element[ 0 ],
 		dataAttr = elm.getAttribute( "data-" + dataName ),
-		dataObj;
+		dataObj = {};
 
 	if ( dataAttr ) {
 		try {
@@ -22,8 +22,37 @@ wb.getData = function( element, dataName ) {
 		}
 	}
 
+	// Check if there is web-component wb-config?
+
+
 	return dataObj;
 };
+
+class WbConfig extends HTMLTemplateElement {
+	// <wb-config hello=world>Hello you</wb-config>
+	static observedAttributes = ["disabled"];
+
+	constructor() {
+		super();
+	}
+
+	connectedCallback() {
+
+		console.log( "connectedCallBack" );
+		this.hidden = true; // And also use CSS to hide it.
+	}
+
+	disconnectedCallback() {
+		console.log( "disconnectedCallBack" );
+	}
+
+	attributeChangedCallback(name, oldValue, newValue) {
+		console.log( "attribute change \"" + name + "\" from: " + oldValue + " TO: " + newValue );
+   }
+
+}
+
+customElements.define("wb-config", WbConfig, { extends: "template" } );
 
 /*
  * Initiate an in-browser download from a blob
