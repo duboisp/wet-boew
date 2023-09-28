@@ -7,10 +7,11 @@
  */
 ( function( $, wb ) {
 
-wb.getData = function( element, dataName ) {
+wb.getData = function( element, dataName, parseOptions ) {
 	var elm = !element.jquery ? element : element[ 0 ],
 		dataAttr = elm.getAttribute( "data-" + dataName ),
-		dataObj = {};
+		dataObj = {},
+		configElm, dataConfig;
 
 	if ( dataAttr ) {
 		try {
@@ -18,19 +19,216 @@ wb.getData = function( element, dataName ) {
 			$.data( elm, dataName, dataObj );
 		} catch ( error ) {
 			console.info( elm );
-			$.error( "Bad JSON array in data-" + dataName + " attribute" );
+			console.error( "Bad JSON array in data-" + dataName + " attribute" );
 		}
 	}
 
-	// Check if there is web-component wb-config?
+	// Check if there is web-component wb-config
+	configElm = elm.querySelector( ":scope wb-config[wb-plugin=" + dataName + "]" ) || document.getElementById( elm.getAttribute( "data-" + dataName + "-config" ) );
 
+	if ( configElm ) {
+
+		// Add a flag this is the root element
+		configElm.setAttribute( "wb-root", "true" );
+
+		// Get the setting from wb-config element
+		dataConfig = getWbConfig( configElm, parseOptions ).parsed;
+
+		if ( !dataAttr ) {
+			dataObj = dataConfig;
+		} else if ( Array.isArray( dataConfig ) && Array.isArray( dataObj ) ) {
+			dataObj = dataObj.concat( dataConfig );
+		} else if ( !Array.isArray( dataConfig ) && !Array.isArray( dataObj ) ) {
+			dataObj = $.extend( true, {}, dataObj, dataConfig );
+		} else {
+			console.info( elm );
+			console.error( "Incompatible setting, array and object can not be merged" );
+
+			// Let's use the dataConfig
+			dataObj = dataConfig;
+		}
+	}
 
 	return dataObj;
 };
 
+
+function getWbConfig( elm, parseOptions ) {
+
+	var context = {},
+		configuration = {},
+		i, i_len = elm.attributes.length,
+		attr, attrName, attrValue,
+		innerConfig = elm.querySelectorAll( ":scope > wb-config" ),
+		innerConfigArray = [],
+		configParsed,
+		expectedBooleanValue, expectedNumberValue;
+
+	// Validate parse Options
+	parseOptions = parseOptions || {};
+	expectedBooleanValue = parseOptions.expectBool || [];
+	expectedNumberValue = parseOptions.expectNb || [];
+
+	/*
+	var expectedBooleanValue = [
+			"hidden",
+			"oh"
+		],
+		expectedNumberValue = [
+			"number"
+		];
+	*/
+
+	// Get all attribute and triage aside the contextual ones prefixed with "wb-"
+	for ( i = 0; i !== i_len; i++ ) {
+		attr = elm.attributes[ i ];
+		attrName = attr.nodeName;
+		attrValue = attr.value;
+
+		// Is it a contextual setting
+		if ( attrName.startsWith( "wb-" ) ) {
+			context[ attrName.substring( 3 ) ] = attrValue;
+			continue;
+		}
+
+		// Exclude any data-* attribute
+		if ( attrName.startsWith( "data-" ) ) {
+			continue;
+		}
+
+		configuration[ attrName ] = parseConfigValue( attrName, attrValue, parseOptions );
+	}
+
+
+	// Is there any wb-config children?
+	i_len = innerConfig.length;
+	for ( i = 0; i !== i_len; i++ ) {
+		configParsed = getWbConfig( innerConfig[ i ], parseOptions );
+
+		if ( configParsed.context.prop ) {
+			configuration[ configParsed.context.prop ] = configParsed.parsed;
+		} else {
+			innerConfigArray.push( configParsed.parsed );
+		}
+	}
+
+	// Define the true value of the configuration
+	if ( !innerConfig.length && !configuration.length && ( context.prop || context.value ) ) {
+
+		// Check if the data type enforced for textContent are JSON
+		if ( context.type === "json" && !context.value ) {
+			context.value = elm.textContent;
+		}
+
+		// Let's figure the value
+		if ( context.value ) {
+			try {
+				configuration = JSON.parse( context.value );
+			} catch ( error ) {
+				console.info( elm );
+				console.error( "Bad JSON in wb-value attribute" );
+			}
+		} else {
+
+			// Map the text content value
+			if ( context.type === "bool" ) {
+				configuration = parseConfigValue( context.prop, elm.textContent, { expectBool: [ context.prop ] } );
+			} else if ( context.type === "number" ) {
+				configuration = parseConfigValue( context.prop, elm.textContent, { expectNb: [ context.prop ] } );
+			} else {
+				configuration = parseConfigValue( context.prop, elm.textContent, parseOptions );
+			}
+		}
+
+	} else if ( innerConfigArray.length && ( !Object.keys( configuration ).length || elm.hasAttribute( "wb-root" ) ) ) {
+
+		// The value are an array of object
+		configuration = innerConfigArray;
+	} else if ( innerConfigArray.length && Object.keys( configuration ).length && !elm.hasAttribute( "wb-root" ) ) {
+
+		// We can't mix key/value items with anonymous object
+		console.error( elm );
+		console.error( "Error in the configuration, Unnamed property or incompatible config type where array must not be intermixed with key/value" );
+	}
+
+	/*console.log( "ELSE..." );
+	console.log( elm );
+	console.log( context );
+	console.log( configuration );
+	console.log( innerConfigArray );*/
+
+	return {
+		context: context,
+		parsed: configuration
+	}
+}
+
+function parseConfigValue( propName, propValue, options ) {
+
+	var expectedBooleanValue = options.expectBool || [],
+		expectedNumberValue = options.expectNb || [];
+
+	// Adjust the value based on plugin configuration expectation
+	if ( expectedBooleanValue.indexOf( propName ) !== -1 ) {
+		switch ( propValue ) {
+
+		case "false":
+		case "0":
+			propValue = false;
+			break;
+
+		case "true":
+		default:
+			propValue = true;
+			break;
+		}
+	}
+
+	if ( expectedNumberValue.indexOf( propName ) !== -1 ) {
+		propValue = Number.parseFloat( propValue );
+	}
+
+	return propValue;
+}
+
+/*
+
+<wb-config wb-plugin="data-json" streamlined>
+	<wb-config wb-config="mapping">
+		<wb-config selector="dt" value="/name"></wb-config>
+		<wb-config selector="dd">
+			<wb-config wb-prop="value" wb-text>/prop</wb-config> <!-- Value set as text content -->
+		</wb-config>
+	</wb-config>
+</wb-config>
+{
+	streamlined: true,
+	mapping: [
+		{ selector: "dt", value: "/name" },
+		{ selector: "dd", value: "/prop" }
+	]
+}
+
+<wb-config wb-plugin="data-json" streamlined>
+	<wb-config wb-config="mapping">
+		<wb-config selector="dt" value="/name"></wb-config>
+		<wb-config selector="dd">
+			<wb-config wb-config="value">/prop</wb-config> <!-- Do value parsing -->
+		</wb-config>
+	</wb-config>
+</wb-config>
+{
+	streamlined: true,
+	mapping: [
+		{ selector: "dt", value: "/name" },
+		{ selector: "dd", value: "/prop" }
+	]
+}
+*/
+
 class WbConfig extends HTMLTemplateElement {
 	// <wb-config hello=world>Hello you</wb-config>
-	static observedAttributes = ["disabled"];
+	/*static observedAttributes = ["disabled"];
 
 	constructor() {
 		super();
@@ -38,7 +236,7 @@ class WbConfig extends HTMLTemplateElement {
 
 	connectedCallback() {
 
-		console.log( "connectedCallBack" );
+		//console.log( "connectedCallBack" );
 		this.hidden = true; // And also use CSS to hide it.
 	}
 
@@ -48,11 +246,12 @@ class WbConfig extends HTMLTemplateElement {
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		console.log( "attribute change \"" + name + "\" from: " + oldValue + " TO: " + newValue );
-   }
+   }*/
 
 }
 
 customElements.define("wb-config", WbConfig, { extends: "template" } );
+
 
 /*
  * Initiate an in-browser download from a blob
