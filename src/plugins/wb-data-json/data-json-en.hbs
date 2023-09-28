@@ -75,25 +75,28 @@
 		}
 	]'>This is a paragraph.</p>
 
-<details>
-	<summary>Source code</summary>
-	<pre><code>&lt;p&gt;My product ABC cost &lt;a data-json-replacewith=&quot;demo/data-en.json#/fees/ABC&quot; href=&quot;#&quot;&gt;(consult our fees schedule)&lt;/a&gt;&lt;/p&gt;
 
-&lt;p class=&quot;mrgn-tp-md&quot;&gt;Your are currently viewing the product &amp;quot;&lt;span data-json-replace=&quot;demo/data-en.json#/product&quot;&gt;Unknown&lt;/span&gt;&amp;quot;&lt;/p&gt;
+<p class="mrgn-tp-md" data-wb-json>
+	<wb-config wb-plugin="wb-json">
+		<wb-config url="demo/data-en.json#/product" type="replace"></wb-config>
+		<wb-config url="demo/data-en.json#/status">
+			<wb-config wb-prop="type">addclass</wb-config>
+			<wb-config wb-prop="number">123.456</wb-config>
+			<wb-config wb-prop="tpnumber" wb-type="number">123.456</wb-config>
+		</wb-config>
+	</wb-config>
+	This is a paragraph.</p>
 
-&lt;p class=&quot;mrgn-tp-md&quot; data-wb-json='
-	[
-		{
-			&quot;url&quot;: &quot;demo/data-en.json#/product&quot;,
-			&quot;type&quot;: &quot;replace&quot;
-		},
-		{
-			&quot;url&quot;: &quot;demo/data-en.json#/status&quot;,
-			&quot;type&quot;: &quot;addclass&quot;
-		}
-	]'&gt;This is a paragraph.&lt;/p&gt;</code></pre>
-</details>
 
+<p class="mrgn-tp-md" data-wb-json="" data-wb-json-config="config-data-json">This is a paragraph.</p>
+<wb-config id="config-data-json" wb-plugin="wb-json">
+	<wb-config url="demo/data-en.json#/product" type="replace"></wb-config>
+	<wb-config url="demo/data-en.json#/status">
+		<wb-config wb-prop="type">addclass</wb-config>
+		<wb-config wb-prop="number">123.456</wb-config>
+		<wb-config wb-prop="tpnumber" wb-type="number">123.456</wb-config>
+	</wb-config>
+</wb-config>
 
 <h2>Inserting content...</h2>
 
