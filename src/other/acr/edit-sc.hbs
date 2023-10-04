@@ -1,0 +1,950 @@
+---
+{
+	"title": "Edit Success Criterion - Accessibility Conformance Report Methodology",
+	"language": "en",
+	"category": "Other",
+	"description": "",
+	"tag": "acr",
+	"parentdir": "acr",
+	"altLangPage": "assess-prep-fr.html",
+	"dateModified": "2023-10-10"
+}
+---
+
+<p class=h1>Git reset to: <code>origin/assessment-form2</code></p>
+
+
+<ol>
+	<li>Load from the local storage the dataset</li>
+	<li>Get the ID saved + Load value into the web interface</li>
+	<li>Edit the form</li>
+	<li>Validate the form</li>
+	<li>Save the SC edited information, save it and return to the main page</li>
+	<li>TODO: An edit-sc is only applicable to one "subject", either it is the global one or either it is a specifity of it. That say, this test + all sub-test should be updated to contain the @id of the tested subject</li>
+</ol>
+<form>
+<details>
+	<summary>JSON Manager debug</summary>
+
+	<div data-wb-jsonmanager-proposed='{
+		"url": { "url": "#[uploaded]", load-from: "local-storage | session | data-layer", "load-key": "localStorage KEY", "Select path" },
+		"name": "edit-sc"
+	}'></div>
+
+	<div data-wb-jsonmanager-out='{
+		"url": [ { "url": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json" } ],
+		"name": "full-ds",
+		"debug": true
+	}'>
+	<!-- {
+		"url": [ { "url": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json" } ],
+		"name": "full-ds",
+		"patches": [
+			{ "op": "patches", "path": "/earl:result", "patches": [
+					{ "op": "wb-swap", "path": "/earl:subject", "ref": "/earl:subject" }
+				]
+			}
+		],
+		"debug": true
+	} -->
+	</div>
+
+	<!-- If load from localhost fail, throw a fetch error state
+	<div id="myDataSet" data-wb-jsonmanager='{
+		"load": "local",
+		"name": "edit-sc",
+		"debug": true
+	}'></div>
+	 -->
+
+	<div id="myDataSet" data-wb-jsonmanager='{
+		"url2": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json#/earl:result/0",
+		"url": "demo/workingspace-data.json",
+		"name": "edit-sc",
+		"patches": [
+			{ "op": "wb-swap", "path": "/workspace/earl:test", "ref": "/sc-rulesets", "put": "/sc-rulesets", "comment_value": "_value_ is a selector from where to take the value from the _ref_ which would be replaced at the specified _path_ location" }
+		],
+		"debug": true
+	}'></div>
+
+	<div id="pre-views-layer" data-wb-jsonmanager='{
+		"url": "#[edit-sc]",
+		"name": "pre-views-sc",
+		"patches": [
+			{ "op": "wb-swap", "path": "/workspace/earl:subject", "ref": "/earl:subject" }
+		],
+		"debug": true
+	}'></div>
+
+	<div id="views-layer" data-wb-jsonmanager='{
+		"url": [
+			"#[pre-views-sc]/workspace",
+			"demo-wcag21/labels.json"
+		],
+		"name": "present-sc",
+		"patches": [
+			{ "op": "wb-swap", "path": "/earl:test", "ref": "/labels/earl:TestCriterion/en" },
+			{ "op": "patches", "path": "/earl:result",
+				"patches": [
+					{ "op": "wb-swap", "path": "/earl:test", "ref": "/labels/earl:TestCriterion/en", "put": "/dct:title" }
+				]
+			}
+		],
+		"debug": true
+	}'></div>
+
+</details>
+
+<p data-json-replace="#[present-sc]/earl:mode">earl:test</p>
+
+<dl>
+	<dt>Success criterion</dt>
+	<dd data-json-replace="#[present-sc]/earl:test">earl:test</dd>
+	<dt>Subject</dt>
+	<dd data-json-replace="#[present-sc]/earl:subject/dct:description">dct:references OR dct:title of _:subject</dd>
+</dl>
+
+<div class="row">
+<div class="col-md-4">
+
+<div class="form-group">
+	<label for="f-mode">Testing mode</label>
+	<select id="f-mode" class="form-control" name="/workspace/earl:mode" data-wb-json='{ "url":"#[edit-sc]/workspace/earl:mode", "type": "select" }'>
+		<option value="earl:automatic">Automatic</option>
+		<option value="earl:manual">Manual</option>
+		<option value="earl:semiAuto">Semi-Automatic</option>
+		<option value="earl:undisclosed">Undisclosed</option>
+		<option value="earl:unknownMode">Unknown</option>
+	</select>
+</div>
+
+</div>
+<div class="col-md-4">
+<div class="form-group">
+	<label for="f-severity">Severity</label>
+	<select id="f-severity" class="form-control" name="/workspace/acr:severity" data-wb-json='{ "url":"#[edit-sc]/workspace/acr:severity", "type": "select" }'>
+		<option value="acr:noSeverity">Not specified</option>
+		<option value="acr:forEvaluation">Need to be evaluated</option>
+		<option value="acr:notRelevant">Not relevant to specify severity</option>
+		<option value="acr:critical">Critical</option>
+		<option value="acr:serious">Serious</option>
+		<option value="acr:moderate">Moderate</option>
+		<option value="acr:trivial">Trivial</option>
+	</select>
+</div>
+
+</div>
+<div class="col-md-4">
+<div class="form-group">
+	<label for="f-relevancy">Relevancy</label>
+	<select id="f-relevancy" class="form-control" name="/workspace/acr:relevancy" data-wb-json='{ "url":"#[edit-sc]/workspace/acr:relevancy", "type": "select" }'>
+		<option value="wbv:acr#noRelevancy">Not specified</option>
+		<option value="acr:forEvaluation">Need to be evaluated</option>
+		<option value="acr:notRelevant">Not relevant to specify relevancy</option>
+		<option value="acr:sufficient">Sufficient</option>
+		<option value="acr:advisory">Advisory</option>
+		<option value="acr:statement">Statement</option>
+		<option value="acr:failure">Failure</option>
+		<option value="acr:compatibility">Compatibility</option>
+		<option value="acr:usability">Usability</option>
+		<option value="acr:expertise">Expertise</option>
+		<option value="acr:opinionated">Opinionated</option>
+		<option value="acr:comments">Comments</option>
+	</select>
+</div>
+</div>
+</div>
+
+<div class="form-group">
+	<label for="f-description">Description</label>
+	<!--<input type="text" class="form-control" id="f-description" name="/workspace/dct:description" data-wb-json='{ "url":"#[edit-sc]/workspace/dct:description", "type": "val" }' />-->
+	<textarea id="f-description" class="form-control full-width" rows="5" name="/workspace/dct:description" data-wb-json='{ "url":"#[edit-sc]/workspace/dct:description", "type": "val" }'></textarea>
+</div>
+
+<!-- TODO: Use a data attribute for the name if we don't want this field to be submitted -->
+<fieldset>
+	<legend>Test outcome</legend>
+	<ul class="list-unstyled" data-wb-json='{ "url":"#[edit-sc]/workspace/earl:outcome", "type": "select" }'>
+		<li class="radio-inline"><label><input type="radio" name="/workspace/earl:outcome" value="earl:untested"> Untested</label></li>
+		<li class="radio-inline"><label><input type="radio" name="/workspace/earl:outcome" value="earl:passed"> Passed</label></li>
+		<li class="radio-inline"><label><input type="radio" name="/workspace/earl:outcome" value="earl:failed"> Failed</label></li>
+		<li class="radio-inline"><label><input type="radio" name="/workspace/earl:outcome" value="earl:cantTell"> Cannot tell</label></li>
+		<li class="radio-inline"><label><input type="radio" name="/workspace/earl:outcome" value="earl:inapplicable"/> Inapplicable</label></li>
+	</ul>
+</fieldset>
+
+
+<!--
+
+Build a data importer, like from wet-beoew.github.io/vocab/act-rules/WCAG/1.1.1
+
+Build a file import (JSON + Text + Base64 for image or other file)
+
+// Limi the sizt of the image to import
+
+-->
+
+
+<button class="btn btn-lg btn-primary" type="button" data-wb-doaction>
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
+		<wb-config source="#myDataSet" action="saveDataSet" mode="local"></wb-config>
+	</wb-config>
+
+	Save and return
+</button>
+
+<button class="btn btn-link" type="button" data-wb-doaction>
+	<!-- This button is updated with data-json from the information in the workspace -->
+	<template>
+		<wb-config action="patch, move to it's main index"></wb-config>
+		<!-- <wb-config empty the workspace -->
+		<!-- Save the dataset -->
+		<!-- Redirect to the main page or form post submit to main page -->
+	</template>
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
+		<wb-config source="#myDataSet" action="saveDataSet" mode="download"></wb-config>
+	</wb-config>
+
+	Download
+</button>
+
+
+<!--
+Save in browser cache configuration example
+<button class="btn btn-lg btn-primary" type="button" data-wb-doaction>
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
+		<wb-config source="#myDataSet" action="saveDataSet" mode="cache"></wb-config>
+	</wb-config>
+
+	Save and return
+</button>
+-->
+
+<!--
+
+Idea: Have a default version of the data in order to remove entry that matching whatever decided default in this form.
+
+-->
+
+
+<h2 id="attachement">Associated assets and attachment (/acr:asset)</h2>
+
+<details>
+	<summary>Add images</summary>
+
+	<fieldset id="fs-add-images">
+		<legend>Add an image</legend>
+
+		<label>Image: <input type="file" name="/workspace-asset/acr:content/@value" accept="image/*" data-clean-on-import data-independent-input /></label> <br />
+
+		<label>Title: <input type="text" name="/workspace-asset/dct:title" data-clean-on-import data-independent-input /></label>
+
+
+		<button type="button" data-wb-doaction>
+			Add
+
+			<wb-config wb-plugin="wb-doaction">
+				<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace-asset"></wb-config>
+						<wb-config op="add" path="/workspace-asset">
+							<wb-config wb-prop="value" wb-value='{ "@type": "acr:AttachmentImage", "acr:content": { "@type": "xsd:anyURI" } }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs"  run-after="prepData" cumulative="true" inputs="#fs-add-images input"></wb-config>
+
+				<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+			</wb-config>
+		</button>
+	</fieldset>
+</details>
+
+<details>
+	<summary>Add a JSON content</summary>
+<fieldset>
+	<legend>Add a JSON content</legend>
+
+	<div id="fs-add-upload-json">
+		<label>Upload a JSON file:
+
+				<input type="file" name="/workspace-asset/@value" data-encode="json" accept="application/json application/ld+json" data-clean-on-import data-independent-input />
+
+		</label>
+
+		<button type="button" data-wb-doaction>
+			Upload and add the JSON file
+
+			<wb-config wb-plugin="wb-doaction">
+
+					<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config op="remove" path="/workspace-asset"></wb-config>
+							<wb-config op="add" path="/workspace-asset">
+								<wb-config wb-prop="value" wb-value='{ "@type": "@json" }'></wb-config>
+							</wb-config>
+						</wb-config>
+					</wb-config>
+
+					<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs" run-after="prepData" cumulative="true" inputs="#fs-add-upload-json input"></wb-config>
+
+					<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+							</wb-config>
+						</wb-config>
+					</wb-config>
+			</wb-config>
+		</button>
+	</div>
+
+	<hr />
+
+	<div id="fs-add-json-text">
+
+		<label class="full-width">Insert JSON content:<br /><textarea class="full-width" name="/workspace-asset/@value" data-encode="json" rows="7" data-clean-on-import data-independent-input></textarea></label>
+
+		<button id="addButton" type="button" data-wb-doaction>
+			Insert the JSON content
+
+			<wb-config wb-plugin="wb-doaction">
+
+					<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config op="remove" path="/workspace-asset"></wb-config>
+							<wb-config op="add" path="/workspace-asset">
+								<wb-config wb-prop="value" wb-value='{ "@type": "@json" }'></wb-config>
+							</wb-config>
+						</wb-config>
+					</wb-config>
+
+					<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs"  run-after="prepData" cumulative="true" inputs="#fs-add-json-text textarea"></wb-config>
+
+					<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+							</wb-config>
+						</wb-config>
+					</wb-config>
+
+				</wb-config>
+		</button>
+	</div>
+
+</fieldset>
+
+</details>
+
+
+<details>
+	<summary>Add a link/reference</summary>
+
+	<!-- This link importer do work as expected -->
+	<fieldset id="fs-add-ref">
+		<legend>Add a link/a reference</legend>
+
+		<input type="url" name="/workspace-asset/@value" data-clean-on-import data-independent-input />
+
+		<button id="addButton" type="button" data-wb-doaction>
+			Add
+
+			<wb-config wb-plugin="wb-doaction">
+
+				<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace-asset"></wb-config>
+						<wb-config op="add" path="/workspace-asset">
+							<wb-config wb-prop="value" wb-value='{ "@type": "xsd:anyURI" }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<wb-config source="#myDataSet" action="importInDataset" run-after="prepData" cumulative="true" inputs="#fs-add-ref input"></wb-config>
+				<wb-config source="#myDataSet" action="patch" run-after="prepData" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="add" path="/workspace-asset/@type" value="xsd:anyURI"></wb-config>
+						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						</wb-config>
+					</wb-config>
+				</wb-config>
+			</wb-config>
+		</button>
+	</fieldset>
+</details>
+
+<details>
+	<summary>Add a code sample</summary>
+
+	<fieldset id="fs-add-codesample">
+		<legend>Add a code sample</legend>
+
+		<label class="full-width">Code:<br /><textarea class="full-width" name="/workspace-asset/@value" rows="7" data-clean-on-import data-independent-input></textarea></label>
+
+		<button id="addButton" type="button" data-wb-doaction>
+			Add
+
+			<wb-config wb-plugin="wb-doaction">
+
+				<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace-asset"></wb-config>
+						<wb-config op="add" path="/workspace-asset">
+							<wb-config wb-prop="value" wb-value='{ "@type": "xsd:string" }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs"  run-after="prepData" cumulative="true" inputs="#fs-add-codesample input, #fs-add-codesample textarea"></wb-config>
+
+				<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+			</wb-config>
+		</button>
+	</fieldset>
+
+</details>
+
+<details>
+	<summary>Embed a resource (type image)</summary>
+
+	<!-- This file importer do work as expected -->
+	<fieldset id="fs-add-ressource">
+		<legend>Embed a resource</legend>
+
+		<input type="file" name="/workspace-asset/@value" accept="image/* application/*" data-clean-on-import data-independent-input />
+
+		<button id="addButton" type="button" data-wb-doaction>
+			Add
+
+			<wb-config wb-plugin="wb-doaction">
+
+				<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace-asset"></wb-config>
+						<wb-config op="add" path="/workspace-asset">
+							<wb-config wb-prop="value" wb-value='{ "@type": "https://www.rfc-editor.org/rfc/rfc2397#section-2" }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs" run-after="prepData" cumulative="true" inputs="#fs-add-ressource input"></wb-config>
+
+				<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+			</wb-config>
+		</button>
+	</fieldset>
+</details>
+
+<h3 id="lst-assets">List of imported assets</h3>
+
+<ul data-wb-json='{
+	"url": "#[present-sc]/acr:asset",
+	"mapping": [
+		{
+			"template": "[data-link]",
+			"test": "fn:guessType",
+			"value": "/",
+			"expect": "xsd:anyURI",
+			"append": true,
+			"mapping": [
+				{ "selector": "a", "value": "/@value" },
+				{ "selector": "a", "value": "/@value", "attr": "href" },
+				{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+			],
+			"debug": true
+		},
+		{
+			"template": "[data-download-link]",
+			"test": "fn:guessType",
+			"value": "/",
+			"expect": "https://www.rfc-editor.org/rfc/rfc2397#section-2",
+			"append": true,
+			"mapping": [
+				{ "selector": "a", "value": "/@value", "attr": "href" },
+				{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+			]
+		},
+		{
+			"template": "[data-source-code]",
+			"test": "fn:guessType",
+			"value": "/",
+			"expect": "xsd:string",
+			"append": true,
+			"mapping": [
+				{ "selector": "code", "value": "/@value" },
+				{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+			]
+		},
+		{
+			"template": "[data-asset-image]",
+			"test": "fn:guessType",
+			"value": "/",
+			"expect": "acr:AttachmentImage",
+			"append": true,
+			"mapping": [
+				{ "selector": "img", "value": "/acr:content/@value", "attr": "src" },
+				{ "selector": "a", "value": "/acr:content/@value", "attr": "href" },
+				{ "selector": "img", "value": "/dct:title", "attr": "alt" },
+				{ "selector": "[data-caption]", "value": "/dct:title" },
+				{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+
+			]
+		},
+		{
+			"template": "[data-asset-json]",
+			"test": "fn:guessType",
+			"value": "/",
+			"expect": "rdf:JSON",
+			"append": true,
+			"mapping": [
+				{ "selector": "code", "value": "/@value" },
+				{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+
+			]
+		}
+	],
+	"removeAll": "li"
+}'>
+	<template data-link>
+		<li>
+			<a href>Link to a website</a>
+			<button type="button" data-wb-doaction>
+				Remove
+
+				<wb-config wb-plugin="wb-doaction">
+					<wb-config source="#lst-assets" action="setFocus"></wb-config>
+					<wb-config source="#myDataSet" action="patch" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config data-btn-remove op="remove" path="/workspace/acr:asset/[[-id-]]"></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+			</button>
+		</li>
+	</template>
+	<template data-download-link>
+		<li>
+			<a href download>Download attachment</a>
+			<button type="button" data-wb-doaction>
+				Remove
+
+				<wb-config wb-plugin="wb-doaction">
+					<wb-config source="#lst-assets" action="setFocus"></wb-config>
+					<wb-config source="#myDataSet" action="patch" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config data-btn-remove op="remove" path="/workspace/acr:asset/[[-id-]]"></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+			</button>
+		</li>
+	</template>
+	<template data-source-code>
+		<li>Source code sample
+			<pre><code></code></pre>
+			<button type="button" data-wb-doaction>
+				Remove
+
+				<wb-config wb-plugin="wb-doaction">
+					<wb-config source="#lst-assets" action="setFocus"></wb-config>
+					<wb-config source="#myDataSet" action="patch" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config data-btn-remove op="remove" path="/workspace/acr:asset/[[-id-]]"></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+			</button></li>
+	</template>
+	<template data-asset-json data-proofer-ignore>
+		<li>JSON content
+			<pre><code></code></pre>
+
+			<button type="button" data-wb-doaction>
+				Remove
+
+				<wb-config wb-plugin="wb-doaction">
+					<wb-config source="#lst-assets" action="setFocus"></wb-config>
+					<wb-config source="#myDataSet" action="patch" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config data-btn-remove op="remove" path="/workspace/acr:asset/[[-id-]]"></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+			</button>
+		</li>
+	</template>
+	<template data-asset-image data-proofer-ignore>
+		<li>
+			<p>Image (<a href download>Download</a>):</p>
+			<figure>
+				<img class="img-responsive" src="" alt lang="en">
+				<figcaption data-caption></figcaption>
+			</figure>
+			<button type="button" data-wb-doaction>
+				Remove
+
+				<wb-config wb-plugin="wb-doaction">
+					<wb-config source="#lst-assets" action="setFocus"></wb-config>
+					<wb-config source="#myDataSet" action="patch" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config data-btn-remove op="remove" path="/workspace/acr:asset/[[-id-]]"></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+			</button>
+		</li>
+	</template>
+</ul>
+
+
+<h2 id="sub-tests">Short sub-test (/earl:result)</h2>
+
+
+<!--
+
+	TODO: Import a set of sub-tests
+
+
+	Example: Have 5 list
+		* Generic
+		* Situation A
+		* Situation B
+		* Situation C
+		* Situation D
+		* Situation E
+		* Situation F
+
+
+-->
+
+<!-- This suggestion is build based on the test evaluation on this page -->
+<label>Suggestion of rulesets
+<select id="suggest-rulesets" name="/workspace-rulesets/selected"  data-wb-json='
+	{
+		"url": "#[pre-views-sc]/sc-rulesets",
+		"mapping": [
+			{ "selector": "option", "value": "/dct:title" },
+			{ "selector": "option", "attr": "value", "value": "/@id" }
+		],
+		"removeAll": "option"
+	}
+'>
+	<template>
+		<option></option>
+	</template>
+</select>
+</label>
+
+<button type="button" data-wb-doaction>
+	Import a set of sub-tests
+
+	<!--
+		1. Grab the selected option in the previous select
+		2. Copy the "rules" into a working space
+		3. Complement each "rules" with the other info we have
+	-->
+
+	<wb-config wb-plugin="wb-doaction">
+
+				<!-- Clean the workspace -->
+				<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true" passive="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace-rulesets"></wb-config>
+						<wb-config op="add" path="/workspace-rulesets">
+							<wb-config wb-prop="value" wb-value='{ "rulesets": [] }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<!-- Get the form input -->
+				<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs" run-after="prepData" cumulative="true" inputs="#suggest-rulesets, #short-sub-tests-table input, #short-sub-tests-table select, #short-sub-tests-table textarea"></wb-config>
+
+				<!-- Save all and current state
+				<wb-config source="#myDataSet" action="importInDataset" action-name="saveAll" run-after="getinputs" cumulative="true"></wb-config>
+				-->
+
+				<!-- Create a working copy -->
+				<wb-config source="#myDataSet" action="patch" cumulative="true" run-after="getinputs">
+					<wb-config wb-prop="patches">
+						<wb-config op="copy" from="/sc-rulesets" path="/workspace-rulesets/rulesets"></wb-config>
+
+				<!-- Select the value -->
+					<wb-config op="wb-swap" path="/workspace-rulesets/selected" ref="/workspace-rulesets/rulesets"></wb-config>
+
+				<!-- Copy the rule -->
+					<wb-config op="wb-add-from" value="/workspace-rulesets/selected/rules" path="/workspace/earl:result/-"></wb-config>
+
+					</wb-config>
+				</wb-config>
+				<!--<wb-config op="copy" from="/sc-rulesets/WCAG21:non-text-content/rulesets/act:rulesets/wcag2x/sc/non-text-content#situations">
+					<wb-config wb-prop="value" wb-value='{
+						"earl:test": "Enter the URL of the test or technique",
+						"earl:outcome": "earl:untested",
+						"earl:subject": "_:subject"
+					}'></wb-config>
+				</wb-config>-->
+
+	</wb-config>
+
+	<!--
+
+	<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						</wb-config>
+
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
+		<wb-config source="#myDataSet" action="patch" cumulative="true">
+			<wb-config wb-prop="patches">
+				<wb-config op="add" path="/workspace/earl:result/-">
+					<wb-config wb-prop="value" wb-value='{
+						"earl:test": "Enter the URL of the test or technique",
+						"earl:outcome": "earl:untested",
+						"earl:subject": "_:subject"
+					}'></wb-config>
+				</wb-config>
+			</wb-config>
+		</wb-config>
+	</wb-config>
+	-->
+</button>
+
+
+
+
+
+<table class="table" id="short-sub-tests-table">
+	<thead>
+		<tr>
+			<th id="sub-test-test" class="col-md-3">Test (URL)</th>
+			<th id="sub-test-outcome">Outcome</th>
+			<th>Details</th>
+			<th class="col-md-1">Actions</th>
+		</tr>
+	</thead>
+	<tbody data-wb-json='{
+			"url": "#[present-sc]/earl:result",
+			"tobeclone": "tr",
+			"source": "#tmplSubTest",
+			"mapping": [
+				{ "selector": "[data-test-name]", "value": "/earl:test" },
+				{ "selector": "[data-test-name]", "value": "/dct:title" },
+				{ "selector": "[data-test]", "value": "/earl:test", "attr": "value" },
+				{ "selector": "[data-test]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+				{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" },
+
+
+				{ "selector": "[data-outcome]", "value": "/earl:outcome", "type": "select" },
+				{ "selector": "[data-outcome-a]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+				{ "selector": "[data-outcome-b]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+				{ "selector": "[data-outcome-c]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+				{ "selector": "[data-outcome-d]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+				{ "selector": "[data-outcome-e]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+
+
+				{ "selector": "[data-severity]", "value": "/earl:severity", "type": "select" },
+				{ "selector": "[data-severity]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+				{ "selector": "[data-relevancy]", "value": "/earl:relevancy", "type": "select" },
+				{ "selector": "[data-relevancy]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+				{ "selector": "[data-notes]", "value": "/dct:description", "attraaa": "value" },
+				{ "selector": "[data-notes]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" }
+			],
+			"removeAll": "tr"
+		}'>
+	</tbody>
+</table>
+
+<template id="tmplSubTest">
+	<table><tr>
+		<!-- test ID -->
+		<td>
+			<p data-test-name>Unknown</p>
+			<div class="form-group">
+				<input data-test aria-labeledby="sub-test-test" type="url" class="form-control" name="/workspace/earl:result/[[-id-]]/earl:test" />
+			</div>
+		</td>
+
+		<!-- outcome -->
+		<td>
+
+			<!--
+
+				{ "selector": "[data-outcome]", "value": "/earl:outcome", "type": "select" },
+				{ "selector": "[data-outcome]", "value": "/_:iterator", "attr": "name", "placeholder": "[[-id-]]" },
+
+			<div class="form-group">
+				<select data-outcome aria-labeledby="sub-test-outcome" class="form-control" name="/workspace/earl:result/[[-id-]]/earl:outcome">
+					<option value="earl:untested">Untested</option>
+					<option value="earl:passed">Passed </option>
+					<option value="earl:failed">Failed </option>
+					<option value="earl:cantTell">Cannot tell</option>
+					<option value="earl:inapplicable">Inapplicable</option>
+				</select>
+			</div>-->
+
+			<ul class="list-unstyled" data-outcome>
+				<li><label><input data-outcome-a type="radio" name="/workspace/earl:result/[[-id-]]/earl:outcome" value="earl:untested"> Untested</label></li>
+				<li><label><input data-outcome-b type="radio" name="/workspace/earl:result/[[-id-]]/earl:outcome" value="earl:passed"> Passed</label></li>
+				<li><label><input data-outcome-c type="radio" name="/workspace/earl:result/[[-id-]]/earl:outcome" value="earl:failed"> Failed</label></li>
+				<li><label><input data-outcome-d type="radio" name="/workspace/earl:result/[[-id-]]/earl:outcome" value="earl:cantTell"> Cannot tell</label></li>
+				<li><label><input data-outcome-e type="radio" name="/workspace/earl:result/[[-id-]]/earl:outcome" value="earl:inapplicable"/> Inapplicable</label></li>
+			</ul>
+		</td>
+
+		<!-- Details -->
+		<td>
+		<div class="row">
+			<div class="col-md-12">
+				<!-- Notes -->
+				<div class="form-group mrgn-bttm-0">
+					<label class="full-width">Note:
+					<textarea data-notes class="form-control full-width" rows="5" name="/workspace/earl:result/[[-id-]]/dct:description"></textarea>
+					</label>
+				</div>
+				<!--
+				<div class="form-group">
+					<label>Note:
+					<input data-notes type="text" class="form-control" name="/workspace/earl:result/[[-id-]]/dct:description" />
+					</label>
+				</div>-->
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+
+				<!-- Severity -->
+				<div class="form-group">
+					<label>Severity:
+						<select data-severity class="form-control" name="/workspace/earl:result/[[-id-]]/earl:severity">
+							<option value="acr:noSeverity">Not specified</option>
+							<option value="acr:forEvaluation">Need to be evaluated</option>
+							<option value="acr:notRelevant">Not relevant to specify severity</option>
+							<option value="acr:critical">Critical</option>
+							<option value="acr:serious">Serious</option>
+							<option value="acr:moderate">Moderate</option>
+							<option value="acr:trivial">Trivial</option>
+						</select>
+					</label>
+				</div>
+
+			</div>
+
+			<div class="col-md-6">
+
+				<!-- Relevancy -->
+				<div class="form-group">
+					<label>Relevancy:
+						<select data-relevancy class="form-control" name="/workspace/earl:result/[[-id-]]/earl:relevancy">
+							<option value="acr:noRelevancy">Not specified</option>
+							<option value="acr:forEvaluation">Need to be evaluated</option>
+							<option value="acr:notRelevant">Not relevant to specify relevancy</option>
+							<option value="acr:sufficient">Sufficient</option>
+							<option value="acr:advisory">Advisory</option>
+							<option value="acr:statement">Statement</option>
+							<option value="acr:failure">Failure</option>
+							<option value="acr:compatibility">Compatibility</option>
+							<option value="acr:usability">Usability</option>
+							<option value="acr:expertise">Expertise</option>
+							<option value="acr:opinionated">Opinionated</option>
+							<option value="acr:comments">Comments</option>
+						</select>
+					</label>
+				</div>
+			</div>
+		</div>
+		</td>
+
+		<!-- actions -->
+		<td>
+			<button type="button" class="btn btn-danger" data-wb-doaction>
+				<span class="wb-inv">Remove</span>
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+
+				<wb-config wb-plugin="wb-doaction">
+					<wb-config source="#sub-tests" action="setFocus"></wb-config>
+					<wb-config source="#myDataSet" action="importInDataset" cumulative="true" passive="true"></wb-config>
+					<wb-config source="#myDataSet" action="patch" cumulative="true">
+						<wb-config wb-prop="patches">
+							<wb-config data-btn-remove op="remove" path="/workspace/earl:result/[[-id-]]"></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+			</button>
+
+		</td>
+	</tr></table>
+</template>
+
+
+<button id="addButton" type="button" data-wb-doaction>
+	Add a detailed test result
+
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
+		<wb-config source="#myDataSet" action="patch" cumulative="true">
+			<wb-config wb-prop="patches">
+				<wb-config op="add" path="/workspace/earl:result/-">
+					<wb-config wb-prop="value" wb-value='{
+						"earl:test": "Enter the URL of the test or technique",
+						"earl:outcome": "earl:untested",
+						"earl:subject": "_:subject"
+					}'></wb-config>
+				</wb-config>
+			</wb-config>
+		</wb-config>
+	</wb-config>
+</button>
+
+
+
+<hr>
+
+<button class="btn btn-lg btn-primary" type="button" data-wb-doaction>
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
+		<wb-config source="#myDataSet" action="saveDataSet" mode="local"></wb-config>
+	</wb-config>
+
+	Save and return
+</button>
+
+<button class="btn btn-link" type="button" data-wb-doaction>
+	<!-- This button is updated with data-json from the information in the workspace -->
+	<template>
+		<wb-config action="patch, move to it's main index"></wb-config>
+		<!-- <wb-config empty the workspace -->
+		<!-- Save the dataset -->
+		<!-- Redirect to the main page or form post submit to main page -->
+	</template>
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
+		<wb-config source="#myDataSet" action="saveDataSet" mode="download"></wb-config>
+	</wb-config>
+
+	Download
+</button>
+
+</form>
+
+
+
