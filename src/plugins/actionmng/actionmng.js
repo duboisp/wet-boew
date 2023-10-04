@@ -27,6 +27,9 @@ var $document = wb.doc,
 		"mapfilter",
 		"tocsv",
 		"loadJSON",
+		"uploadJSON",
+		"importInDataset",
+		"saveDataSet",
 		"patch",
 		"ajax",
 		"addClass",
@@ -307,6 +310,119 @@ var $document = wb.doc,
 		} );
 
 	},
+
+	// Trigger file upload
+	uploadJSON = function( event, data ) {
+
+		var elm = event.currentTarget,
+			fileInput;
+
+		// Ensure the required data is provided
+		if ( !data.source || !data.source.length || !data.asDataset || !data.asDataset.length ) {
+			console.error( "Configuration missing or empty for: 'source' or/and 'asDataset'" );
+			return;
+		}
+
+		// Check if the input is already attached, if so reuse
+		if ( elm.wbBind ) {
+			fileInput = elm.wbBind;
+		} else {
+
+			// Create the file input
+			fileInput = document.createElement('input');
+			fileInput.setAttribute("type", "file");
+			fileInput.setAttribute("hidden", "");
+			fileInput.accept = ".json,.json-ld,application/json";
+
+			// Attach the file upload input
+			elm.parentElement.insertBefore( fileInput, this );
+			fileInput.addEventListener('change', getUploadedFile);
+			fileInput.wbData = data;
+			elm.wbBind = fileInput;
+		}
+
+		// Trigger the upload
+		fileInput.click();
+
+	},
+
+	// Take form input and integrate to JSON manager
+	importInDataset = function( event, data ) {
+
+		var elm = event.currentTarget;
+
+		// Ensure the required data is provided
+		if ( !data.source || !data.source.length ) {
+			console.error( "Configuration missing or empty for: 'source' or/and 'asDataset'" );
+			return;
+		}
+
+		console.log( data);
+
+		console.log( elm.form.elements );
+
+		// Get the form inputs
+		// Match the "name" with the selected "value"
+		// Support for multiple? Will be an array of "value"
+
+		//
+
+	},
+
+	// Save JSON manager into LocalHost or SessionStorage (Session will be best)
+	saveDataSet = function( event, data ) {
+
+		var elm = event.currentTarget;
+
+		// Ensure the required data is provided
+		if ( !data.source || !data.source.length ) {
+			console.error( "Configuration missing or empty for: 'source' or/and 'asDataset'" );
+			return;
+		}
+
+		// Get the form inputs
+		// Match the "name" with the selected "value"
+		// Support for multiple? Will be an array of "value"
+
+		//
+
+	},
+
+	getUploadedFile = function () {
+
+		var curFiles = this.files,
+			file,
+			data = this.wbData,
+			url,
+			fileTypes = [
+				"application/json"
+			];
+
+		if (curFiles.length === 0) {
+			console.log( "No file selected" );
+			return;
+		}
+
+		for (file of curFiles) {
+
+			if ( !fileTypes.includes( file.type ) ) {
+				console.error( "File format not accepted" );
+				continue;
+			}
+
+			url = URL.createObjectURL( file );
+
+			// Trigger a JSON load on the source
+			$( data.source ).trigger( {
+				type: "json-fetch.wb",
+				fetch: {
+					url: url,
+					asDataset: data.asDataset
+				}
+			} );
+		}
+	},
+
 
 	// From a user input or a predefined input, apply some tranformation to the command prior to execute it
 	// This functionality was already in the URL mapping and was moved here to be reused by any user input
@@ -590,6 +706,15 @@ $document.on( actionMngEvent, selector, function( event, data ) {
 			break;
 		case "loadJSON":
 			loadJSON( data );
+			break;
+		case "uploadJSON":
+			uploadJSON( event, data );
+			break;
+		case "importInDataset":
+			importInDataset( event, data );
+			break;
+		case "saveDataSet":
+			saveDataSet( event, data );
 			break;
 		case "withInput":
 			withInput( event, data );

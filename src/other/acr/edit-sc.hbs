@@ -1,0 +1,249 @@
+---
+{
+	"title": "Edit Success Criterion - Accessibility Conformance Report Methodology",
+	"language": "en",
+	"category": "Other",
+	"description": "",
+	"tag": "acr",
+	"parentdir": "acr",
+	"altLangPage": "assess-prep-fr.html",
+	"dateModified": "2023-10-10"
+}
+---
+
+<p class=h1>Git reset to: <code>origin/assessment-form</code></p>
+
+
+<ol>
+	<li>Load from the local storage the dataset</li>
+	<li>Get the ID saved + Load value into the web interface</li>
+	<li>Edit the form</li>
+	<li>Validate the form</li>
+	<li>Save the SC edited information, save it and return to the main page</li>
+</ol>
+<form>
+<details>
+	<summary>JSON Manager debug</summary>
+
+	<div data-wb-jsonmanager-proposed='{
+		"url": { "url": "#[uploaded]", load-from: "local-storage | session | data-layer", "load-key": "localStorage KEY", "Select path" },
+		"name": "edit-sc"
+	}'></div>
+
+	<div data-wb-jsonmanager-out='{
+		"url": [ { "url": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json" } ],
+		"name": "full-ds",
+		"debug": true
+	}'>
+	<!-- {
+		"url": [ { "url": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json" } ],
+		"name": "full-ds",
+		"patches": [
+			{ "op": "patches", "path": "/earl:result", "patches": [
+					{ "op": "wb-swap", "path": "/earl:subject", "ref": "/earl:subject" }
+				]
+			}
+		],
+		"debug": true
+	} -->
+	</div>
+
+	<div id="myDataSet" data-wb-jsonmanager='{
+		"url2": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json#/earl:result/0",
+		"url": "demo/workingspace-data.json",
+		"name": "edit-sc",
+		"debug": true
+	}'></div>
+</details>
+
+<dl>
+	<dt>Success criterion</dt>
+	<dd data-json-replace="#[edit-sc]/workspace/earl:test">earl:test</dd>
+	<dt>Subject</dt>
+	<dd data-json-replace="#[edit-sc]/workspace/earl:subject/@id">dct:references OR dct:title of _:subject</dd>
+</dl>
+
+<div class="form-group">
+	<label for="f-mode">Testing mode</label>
+	<select id="f-mode" class="form-control" name="earl:mode" data-wb-json='{ "url":"#[edit-sc]/workspace/earl:mode", "type": "select" }'>
+		<option value="earl:automatic">Automatic</option>
+		<option value="earl:manual">Manual</option>
+		<option value="earl:semiAuto">Semi-Automatic</option>
+		<option value="earl:undisclosed">Undisclosed</option>
+		<option value="earl:unknownMode">Unknown</option>
+	</select>
+</div>
+
+
+<div class="form-group">
+	<label for="f-outcome">Test outcome</label>
+	<select id="f-outcome" class="form-control" name="earl:outcome" data-wb-json='{ "url":"#[edit-sc]/workspace/earl:outcome", "type": "select" }'>
+		<option value="earl:untested">Untested</option>
+		<option value="earl:passed">Passed </option>
+		<option value="earl:failed">Failed </option>
+		<option value="earl:cantTell">Cannot tell</option>
+		<option value="earl:inapplicable">Inapplicable</option>
+	</select>
+</div>
+
+<div class="form-group">
+	<label for="f-description">Description</label>
+	<input type="text" class="form-control" id="f-description" name="dct:description" data-wb-json='{ "url":"#[edit-sc]/workspace/dct:description", "type": "val" }' />
+</div>
+
+<div class="form-group">
+	<label for="f-severity">Severity</label>
+	<select id="f-severity" class="form-control" name="acr:severity" data-wb-json='{ "url":"#[edit-sc]/workspace/acr:severity", "type": "select" }'>
+		<option value="acr:noSeverity">Not specified</option>
+		<option value="acr:forEvaluation">Need to be evaluated</option>
+		<option value="acr:notRelevant">Not relevant to specify severity</option>
+		<option value="acr:critical">Critical</option>
+		<option value="acr:serious">Serious</option>
+		<option value="acr:moderate">Moderate</option>
+		<option value="acr:trivial">Trivial</option>
+	</select>
+</div>
+
+
+<div class="form-group">
+	<label for="f-relevancy">Relevancy</label>
+	<select id="f-relevancy" class="form-control" name="acr:relevancy" data-wb-json='{ "url":"#[edit-sc]/workspace/acr:relevancy", "type": "select" }'>
+		<option value="wbv:acr#noRelevancy">Not specified</option>
+		<option value="acr:forEvaluation">Need to be evaluated</option>
+		<option value="acr:notRelevant">Not relevant to specify relevancy</option>
+		<option value="acr:sufficient">Sufficient</option>
+		<option value="acr:advisory">Advisory</option>
+		<option value="acr:statement">Statement</option>
+		<option value="acr:failure">Failure</option>
+		<option value="acr:compatibility">Compatibility</option>
+		<option value="acr:usability">Usability</option>
+		<option value="acr:expertise">Expertise</option>
+		<option value="acr:opinionated">Opinionated</option>
+		<option value="acr:comments">Comments</option>
+	</select>
+</div>
+
+<button type="button" data-wb-doaction>
+	<!-- This button is updated with data-json from the information in the workspace -->
+	<template>
+		<wb-config action="patch, move to it's main index"></wb-config>
+		<!-- <wb-config empty the workspace -->
+		<!-- Save the dataset -->
+		<!-- Redirect to the main page or form post submit to main page -->
+	</template>
+	<wb-config wb-plugin="wb-doaction" source="#myDataSet" action="importInDataset">
+	</wb-config>
+
+	Save
+</button>
+
+</form>
+
+<h2>Short sub-test (/earl:result)</h2>
+
+<button>Add a detailed test result</button>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Test</th>
+			<th>Outcome</th>
+			<th>Severity</th>
+			<th>Relevancy</th>
+			<th>Notes</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>/earl:test</td>
+			<td>/earl:outcome</td>
+			<td>/earl:severity</td>
+			<td>/earl:relevancy</td>
+			<td>/earl:description</td>
+		</tr>
+
+		<tr>
+			<td>/earl:test</td>
+
+			<!-- outcome -->
+			<td>
+				<div class="form-group">
+					<label for="f-outcome">Test outcome</label>
+					<select id="f-outcome" class="form-control" name="earl:outcome">
+						<template is="wb-config" data-plugin="data-map">
+							<wb-config basepath="/earl:result" index="0" prop="earl:outcome"></wb-config>
+						</template>
+						<option value="earl:untested">Untested</option>
+						<option value="earl:passed">Passed </option>
+						<option value="earl:failed">Failed </option>
+						<option value="earl:cantTell">Cannot tell</option>
+						<option value="earl:inapplicable">Inapplicable</option>
+					</select>
+
+				</div>
+			</td>
+
+			<!-- Severity -->
+			<td>
+				<div class="form-group">
+					<label for="f-severity">Severity</label>
+					<select id="f-severity" class="form-control" name="acr:severity">
+						<template is="wb-config" data-plugin="data-map">
+							<wb-config basepath="/earl:result" index="0" prop="acr:severity"></wb-config>
+						</template>
+						<option value="acr:noSeverity">Not specified</option>
+						<option value="acr:forEvaluation">Need to be evaluated</option>
+						<option value="acr:notRelevant">Not relevant to specify severity</option>
+						<option value="acr:critical">Critical</option>
+						<option value="acr:serious">Serious</option>
+						<option value="acr:moderate">Moderate</option>
+						<option value="acr:trivial">Trivial</option>
+					</select>
+				</div>
+			</td>
+
+			<!-- Relevancy -->
+			<td>
+				<div class="form-group">
+					<label for="f-relevancy">Relevancy</label>
+					<select id="f-relevancy" class="form-control" name="acr:relevancy">
+						<template is="wb-config" data-plugin="data-map">
+							<wb-config basepath="/earl:result" index="0" prop="acr:relevancy"></wb-config>
+						</template>
+						<option value="acr:noRelevancy">Not specified</option>
+						<option value="acr:forEvaluation">Need to be evaluated</option>
+						<option value="acr:notRelevant">Not relevant to specify relevancy</option>
+						<option value="acr:sufficient">Sufficient</option>
+						<option value="acr:advisory">Advisory</option>
+						<option value="acr:statement">Statement</option>
+						<option value="acr:failure">Failure</option>
+						<option value="acr:compatibility">Compatibility</option>
+						<option value="acr:usability">Usability</option>
+						<option value="acr:expertise">Expertise</option>
+						<option value="acr:opinionated">Opinionated</option>
+						<option value="acr:comments">Comments</option>
+					</select>
+				</div>
+			</td>
+
+			<!-- Notes -->
+			<td>
+				<div class="form-group">
+					<label for="f-description">Notes</label>
+					<input type="text" class="form-control" id="f-description" name="dct:description" data-data-map-config="notes-config-1" />
+					<template id="notes-config-1" is="wb-config" data-plugin="data-map">
+						<wb-config basepath="/earl:result" index="0" prop="acr:relevancy"></wb-config>
+					</template>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+list
+
+
+- Item - Expand
+
+
+

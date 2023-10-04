@@ -197,6 +197,20 @@ var componentName = "wb-data-json",
 				$elm.prop( attrname, content );
 			} else if ( jsonType === "attr" && attrname && allowAttrNames.test( attrname ) ) {
 				$elm.attr( attrname, content );
+			} else if ( jsonType === "select" ) {
+
+				// Find all elm that have a matching value
+				var optionsSelected = elm.querySelectorAll( "[value='" + content + "']" );
+				optionsSelected.forEach( function( opt ) {
+
+					// If option, set "selected" || if input set "checked"
+					if ( opt.nodeName === "OPTION" ) {
+						$( opt ).prop( "selected", true );
+					} else if ( opt.nodeName === "INPUT" ) {
+						$( opt ).prop( "checked", true );
+					}
+				} );
+
 			} else if ( typeof $elm[ jsonType ] === "function" && allowJsonTypes.indexOf( jsonType ) !== -1 ) {
 				$elm[ jsonType ]( content );
 			} else {
@@ -207,6 +221,10 @@ var componentName = "wb-data-json",
 			jQuery.ajaxSettings.cache = jQueryCaching;
 
 			$elm.trigger( contentUpdatedEvent, { "json-type": jsonType, "content": content } );
+		} else if ( itmSettings.fail && itmSettings.fail.removeAll ) {
+
+			// If there any fail instruction, let proceed with the clean up. This is for cases where the failure are not accompanied with regular content mapping
+			elm.querySelectorAll( itmSettings.fail.removeAll ).forEach( el => el.remove() );
 		}
 	},
 
@@ -216,7 +234,8 @@ var componentName = "wb-data-json",
 		var elmClass = elm.className,
 			dataTable,
 			dataTableAddRow,
-			template = settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" );
+			template = settings.source ? document.querySelector( settings.source ) : elm.querySelector( "template" ),
+			cleanUpSelector = settings.removeAll || "";
 
 		// If combined with wb-tables plugin
 		if ( elm.tagName === "TABLE" && elmClass.indexOf( "wb-tables" ) !== -1 ) {
@@ -243,6 +262,18 @@ var componentName = "wb-data-json",
 			settings.tobeclone = "tr"; // Only table row can be added
 		}
 
+		// Need to clean up element before to proceed?
+		cleanUpSelector = settings.removeAll;
+		if ( cleanUpSelector && settings.fail && settings.fail.removeAll ) {
+			cleanUpSelector = settings.removeAll + "," + settings.fail.removeAll;
+		} else if ( !cleanUpSelector && settings.fail && settings.fail.removeAll ) {
+			cleanUpSelector = settings.fail.removeAll;
+		}
+		if ( cleanUpSelector ) {
+			elm.querySelectorAll( cleanUpSelector ).forEach( el => el.remove() );
+		}
+
+		// Let's stop if no template was configured
 		if ( !template ) {
 			return;
 		}
@@ -270,7 +301,8 @@ var componentName = "wb-data-json",
 		var i, i_len, i_cache,
 			elmAppendTo = elm,
 			clone, template,
-			dataTable, dataTableAddRow;
+			dataTable, dataTableAddRow,
+			iteratorPrefix = mappingConfig.iteratorPrefix || "_:iterator";
 
 		if ( mappingConfig.appendto ) {
 			elmAppendTo = $( mappingConfig.appendto ).get( 0 );
@@ -328,6 +360,16 @@ var componentName = "wb-data-json",
 		for ( i = 0; i < i_len; i += 1 ) {
 			i_cache = content[ i ];
 
+			// Embed iterator information (Need to tweak prev and next because of the "filterPass" operation
+			if ( typeof i_cache === "object" ) {
+				if ( i > 0 ) {
+					i_cache[ iteratorPrefix + "#prev" ] = i - 1;
+				}
+				if ( i + 1 !== i_len ) {
+					i_cache[ iteratorPrefix + "#next" ] = i + 1;
+				}
+				i_cache[ iteratorPrefix ] = i;
+			}
 
 			// If the data are filtered. This is deprecated and are only for backward compatible purpose
 			if ( !filterPassJSON( i_cache, mappingConfig.filter, mappingConfig.filternot ) ) {
@@ -833,7 +875,6 @@ var componentName = "wb-data-json",
 		// Add the template, if applicable
 		if ( template ) {
 			if ( template.parentNode ) {
-
 				if ( !mappingConfig.append ) {
 					template.parentNode.insertBefore( clone, template );
 				} else {

@@ -302,7 +302,7 @@ var componentName = "wb-jsonmanager",
 			jsSettings = window[ componentName ] || { },
 			ops, opsArray, opsRoot,
 			i, i_len, i_cache,
-			url, urlActual, dsName,
+			url, urlActual, dsName, urlSplit, fetchedRef,
 			fetchOpts = { };
 
 		if ( elm ) {
@@ -356,13 +356,12 @@ var componentName = "wb-jsonmanager",
 					dsNameRegistered.push( dsName );
 
 					url = elmData.url;
+					dsFetching[ dsName ] = {};
 
 					if ( url ) {
 
 						url = typeof url === "string" ? [ url ] : url;
 						i_len = url.length;
-
-						dsFetching[ dsName ] = i_len;
 
 						for ( i = 0; i !== i_len; i++ ) {
 
@@ -385,6 +384,17 @@ var componentName = "wb-jsonmanager",
 								fetchOpts.url = urlActual;
 							}
 
+							// Figure out the fetching reference for this dataset, one reference by URLs. (Note: CharCode 91 === "["
+							urlSplit = fetchOpts.url.split( "#" );
+							fetchedRef = urlSplit[ 0 ];
+							if ( !fetchedRef &&  urlSplit[ 1 ].charCodeAt( 0 ) === 91 ) {
+
+								// Extract and use the dataset name as the reference
+								fetchedRef = "#" + urlSplit[ 1 ];
+
+							}
+							dsFetching[ dsName ][ fetchedRef ] = false;
+
 							// Fetch the JSON
 							$elm.trigger( {
 								type: "json-fetch.wb",
@@ -397,6 +407,7 @@ var componentName = "wb-jsonmanager",
 							}
 						}
 					} else if ( !url && elmData.extractor ) {
+						dsFetching[ dsName ][ dsName ] = false;
 						$elm.trigger( {
 							type: "json-fetched.wb",
 							fetch: {
@@ -406,7 +417,7 @@ var componentName = "wb-jsonmanager",
 						wb.ready( $elm, componentName );
 
 					} else {
-
+						dsFetching[ dsName ][ dsName ] = false;
 						$elm.trigger( {
 							type: "json-fetch.wb"
 						} );
@@ -692,11 +703,57 @@ var componentName = "wb-jsonmanager",
 
 $document.on( "json-failed.wb", selector, function( event ) {
 	var elm = event.target,
-		$elm;
+		$elm,
+		fetchOpts = event.fetch,
+		urlSplit = fetchOpts.url.split( "#" ),
+		settings, urlSplit, fetchedRef,
+		dsName,
+		backlog, i, i_len, i_cache;
 
 	if ( elm === event.currentTarget ) {
 		$elm = $( elm );
 		$elm.addClass( jsonFailedClass );
+
+		settings = wb.getData( $elm, componentName );
+		dsName = settings.name;
+
+		// Let invalidate the graph represented by the alias
+		if ( !dsFetching[ dsName ] ) {
+			dsFetching[ dsName ] = {};
+		}
+		fetchedRef = urlSplit[ 0 ];
+		if ( !fetchedRef &&  urlSplit[ 1 ].charCodeAt( 0 ) === 91 ) {
+
+			// Extract and use the dataset name as the reference
+			fetchedRef = "#" + urlSplit[ 1 ];
+
+		}
+		dsFetching[ dsName ][ fetchedRef ] = false;
+
+		dsName = "[" + dsName + "]"; // Dataset unique name
+
+		// Notify the binded data-json of the failure and return the current compiled data
+		if ( dsDelayed[ dsName ] ) {
+			backlog = dsDelayed[ dsName ];
+			i_len = backlog.length;
+			for ( i = 0; i !== i_len; i += 1 ) {
+				i_cache = backlog[ i ];
+				$( "#" + i_cache.callerId ).trigger( {
+					type: "json-failed.wb",
+					fetch: {
+						url: fetchedRef,
+						response: dsFetchMerged[ dsName ] || {},
+						status: fetchOpts.status,
+						error: fetchOpts.error,
+						refId: i_cache.refId,
+						xhr: fetchOpts.xhr,
+						fetchOpts: fetchOpts
+					}
+				}, this );
+			}
+		}
+
+
 
 		// Identify that initialization has completed
 		wb.ready( $elm, componentName );
@@ -708,6 +765,8 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		$elm = $( elm ),
 		settings,
 		fetchedOpts = event.fetch.fetchedOpts,
+		wasUrl = event.fetch.url,
+		urlWasFound = false,
 		isReloading = elm.hasAttribute( reloadFlag ),
 		dsName,
 		JSONresponse = event.fetch.response,
@@ -745,7 +804,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		}
 
 		dsName = settings.name;
-		dsFetching[ dsName ]--;
+		wasUrl = wasUrl || dsName;
 
 		// Ensure that we do have fetched and merged all urls everything before to move ahead
 		dsFetchIsArray[ dsName ] = dsFetchIsArray[ dsName ] ? dsFetchIsArray[ dsName ] : isArrayResponse;
@@ -754,6 +813,19 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			throw "Can't merge, incompatible JSON type (array vs object)";
 		}
 
+		// Ensure the URL was intended to be fetched
+		for (i in dsFetching[ dsName ] ) {
+			if ( i === wasUrl ) {
+				urlWasFound = true;
+				break;
+			}
+		}
+		if ( !urlWasFound ) {
+			return;
+		}
+
+		// Merge the response
+		dsFetching[ dsName ][ wasUrl ] = JSONresponse;
 		if ( !dsFetchMerged[ dsName ] ) {
 			dsFetchMerged[ dsName ] = JSONresponse;
 		} else if ( dsFetchMerged[ dsName ] && isArrayResponse ) {
@@ -762,9 +834,11 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			dsFetchMerged[ dsName ] = $.extend( dsFetchMerged[ dsName ], JSONresponse );
 		}
 
-		// Quit and wait for the next fetch
-		if ( !isReloading && dsFetching[ dsName ] ) {
-			return;
+		// Ensure that all URL has been loaded before to proceed.
+		for (i in dsFetching[ dsName ] ) {
+			if ( !dsFetching[ dsName ][ i ] ) {
+				return;
+			}
 		}
 
 		JSONresponse = dsFetchMerged[ dsName ];
@@ -842,6 +916,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 				$( "#" + i_cache.callerId ).trigger( {
 					type: "json-fetched.wb",
 					fetch: {
+						url: "#[" + dsName + "]",
 						response: resultSet,
 						status: "200",
 						refId: i_cache.refId,
@@ -922,6 +997,7 @@ $document.on( patchesEvent, selector, function( event ) {
 			$( "#" + i_cache.callerId ).trigger( {
 				type: "json-fetched.wb",
 				fetch: {
+					url: "#[" + dsName + "]",
 					response: resultSet,
 					status: "200",
 					refId: i_cache.refId,
@@ -966,6 +1042,7 @@ $document.on( postponeEvent, function( event ) {
 		$( "#" + callerId ).trigger( {
 			type: "json-fetched.wb",
 			fetch: {
+				url: "#[" + dsName + "]",
 				response: resultSet,
 				status: "200",
 				refId: refId,
