@@ -23,17 +23,24 @@ var $document = wb.doc,
 	postponePreActions = { },
 	postponeActions = { },
 	groupPostAction = { },
+	runAfterActionStack = { },
+	delayedActionQueud = [ ],
 	actionMngEvent = [
 		"mapfilter",
 		"tocsv",
 		"loadJSON",
+		"uploadJSON",
+		"importInDataset",
+		"saveDataSet",
 		"patch",
 		"ajax",
 		"addClass",
 		"removeClass",
+		"setFocus",
 		"tblfilter",
 		"withInput",
-		"run"
+		"run",
+		"test"
 	].join( "." + actionEvent + " " ) + "." + actionEvent,
 
 	patchDefault = {
@@ -97,6 +104,28 @@ var $document = wb.doc,
 			delete i_cache.action;
 		}
 	},
+
+	executeAfterRunAction = function( actionName ) {
+		var actions = runAfterActionStack[ actionName ];
+
+		if ( !actions ) {
+			console.log( actionName );
+			console.log( runAfterActionStack );
+			console.error( "END ERROR EXEC" );
+			return;
+		}
+
+		for ( let act of actions ) {
+			$( act.elm )
+				.addClass( componentName )
+				.trigger( act.event + "." + actionEvent, act.setting )
+				.removeClass( componentName );
+		}
+
+		// Clean any existing action
+		runAfterActionStack[ actionName ] = [];
+	},
+
 	patchAct = function( event, data ) {
 
 		// Prepare patches operation for execution by the json-manager
@@ -118,8 +147,15 @@ var $document = wb.doc,
 			fpath: data.fpath,
 			filter: data.filter || [],
 			filternot: data.filternot || [],
-			cumulative: isCumulative // Ensure the patches would remain as any other future update.
+			cumulative: isCumulative, // Ensure the patches would remain as any other future update.
+			passive: data.passive
 		} );
+
+		// Run sync action if configured by the author
+		if ( data[ "action-name" ] ) {
+			console.log( "Run named action" );
+			executeAfterRunAction( data[ "action-name" ] );
+		}
 
 	},
 	ajaxAct = function( event, data ) {
@@ -169,6 +205,11 @@ var $document = wb.doc,
 			return;
 		}
 		$elm.removeClass( data.class );
+	},
+	setFocusAct = function( event, data ) {
+		var $elm = $( data.source );
+		$elm.attr( "tabindex", "-1" ); // Make it focusable
+		$elm.get( 0 ).focus( { focusVisible: true } );
 	},
 	tblflrAct = function( event, data ) {
 		var elm = event.target,
@@ -307,6 +348,321 @@ var $document = wb.doc,
 		} );
 
 	},
+
+	// Trigger file upload
+	uploadJSON = function( event, data ) {
+
+		var elm = event.currentTarget,
+			fileInput;
+
+		// Ensure the required data is provided
+		if ( !data.source || !data.source.length || !data.asDataset || !data.asDataset.length ) {
+			console.error( "Configuration missing or empty for: 'source' or/and 'asDataset'" );
+			return;
+		}
+
+		// Check if the input is already attached, if so reuse
+		if ( elm.wbBind ) {
+			fileInput = elm.wbBind;
+		} else {
+
+			// Create the file input
+			fileInput = document.createElement('input');
+			fileInput.setAttribute("type", "file");
+			fileInput.setAttribute("hidden", "");
+			fileInput.accept = ".json,.json-ld,application/json";
+
+			// Attach the file upload input
+			elm.parentElement.insertBefore( fileInput, this );
+			fileInput.addEventListener('change', getUploadedFile);
+			fileInput.wbData = data;
+			elm.wbBind = fileInput;
+		}
+
+		// Trigger the upload
+		fileInput.click();
+
+	},
+
+	// Take form input and integrate to JSON manager
+	importInDataset = function( event, data ) {
+
+		var elm = event.currentTarget,
+			processedInputs = 0,
+			nbInputs = 0;
+
+		// Ensure the required data is provided
+		if ( !data.source || !data.source.length ) {
+			console.error( "Configuration missing or empty for: 'source' or/and 'asDataset'" );
+			return;
+		}
+
+
+		console.info( "Action: importInDataset" );
+
+		// console.log( data );
+
+		var inputs;
+
+		if ( data.inputs ) {
+
+			// Resolve that CSS selector
+			inputs = document.querySelectorAll( data.inputs );
+
+		} else {
+			// Get the form inputs
+			inputs = elm.form.elements;
+		}
+		nbInputs = inputs.length;
+
+		// Prepare the patches
+		data.patches = data.patches || [];
+
+
+		// console.log( inputs );
+
+		// Technical note: It don't support multiple selection yet
+		// Support for multiple? Will be an array of "value"
+
+
+		for( var i = 0; i < inputs.length; i++ ) {
+
+			var inField = inputs[ i ],
+				encodeTargetAs,
+				inputValue;
+
+			// Skip the input if not specifically selected and mark as independent input
+			if ( !data.inputs && inField.dataset.independentInput !== false ) {
+				continue;
+			}
+
+
+			// If not named or checked is explicit to false, skip the input
+			if ( !inField.name || ( [ "radio", "checkbox" ].indexOf( inField.type ) !== -1  && inField.checked === false ) ) {
+				continue;
+			}
+
+			encodeTargetAs = inField.dataset.encode;
+
+			// If input is a "file"
+
+			switch ( inField.type ) {
+
+			case "file":
+				var curFiles = inField.files,
+					file,
+					url,
+					fileTypes = [
+						"application/json"
+					],
+					path;
+
+				if (curFiles.length === 0) {
+					break; // No file selected
+				}
+
+				if ( !inField.accept || inField.accept === "" ) {
+					console.error( "An accept attribute must be defined on input[type=file]" );
+					console.log( inField );
+					break;
+				}
+
+				// TODO: Add support for "multiple"
+				// Adjust the number of inputs being processed (if multiple selected)
+				/*nbInputs = nbInputs + curFiles.length - 1;
+
+				if ( curFiles.length )  {
+					// TODO: Ensure the location is an array
+				}
+
+				// for (file of curFiles) {
+				*/
+				file = curFiles[ 0 ];
+				path = inField.name;
+
+
+				switch (encodeTargetAs) {
+
+				case "json":
+					file.text().then( function( txt ) {
+
+						try {
+							txt = JSON.parse( txt );
+						} catch ( ex ) {
+
+							// Need a way to manage error generated by an action from the outside
+							console.error( "Uploaded file is not a valid JSON file" );
+							console.error( ex );
+							return;
+						}
+
+						// Encode in Base64 + attach the file
+						data.patches.push(
+							{
+								op: "add",
+								path: path,
+								value: txt
+							}
+						);
+						processedInputs = processedInputs + 1;
+
+						if ( processedInputs === nbInputs ) {
+
+							// Execute a patch to the dataset
+							patchAct( event, data );
+
+							// Run sync action if configured by the author
+							if ( data[ "action-name" ] ) {
+								console.log( "Run named action" );
+								executeAfterRunAction( data[ "action-name" ] );
+							}
+						}
+					} );
+
+				case "base64":
+				default:
+					file.arrayBuffer().then( function( arrBuff ) {
+
+						// Encode in Base64 + attach the file
+						data.patches.push(
+							{
+								op: "add",
+								path: path,
+								value: "data:" + file.type + ";base64," + wb.string.arrayBufferToBase64( arrBuff )
+							}
+						);
+						processedInputs = processedInputs + 1;
+
+						if ( processedInputs === nbInputs ) {
+
+							// Execute a patch to the dataset
+							patchAct( event, data );
+
+							// Run sync action if configured by the author
+							if ( data[ "action-name" ] ) {
+								console.log( "Run named action" );
+								executeAfterRunAction( data[ "action-name" ] );
+							}
+						}
+					} );
+				}
+
+				break;
+
+			default:
+
+				switch ( encodeTargetAs ) {
+
+				case "json":
+					try {
+						inputValue = JSON.parse( inField.value );
+					} catch ( ex ) {
+
+						// Need a way to manage error generated by an action from the outside
+						console.error( "Parsed JSON content are not valid" );
+						console.error( ex );
+						return;
+					}
+				default:
+					inputValue = inField.value;
+				}
+
+				processedInputs = processedInputs + 1;
+				var patch = {
+						op: "add",
+						path: inField.name,
+						value: inputValue
+					};
+
+				data.patches.push( patch );
+			}
+
+			if ( inField.dataset.cleanOnImport !== undefined ) {
+				inField.value = "";
+			}
+
+		}
+
+
+		if ( processedInputs === nbInputs ) {
+			// Execute a patch to the dataset
+			patchAct( event, data );
+
+			// Run sync action if configured by the author
+			if ( data[ "action-name" ] ) {
+				executeAfterRunAction( data[ "action-name" ] );
+			}
+		}
+
+	},
+
+	// Save JSON manager into LocalHost or SessionStorage (Session will be best)
+	saveDataSet = function( event, data ) {
+
+		var elm = event.currentTarget;
+
+		// Ensure the required data is provided
+		if ( !data.source || !data.source.length ) {
+			console.error( "Configuration missing or empty for: 'source' or/and 'asDataset'" );
+			return;
+		}
+
+		console.log( "Saving the dataset" );
+		console.log( data );
+
+		// Save the dataset into the local storage.
+		// Use the dataset name as the key
+		// Prefix key: with "wb-jsonmngr"
+		// Should we add a little registry? For maintenance + Debug + Ensure the integrity of the data
+		//	* Dataset name
+		//	* Updated date
+		//  * Current pageURL signature?
+		//	* Data signature (Verifiable Claim?)
+
+		// Call JSON-Manager to save in Localhost
+
+		$( data.source ).trigger( {
+			type: "save.wb-jsonmanager",
+			metadata: data
+		} );
+
+	},
+
+	getUploadedFile = function () {
+
+		var curFiles = this.files,
+			file,
+			data = this.wbData,
+			url,
+			fileTypes = [
+				"application/json"
+			];
+
+		if (curFiles.length === 0) {
+			console.log( "No file selected" );
+			return;
+		}
+
+		for (file of curFiles) {
+
+			if ( !fileTypes.includes( file.type ) ) {
+				console.error( "File format not accepted" );
+				continue;
+			}
+
+			url = URL.createObjectURL( file );
+
+			// Trigger a JSON load on the source
+			$( data.source ).trigger( {
+				type: "json-fetch.wb",
+				fetch: {
+					url: url,
+					asDataset: data.asDataset
+				}
+			} );
+		}
+	},
+
 
 	// From a user input or a predefined input, apply some tranformation to the command prior to execute it
 	// This functionality was already in the URL mapping and was moved here to be reused by any user input
@@ -474,6 +830,15 @@ var $document = wb.doc,
 			}
 			$elm.removeClass( runCssFlag );
 		}
+	},
+
+	test = function( event, data ) {
+
+		console.info( "Action TEST - Logging parameter: element, data, event" )
+		console.log( event.target );
+		console.log( data );
+		console.log( event );
+
 	};
 
 // Main entry to submit wet-boew plugin actions
@@ -483,7 +848,8 @@ $document.on( "do." + actionEvent, function( event ) {
 		$elm, elmID = elm.id,
 		actions = event.actions || [ ],
 		i, i_len, i_cache,
-		i_action, i_target, i_trggrp;
+		i_action, i_target, i_trggrp,
+		delayCounter = 0;
 
 	// Filter out any events triggered by descendants
 	if ( ( elm === event.target || event.currentTarget === event.target ) && elm.className.indexOf( componentName ) === -1 ) {
@@ -504,6 +870,35 @@ $document.on( "do." + actionEvent, function( event ) {
 		if ( elmID && postponePreActions[ elmID ] ) {
 			executePostAction( $elm, elmID, postponePreActions );
 		}
+
+		// To avoid the racing condition of making multiple action on the same plugin, let's sort the action by priority order
+		// delayedActionQueud.push( ACTION ) + Call a setTimeout for making the delay OR can we chain it?
+
+		// Stack aside all the action that need to run after
+		for ( i = 0; i !== i_len; i += 1 ) {
+			i_cache = actions[ i ];
+
+			i_action = i_cache.action;
+			if ( !i_action ) {
+				continue;
+			}
+
+			if ( i_cache[ "run-after" ] ) {
+
+				if ( !runAfterActionStack[ i_cache[ "run-after" ] ] ) {
+					runAfterActionStack[ i_cache[ "run-after" ] ] = [ ];
+				}
+				runAfterActionStack[ i_cache[ "run-after" ] ].push( {
+					elm: $elm.get( 0 ),
+					event: i_action,
+					setting: i_cache
+				} );
+
+				console.info( "Action put aside for sequential execution" );
+				console.log( i_cache );
+			}
+		}
+
 
 		for ( i = 0; i !== i_len; i += 1 ) {
 			i_cache = actions[ i ];
@@ -528,7 +923,12 @@ $document.on( "do." + actionEvent, function( event ) {
 					addDelayedAction( i_trggrp, groupPostAction, i_cache );
 				}
 			} else {
-				$elm.trigger( i_action + "." + actionEvent, i_cache );
+
+				// Check if this action must be put in sequence to another action
+				if ( !i_cache[ "run-after" ] ) {
+					console.log( "Trigger: " + i_action + "." + actionEvent );
+					$elm.trigger( i_action + "." + actionEvent, i_cache );
+				}
 			}
 		}
 
@@ -560,6 +960,10 @@ $document.on( "clean." + actionEvent, function( event ) {
 
 $document.on( actionMngEvent, selector, function( event, data ) {
 
+	console.log( "Action received" );
+	console.log( event );
+	console.log( data );
+
 	var eventType = event.type;
 
 	if ( actionEvent === event.namespace ) {
@@ -576,6 +980,9 @@ $document.on( actionMngEvent, selector, function( event, data ) {
 		case "removeClass":
 			remClassAct( event, data );
 			break;
+		case "setFocus":
+			setFocusAct( event, data );
+			break;
 		case "ajax":
 			ajaxAct( event, data );
 			break;
@@ -591,8 +998,20 @@ $document.on( actionMngEvent, selector, function( event, data ) {
 		case "loadJSON":
 			loadJSON( data );
 			break;
+		case "uploadJSON":
+			uploadJSON( event, data );
+			break;
+		case "importInDataset":
+			importInDataset( event, data );
+			break;
+		case "saveDataSet":
+			saveDataSet( event, data );
+			break;
 		case "withInput":
 			withInput( event, data );
+			break;
+		case "test":
+			test( event, data );
 			break;
 		}
 	}
