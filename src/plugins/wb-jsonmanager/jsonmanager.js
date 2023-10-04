@@ -19,6 +19,7 @@ var componentName = "wb-jsonmanager",
 	initEvent = "wb-init." + componentName,
 	postponeEvent = "postpone." + componentName,
 	patchesEvent = "patches." + componentName,
+	saveEvent = "save." + componentName,
 	jsonFailedClass = "jsonfail",
 	reloadFlag = "data-" + componentName + "-reload",
 	dsNameRegistered = [],
@@ -166,7 +167,7 @@ var componentName = "wb-jsonmanager",
 				fn: function( obj, key, tree ) {
 					var val = obj[ key ],
 						ref = this.ref,
-						mainTree = this.mainTree || obj,
+						mainTree = this.mainTree || tree,
 						path = this.path,
 						newVal,
 						refObject, refIsArray, valWasArray,
@@ -189,8 +190,19 @@ var componentName = "wb-jsonmanager",
 							i_item = val[ i ];
 							newVal = undefined; // Reinit
 							if ( !refIsArray ) {
+
+								/*
+									This change was about to support in replacing/specifying the earl:subject, but whatever for now.
+								*/
 								i_item = i_item.replaceAll( "~", "~0" ).replaceAll( "/", "~1" ); // Escape slashed and tilde in val when the key is an IRI for JSON pointer compatibility
-								newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + i_item ) : jsonpointer.get( tree, ref + "/" + i_item );
+								if ( refObject && refObject[ "@id" ] && refObject[ "@id" ] === i_item ) {
+									newVal = refObject;
+								} else if ( refObject && refObject[ "@id" ] ) {
+
+									// There is no match, leave it as is
+								} else {
+									newVal = mainTree ? jsonpointer.get( mainTree, ref + "/" + i_item ) : jsonpointer.get( tree, ref + "/" + i_item );
+								}
 							} else {
 
 								// Iterate until we found a corresponding value in the property "@id"
@@ -284,7 +296,8 @@ var componentName = "wb-jsonmanager",
 
 	// Add debug information after the JSON manager element
 	debugPrintOut = function( $elm, name, json, patches ) {
-		$elm.after( "<p lang=\"en\"><strong>JSON Manager Debug</strong> (" +  name + ")</p><ul lang=\"en\"><li>JSON: <pre><code>" + JSON.stringify( json ) + "</code></pre></li><li>Patches: <pre><code>" + JSON.stringify( patches ) + "</code></pre>" );
+		$elm.after( "<p lang=\"en\"><strong>" + $elm.get( 0 ).id + " - JSON Manager Debug</strong> (" +  name + ")</p><ul lang=\"en\"><li>JSON: <pre><code>" + JSON.stringify( json, null, 2 ) + "</code></pre></li><li>Patches: <pre><code>" + JSON.stringify( patches, null, 2 ) + "</code></pre>" );
+		console.info( "Debug: " + $elm.get( 0 ).id );
 		console.log( json );
 	},
 
@@ -302,7 +315,7 @@ var componentName = "wb-jsonmanager",
 			jsSettings = window[ componentName ] || { },
 			ops, opsArray, opsRoot,
 			i, i_len, i_cache,
-			url, urlActual, dsName,
+			url, urlActual, dsName, urlSplit, fetchedRef,
 			fetchOpts = { };
 
 		if ( elm ) {
@@ -356,13 +369,12 @@ var componentName = "wb-jsonmanager",
 					dsNameRegistered.push( dsName );
 
 					url = elmData.url;
+					dsFetching[ dsName ] = {};
 
 					if ( url ) {
 
 						url = typeof url === "string" ? [ url ] : url;
 						i_len = url.length;
-
-						dsFetching[ dsName ] = i_len;
 
 						for ( i = 0; i !== i_len; i++ ) {
 
@@ -370,6 +382,7 @@ var componentName = "wb-jsonmanager",
 
 							// Fetch default configuration
 							fetchOpts = {
+								callerId: elm.id,  // This change is a bug fix that prevented to chain multiple JSON manager
 								nocache: elmData.nocache,
 								nocachekey: elmData.nocachekey,
 								data: elmData.data,
@@ -385,6 +398,16 @@ var componentName = "wb-jsonmanager",
 								fetchOpts.url = urlActual;
 							}
 
+							// Figure out the fetching reference for this dataset, one reference by URLs. (Note: CharCode 91 === "["
+							urlSplit = fetchOpts.url.split( "#" );
+							fetchedRef = urlSplit[ 0 ];
+							if ( !fetchedRef &&  urlSplit[ 1 ].charCodeAt( 0 ) === 91 ) {
+
+								// Extract and use the dataset name as the reference
+								fetchedRef = "#[" + urlSplit[ 1 ].split( "/" )[ 0 ] + "]"; // This change is a bug fix that prevented to chain multiple JSON manager
+							}
+							dsFetching[ dsName ][ fetchedRef ] = false;
+
 							// Fetch the JSON
 							$elm.trigger( {
 								type: "json-fetch.wb",
@@ -397,6 +420,7 @@ var componentName = "wb-jsonmanager",
 							}
 						}
 					} else if ( !url && elmData.extractor ) {
+						dsFetching[ dsName ][ dsName ] = false;
 						$elm.trigger( {
 							type: "json-fetched.wb",
 							fetch: {
@@ -405,8 +429,11 @@ var componentName = "wb-jsonmanager",
 						} );
 						wb.ready( $elm, componentName );
 
+					} else if ( !url && elmData.load ) {
+						loadFromStorage( ( elmData.load === "local" ? localStorage : sessionStorage ), $elm, dsName );
+						wb.ready( $elm, componentName );
 					} else {
-
+						dsFetching[ dsName ][ dsName ] = false;
 						$elm.trigger( {
 							type: "json-fetch.wb"
 						} );
@@ -416,6 +443,55 @@ var componentName = "wb-jsonmanager",
 				}
 			} );
 		}
+	},
+	loadFromStorage = function( storage, $elm, dsName ) {
+		var storageLoad;
+
+		dsFetching[ dsName ][ dsName ] = false;
+
+		storageLoad = storage.getItem( "ds-[" + dsName + "]" );
+
+		// Check if the storage item do exist
+		if ( !storageLoad ) {
+
+			// Throw a fetch error
+			$elm.trigger( {
+				type: "json-failed.wb",
+				fetch: {
+					url: "#storage",
+					xhr: {},
+					status: "500",
+					error: "Data was not found in storage as expected"
+				}
+			} )
+			return;
+		}
+
+		// Try parsing the value from the storage
+		try {
+			storageLoad = JSON.parse( storageLoad );
+		} catch ( ex ) {
+
+			// Throw a fetch error
+			$elm.trigger( {
+				type: "json-failed.wb",
+				fetch: {
+					url: "#storage",
+					xhr: {},
+					status: "500",
+					error: "JSON parsing error. The data seems corrupted in the store."
+				}
+			} );
+			return;
+		}
+
+		// All good, let trigger a normal fetch
+		$elm.trigger( {
+			type: "json-fetched.wb",
+			fetch: {
+				response: storageLoad
+			}
+		} );
 	},
 	extractData = function( elmObj ) {
 
@@ -692,11 +768,57 @@ var componentName = "wb-jsonmanager",
 
 $document.on( "json-failed.wb", selector, function( event ) {
 	var elm = event.target,
-		$elm;
+		$elm,
+		fetchOpts = event.fetch,
+		urlSplit = fetchOpts.url.split( "#" ),
+		settings, urlSplit, fetchedRef,
+		dsName,
+		backlog, i, i_len, i_cache;
 
 	if ( elm === event.currentTarget ) {
 		$elm = $( elm );
 		$elm.addClass( jsonFailedClass );
+
+		settings = wb.getData( $elm, componentName );
+		dsName = settings.name;
+
+		// Let invalidate the graph represented by the alias
+		if ( !dsFetching[ dsName ] ) {
+			dsFetching[ dsName ] = {};
+		}
+		fetchedRef = urlSplit[ 0 ];
+		if ( !fetchedRef &&  urlSplit[ 1 ].charCodeAt( 0 ) === 91 ) {
+
+			// Extract and use the dataset name as the reference
+			fetchedRef = "#" + urlSplit[ 1 ];
+
+		}
+		dsFetching[ dsName ][ fetchedRef ] = false;
+
+		dsName = "[" + dsName + "]"; // Dataset unique name
+
+		// Notify the binded data-json of the failure and return the current compiled data
+		if ( dsDelayed[ dsName ] ) {
+			backlog = dsDelayed[ dsName ];
+			i_len = backlog.length;
+			for ( i = 0; i !== i_len; i += 1 ) {
+				i_cache = backlog[ i ];
+				$( "#" + i_cache.callerId ).trigger( {
+					type: "json-failed.wb",
+					fetch: {
+						url: fetchedRef,
+						response: dsFetchMerged[ dsName ] || {},
+						status: fetchOpts.status,
+						error: fetchOpts.error,
+						refId: i_cache.refId,
+						xhr: fetchOpts.xhr,
+						fetchOpts: fetchOpts
+					}
+				}, this );
+			}
+		}
+
+
 
 		// Identify that initialization has completed
 		wb.ready( $elm, componentName );
@@ -708,6 +830,8 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		$elm = $( elm ),
 		settings,
 		fetchedOpts = event.fetch.fetchedOpts,
+		wasUrl = event.fetch.url,
+		urlWasFound = false,
 		isReloading = elm.hasAttribute( reloadFlag ),
 		dsName,
 		JSONresponse = event.fetch.response,
@@ -745,7 +869,7 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		}
 
 		dsName = settings.name;
-		dsFetching[ dsName ]--;
+		wasUrl = wasUrl || dsName;
 
 		// Ensure that we do have fetched and merged all urls everything before to move ahead
 		dsFetchIsArray[ dsName ] = dsFetchIsArray[ dsName ] ? dsFetchIsArray[ dsName ] : isArrayResponse;
@@ -754,6 +878,19 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			throw "Can't merge, incompatible JSON type (array vs object)";
 		}
 
+		// Ensure the URL was intended to be fetched
+		for (i in dsFetching[ dsName ] ) {
+			if ( i === wasUrl ) {
+				urlWasFound = true;
+				break;
+			}
+		}
+		if ( !urlWasFound ) {
+			return;
+		}
+
+		// Merge the response
+		dsFetching[ dsName ][ wasUrl ] = JSONresponse;
 		if ( !dsFetchMerged[ dsName ] ) {
 			dsFetchMerged[ dsName ] = JSONresponse;
 		} else if ( dsFetchMerged[ dsName ] && isArrayResponse ) {
@@ -762,9 +899,11 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			dsFetchMerged[ dsName ] = $.extend( dsFetchMerged[ dsName ], JSONresponse );
 		}
 
-		// Quit and wait for the next fetch
-		if ( !isReloading && dsFetching[ dsName ] ) {
-			return;
+		// Ensure that all URL has been loaded before to proceed.
+		for (i in dsFetching[ dsName ] ) {
+			if ( !dsFetching[ dsName ][ i ] ) {
+				return;
+			}
 		}
 
 		JSONresponse = dsFetchMerged[ dsName ];
@@ -802,7 +941,17 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 
 		// Apply the patches
 		if ( patches.length ) {
-			jsonpatch.apply( JSONresponse, patches );
+			//try {
+				jsonpatch.apply( JSONresponse, patches );
+			/*} catch ( ex ) {
+				console.error( "Error when applying patches" );
+				console.error( elm );
+				console.info( "Patches:" );
+				console.info( patches );
+				console.info( "Dataset:" );
+				console.info( JSONresponse );
+				return;
+			}*/
 		}
 
 		if ( settings.debug ) {
@@ -839,9 +988,11 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 				} else {
 					resultSet = JSONresponse;
 				}
+
 				$( "#" + i_cache.callerId ).trigger( {
 					type: "json-fetched.wb",
 					fetch: {
+						url: "#[" + dsName + "]",
 						response: resultSet,
 						status: "200",
 						refId: i_cache.refId,
@@ -865,6 +1016,7 @@ $document.on( patchesEvent, selector, function( event ) {
 		filterTrueness = event.filter || [],
 		filterFaslseness = event.filternot || [],
 		isCumulative = !!event.cumulative,
+		passiveUpdate = !!event.passive,
 		settings,
 		dsName,
 		dsJSON, resultSet,
@@ -902,7 +1054,11 @@ $document.on( patchesEvent, selector, function( event ) {
 		jsonpatch.apply( dsJSON, patches );
 
 		if ( settings.debug ) {
-			debugPrintOut( $elm, "patchesEvent", dsJSON, patches );
+			debugPrintOut( $elm, "patchesEvent" + ( passiveUpdate ? " -passive" : "" ), dsJSON, patches );
+		}
+
+		if ( passiveUpdate ) {
+			return;
 		}
 
 		delayedLst = dsDelayed[ dsName ];
@@ -922,6 +1078,7 @@ $document.on( patchesEvent, selector, function( event ) {
 			$( "#" + i_cache.callerId ).trigger( {
 				type: "json-fetched.wb",
 				fetch: {
+					url: "#[" + dsName + "]",
 					response: resultSet,
 					status: "200",
 					refId: i_cache.refId,
@@ -932,6 +1089,52 @@ $document.on( patchesEvent, selector, function( event ) {
 	}
 } );
 
+// I need to Save, Load, Export and Import
+// To save a JSON dataset in a local storage
+$document.on( saveEvent, function( event ) {
+
+	console.log( event );
+
+	var elm = event.target,
+		$elm = $( elm ),
+		data = event.metadata,
+		dsName,
+		mode = data.mode,
+		fileName,
+		settings;
+
+	settings = wb.getData( $elm, componentName );
+
+	if ( !settings ) {
+		return true;
+	}
+	dsName = "[" + settings.name + "]";
+
+	if ( !settings.name || !datasetCache[ dsName ] ) {
+		throw "A valid dataset name must be specified";
+	}
+
+	// Storage option
+	switch ( mode ) {
+
+	case "download":
+		fileName = data.fname || dsName.slice( 1, -1) + ".json",
+		wb.download( new Blob( [ JSON.stringify( datasetCache[ dsName ], null, 2 ) ], { type: "application/json;charset=utf-8" } ), fileName );
+		break;
+
+	case "local":
+		localStorage.setItem( "ds-" + dsName, JSON.stringify( datasetCache[ dsName ] ) );
+		console.log( "Saved in local" );
+		break;
+
+	case "session":
+	default:
+		sessionStorage.setItem( "ds-" + dsName, JSON.stringify( datasetCache[ dsName ] ) );
+		console.log( "Saved in session" );
+		break;
+	}
+
+} );
 
 // Used by the JSON-fetch plugin for when trying fetching a resource that is mapped a dataset name
 $document.on( postponeEvent, function( event ) {
@@ -955,6 +1158,7 @@ $document.on( postponeEvent, function( event ) {
 
 	// Send the data if the dataset is ready?
 	if ( datasetCache[ dsName ] && !datasetCacheSettings[ dsName ].wait ) {
+
 		resultSet = datasetCache[ dsName ];
 		if ( selector.length ) {
 			try {
@@ -966,6 +1170,7 @@ $document.on( postponeEvent, function( event ) {
 		$( "#" + callerId ).trigger( {
 			type: "json-fetched.wb",
 			fetch: {
+				url: "#[" + dsName + "]",
 				response: resultSet,
 				status: "200",
 				refId: refId,

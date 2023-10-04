@@ -1,0 +1,234 @@
+---
+{
+	"title": "ACR assessment preparation - Accessibility Conformance Report Methodology",
+	"language": "en",
+	"category": "Other",
+	"description": "Provides a baseline assessment report required to produce an assessment conformance report. This is part of the ACR methodology compatible with the EN 301 549 standard and WCAG 2.1 guideline",
+	"tag": "acr",
+	"parentdir": "acr",
+	"altLangPage": "assess-prep-fr.html",
+	"css": ["demo/acr"],
+	"js": ["demo/acr"],
+	"dateModified": "2023-04-25"
+}
+---
+
+<p>Instruction:</p>
+<ol>
+	<li>Fill out the information about the assessment</li>
+	<li>Save the JSON baseline output code sample</li>
+	<li>Update each items in the results array</li>
+	<li>Optional - Update the assessment summary</li>
+	<li>Submit your modified JSON file via GitHub PR</li>
+</ol>
+
+<hr />
+
+<fieldset>
+	<legend>Select assessment type</legend>
+	<label>
+		Select a baseline ruleset
+		<select>
+			<optgroup label="Technical assessment">
+				<option value="">WCAG 2.1 Level AA Success Criterion</option>
+				<option value="">EN 301 549</option>
+				<option value="">Level AAA Delta WCAG 2.1 Success Criterion</option>
+				<option value="">Delta from WCAG 2.0 to WCAG 2.1 Level AA Success Criterion</option>
+				<option value="">Delta as 2022-09 from WCAG 2.1 to of WCAG 2.2 Level AA Success Criterion</option>
+				<option value="">Delta as 2023-04 from WCAG 2.1 to of WCAG 2.2 Level AA Success Criterion</option>
+			</optgroup>
+			<optgroup label="Thematic">
+				<option value="">Images and non text content</option>
+			</optgroup>
+			<optgroup label="Preliminary assessment">
+				<option value="">Identifying applicable WCAG 2.1 Level AA Success Criterion</option>
+			</optgroup>
+		</select>
+	</label>
+	<p><a href="https://github.com/wet-boew/act-rules/">ACT rules GitHub repository</a></p>
+</fieldset>
+
+<fieldset>
+	<legend>Subject</legend>
+		<label>Type of document
+			<select>
+				<option>Web</option>
+				<option>Component in a web page</option>
+				<option>Non-web document</option>
+				<option>ICT with two-way voice communication</option>
+				<option>ICT with video capabilities</option>
+				<option>Hardware</option>
+				<option>Software</option>
+				<option>Documentation and support services</option>
+				<option>ICT providing relay or emergency service access</option>
+			</select>
+		</label>
+		<label>Stable URL representing the subject: <input type="url"></label>
+		<label>(Optional) Applicability: <input></label>
+</fieldset>
+
+
+<fieldset>
+	<legend>Assessor</legend>
+		<label>Organisation name: <input></label>
+		<label>Organisation URL: <input type="url"></label>
+		<label>Your name: <input></label>
+		<label>Your home page URL (ex. Github): <input type="url"></label>
+</fieldset>
+
+<label>Date: <input type="date"></label>
+
+<button type="submit">Generate the baseline report</button>
+
+<h3>JSON baseline code sample</h3>
+
+<ouput><pre><code>{
+	"@context": "https://wet-boew.github.io/vocab/context/2023/conformance-report.json-ld",
+
+	"@type": "earl:Assertion",
+
+	"subject": {
+		"@type": "earl:TestSubject",
+		"@id": "https://example.com/url/of/the/page/being/assessed"
+
+		"applicability": "Describe what parts of the test subject are tested (ACT Rules Format Section 4.6)"
+	},
+
+	"assertedBy": {
+		"name": "{Name of the department} - {Name of the organization}",
+		"@id": "https://example.com/url/identifying/the/departement",
+		"@type": ["earl:Assertor", "foaf:Organization"],
+		"producedBy": {
+			"name": "{Full name of the accessor} ({Social media name}: @{Social media handle})",
+			"@id": "https://example.com/url/identifying/the/accessor/on/its/social-media",
+			"@type": ["earl:Assertor", "foaf:Person"]
+		}
+	},
+	"date": "2023-12-31",
+
+	"summary": "{General summary or/and notes made by the assertor regarding this assessment, observation or/and comments which will help provide more context and improve the understanding of the assessment result itself. Also, any note that impact the conformance beyond the tested success criteria which are defined under '5. Conformance' in WCAG 2.x}",
+
+	"earl:test": "@id to the composite ACT rule which this Assessment match",
+	"wb-acr:baseline": "@id of the predefined ruleset used for building this assessment OR @id of a preliminary assessment where further test are made",
+
+	"earl:mode": "When the mode is globally applicable to this assessment"
+
+	"results": [
+		{
+			// a test with a reference to an ACT rule
+		},
+		{
+			// a composite test
+			"@type": [ "earl:TestCase", "wb-acr:CompositeTest", "act-rules:composite-rules" ]
+
+			"results": [
+				{
+					// an atomic test
+					"@type": [ "earl:TestCase", "wb-acr:AtomicTest", "act-rules:atomic-rules" ]
+				}
+			]
+		},
+		{
+			// a test
+		}
+	]
+}</code></pre></output>
+
+<!--
+
+Namespace for EN 301 549 standard: https://www.etsi.org/deliver/etsi_en/301500_301599/301549/
+
++++++
+
+// Load the Ruleset
+
+
+
+// Identify the subject
+
+// Identify the assessor
+
+// Perform the assessement
+
+
+// Export
+
++++++++++++=
+
+Completing ARC
+
+// Load requirements ruleset
+
+// Load assessments
+
+// Identify the auditor
+
+// Make the review
+
+// Check if requirement are satisfied
+
+// Add Work items
+
+-->
+
+
+
+
+
+<!-- Code sample of the Edit a SC could look like -->
+
+<form action="URL/of/the/previous/page.html" method="GET">
+
+<div data-json-manager=' {
+	"load-from-storage": "Flag to know if we expect to load data from storage."
+}'></div>
+
+<label>Description: <input type="text" name="dct:description" value="something"></label>
+<label>Severity: <input type="text" name="acr:severity" value="something"></label>
+
+<button type="submit" data-do-action='[
+	{
+		"action": "data-save-to-input",
+		"json-manager": "ID to JSON manager",
+		"pointer": "/data/pointer/array/ {{ idx }} /",
+		"Flag-no-data-fetch": "Flag to enforce to not trigger automatic update once the data is updated",
+		"Flag-if-we-remove|keep-input-on-submit": "Flag to ensure we do have a clean GET submission url. Only the matching input are removed, not the others.",
+		"note-": "this.form.inputs are used to match name with properties. Every name are just JSON pointers relative to this action pointer"
+	},
+	{
+		"action": "data-save-local",
+		"json-manager": "ID of the JSON manager",
+		"local-name": "Humm, set a local storage name, but we can probably use the dataset name.... if not defined.",
+		"current-session-only": "Indicator if we should use the session storage instead of the local storage"
+	}
+]'>
+	Save
+</button>
+
+
+<button type="submit">Cancel</button>
+
+</form>
+
+
+<!-- DAta JSON code
+
+"mapping": [
+			{ "selector": "[testitm]", "value": "/iterator:index", "attr": "index" },
+
+
+<template id="tmpl-result">
+	<table>
+		<tr>
+			<th data-label></th>
+			<th><button class="btn btn-default" data-index data-do-action="{ }">
+					<wb-config component="do-action">
+						<wb-config testitm action="saveitem" index></wb-config>
+					</wb-config>
+
+					Edit this SC
+				</button> <span data-label></span></th>
+			<td><span data-outcome></span></td>
+
+-->
+
