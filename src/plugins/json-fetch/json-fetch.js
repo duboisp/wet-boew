@@ -20,6 +20,9 @@ var $document = wb.doc,
 	jsonCache = { },
 	jsonCacheBacklog = { },
 	completeJsonFetch = function( callerId, refId, response, status, xhr, selector, fetchedOpts ) {
+
+		var urlFetched = fetchedOpts.url;
+
 		if ( !window.jsonpointer ) {
 
 			// JSON pointer library is loaded but not executed in memory yet, we need to wait a tick before to continue
@@ -37,9 +40,17 @@ var $document = wb.doc,
 				console.error( $( "#" + callerId ).get( 0 ) );
 			}
 		}
+
+
+		// Is this fetch are a masked dataset
+		if ( fetchedOpts.asDataset ) {
+			urlFetched = "#[" + fetchedOpts.asDataset + "]";
+		}
+
 		$( "#" + callerId ).trigger( {
 			type: "json-fetched.wb",
 			fetch: {
+				url: urlFetched,
 				response: response,
 				status: status,
 				xhr: xhr,
@@ -189,10 +200,19 @@ $document.on( fetchEvent, function( event ) {
 
 					} )
 					.fail( function( xhr, status, error ) {
+						var urlFetched = fetchOpts.url;
+
 						xhr.responseText = DOMPurify.sanitize( xhr.responseText );
+
+						// Is this fetch are a masked dataset
+						if ( fetchOpts.asDataset ) {
+							urlFetched = "#[" + fetchOpts.asDataset + "]";
+						}
+
 						$( "#" + callerId ).trigger( {
 							type: "json-failed.wb",
 							fetch: {
+								url: urlFetched,
 								xhr: xhr,
 								status: status,
 								error: error,
