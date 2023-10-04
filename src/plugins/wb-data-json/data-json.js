@@ -270,7 +270,8 @@ var componentName = "wb-data-json",
 		var i, i_len, i_cache,
 			elmAppendTo = elm,
 			clone, template,
-			dataTable, dataTableAddRow;
+			dataTable, dataTableAddRow,
+			iteratorPrefix = mappingConfig.iteratorPrefix || "_:iterator#";
 
 		if ( mappingConfig.appendto ) {
 			elmAppendTo = $( mappingConfig.appendto ).get( 0 );
@@ -328,6 +329,14 @@ var componentName = "wb-data-json",
 		for ( i = 0; i < i_len; i += 1 ) {
 			i_cache = content[ i ];
 
+			// Embed iterator information (Need to tweak prev and next because of the "filterPass" operation
+			if ( i > 0 ) {
+				i_cache[ iteratorPrefix + "prev" ] = i - 1;
+			}
+			if ( i + 1 !== i_len ) {
+				i_cache[ iteratorPrefix + "next" ] = i + 1;
+			}
+			i_cache[ iteratorPrefix ] = i;
 
 			// If the data are filtered. This is deprecated and are only for backward compatible purpose
 			if ( !filterPassJSON( i_cache, mappingConfig.filter, mappingConfig.filternot ) ) {
