@@ -417,12 +417,120 @@ var $document = wb.doc,
 		// Support for multiple? Will be an array of "value"
 
 
-		for( var i = 0; i < inputs.length; i++ ) {
+		var arrInputToProcess = [];
 
-			var inField = inputs[ i ],
+		// Get the grouped inputs
+		for( var i = 0; i < inputs.length; i++ ) {
+			var inField = inputs[ i ];
+
+			// The input was already processed
+			if ( inField.wbImported ) {
+				delete inField.wbImported;
+				continue;
+			}
+
+			// Skip the input if not specifically selected and mark as independent input
+			if ( !data.inputs && inField.dataset.independentInput !== undefined ) {
+				processedInputs = processedInputs + 1;
+				continue;
+			}
+
+			// If not named or checked is explicit to false, skip the input
+			if ( !( inField.name || inField.dataset.path ) || ( [ "radio", "checkbox" ].indexOf( inField.type ) !== -1  && inField.checked === false ) ) {
+				processedInputs = processedInputs + 1;
+				continue;
+			}
+
+			if ( inField.type === "fieldset" && inField.dataset.path && inField.dataset.templateObject ) {
+
+				// Process its inner input as they are going to be the object to add at the specified path
+				// Only support plain input
+
+				var innerElements = inField.elements,
+					patches = [],
+					compiledValue;
+
+
+				// Let's process the inner elements, as we do want them to be mark as processed<
+				// This logic don't support fieldset inside fieldset yet. For that we will need a recursive function
+
+				for ( var j = 0; j < innerElements.length; j++ ) {
+
+					var inputElement = innerElements[ j ];
+					inputElement.wbImported = true;
+					processedInputs = processedInputs + 1;
+
+					if (
+
+						( !data.inputs && inputElement.dataset.independentInput !== undefined ) ||
+						!inputElement.dataset.path ||
+						( [ "radio", "checkbox" ].indexOf( inputElement.type ) !== -1  && inputElement.checked === false ) ) {
+
+						continue;
+					}
+
+					var innerElemValue = [ inputElement ];
+
+					if ( inputElement.selectedOptions ) {
+						innerElemValue = inputElement.selectedOptions;
+					}
+
+					for ( var m = 0; m < innerElemValue.length; m++ ) {
+
+						var option = innerElemValue[ m ],
+							optionVal = option.value;
+
+						if ( optionVal === "" && inputElement.dataset.voidEmpty !== "undefined" ) {
+							continue;
+						}
+
+						patches.push( {
+							op: "add",
+							path: inputElement.dataset.path,
+							value: optionVal
+						} );
+					}
+				}
+
+				console.log( patches );
+
+				// If there is no sub-items to add, let's skip it
+				if ( !patches.length ) {
+					processedInputs = processedInputs + 1;
+					continue;
+				}
+
+				// Check if the templateObject is ok
+				var compiledValue = {};
+
+				try {
+					compiledValue = JSON.parse( inField.dataset.templateObject );
+				} catch ( ex ) {
+					console.error( inField );
+					console.error( "JSON error for the value of the template object" );
+				}
+
+
+				jsonpatch.apply( compiledValue, patches );
+
+				inField.value = compiledValue;
+			}
+
+			arrInputToProcess.push( inField );
+		}
+
+		console.log( "arrInputToProcess" );
+		console.log( arrInputToProcess );
+
+
+		// Process individual inputs
+		for( var i = 0; i < arrInputToProcess.length; i++ ) {
+
+			var inField = arrInputToProcess[ i ],
 				encodeTargetAs,
 				inputValue;
 
+			/*
 			// Skip the input if not specifically selected and mark as independent input
 			if ( !data.inputs && inField.dataset.independentInput !== undefined ) {
 				processedInputs = processedInputs + 1;
@@ -434,7 +542,7 @@ var $document = wb.doc,
 			if ( !inField.name || ( [ "radio", "checkbox" ].indexOf( inField.type ) !== -1  && inField.checked === false ) ) {
 				processedInputs = processedInputs + 1;
 				continue;
-			}
+			}*/
 
 			encodeTargetAs = inField.dataset.encode;
 
@@ -474,7 +582,7 @@ var $document = wb.doc,
 				// for (file of curFiles) {
 				*/
 				file = curFiles[ 0 ];
-				path = inField.name;
+				path = inField.dataset.path || inField.name;
 
 
 				switch (encodeTargetAs) {
@@ -565,11 +673,17 @@ var $document = wb.doc,
 
 				var patch = {
 						op: "add",
-						path: inField.name,
+						path: inField.dataset.path || inField.name,
 						value: inputValue
 					};
 
 				data.patches.push( patch );
+
+
+				// Cleanup the fieldset if applicable
+				if ( inField.type === "fieldset" && inField.value ) {
+					delete inField.value;
+				}
 			}
 
 			if ( inField.dataset.cleanOnImport !== undefined ) {
@@ -577,6 +691,11 @@ var $document = wb.doc,
 			}
 
 		}
+
+		console.log( "processedInputs" );
+		console.log( processedInputs );
+		console.log( nbInputs );
+		console.log( data );
 
 		if ( processedInputs === nbInputs ) {
 

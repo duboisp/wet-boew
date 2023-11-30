@@ -1,0 +1,667 @@
+---
+{
+	"title": "Select your filter - Subscription services - Prototype",
+	"language": "en",
+	"category": "Other",
+	"description": "Proptype",
+	"tag": "subscription-services",
+	"parentdir": "subscription-services",
+	"altLangPrefix": "demo",
+	"dateModified": "2023-11-30"
+}
+---
+
+
+	<details>
+		<summary>Debug</summary>
+		<div id="myDataSet" data-wb-jsonmanager='{
+			"url": "demo/my-filters-sample.json",
+			"name": "filters",
+			"debug": true
+		}'></div>
+	</details>
+
+	<h2>Add a filter</h2>
+
+	<script>
+		var prevCheckState = {};
+		function checkAll( elm ){
+
+			if ( prevCheckState[ elm.name ] === elm.checked ) {
+				return;
+			}
+
+			$( "[name='" + elm.name + "']" ).prop( "checked", elm.checked  );
+
+			// Should we make it indeterminate when some are checked?
+			// elm.indeterminate = true;
+
+		}
+
+		function checkInt( elm ) {
+
+			// Prototype, intermediate selection
+			var intCheckbox = document.querySelectorAll( "[name=newsType][value]" );
+
+			var numberOfChecked = 0;
+
+			for( var i = 0; i < intCheckbox.length; i++ ) {
+				if ( intCheckbox[ i ].checked ) {
+					numberOfChecked = numberOfChecked + 1;
+				}
+			}
+
+			var protoCheckAll = document.getElementById( "protoCheckAll" );
+
+
+			if ( numberOfChecked === intCheckbox.length ) {
+
+				// They are all check
+				protoCheckAll.checked = true;
+				protoCheckAll.indeterminate = false;
+
+			} else if ( numberOfChecked === 0 ) {
+
+				// None are checked
+				protoCheckAll.checked = false;
+				protoCheckAll.indeterminate = false;
+
+			} else {
+
+				// Intermediate state
+				protoCheckAll.checked = false;
+				protoCheckAll.indeterminate = true;
+
+			}
+
+		}
+		</script>
+
+	 <form id="add-filter">
+		<div class="row wb-eqht-grd">
+
+			<div class="col-md-3">
+
+			<fieldset class="p-0" data-path="/workspace/filter/-" data-template-object='{ "tags": [], "condition": "atLeastOne" }'>
+				<!-- Name in the fieldset will act as the baseline for all the inner component -->
+				<legend class="h5 mrgn-tp-0">News type</legend>
+
+				<input type="hidden" data-path="/@type" value="filterItem">
+				<input type="hidden" data-path="/group" value="newsType">
+
+				<ul class="list-unstyled">
+					<li class="mrgn-bttm-md"><label><input id="protoCheckAll" type="checkbox" name="newsType" onchange="checkAll( this );"> Select all News type</label><!-- Have a function that check them all? --></li>
+					<li><label><input type="checkbox" name="newsType" data-path="/tags/-" onchange="checkInt( this );" value="backgrounders"> Backgrounders</label></li>
+					<li><label><input type="checkbox" name="newsType" data-path="/tags/-" onchange="checkInt( this );" value="mediaadvisories"> Media advisories</label></li>
+					<li><label><input type="checkbox" name="newsType" data-path="/tags/-" onchange="checkInt( this );" value="newsreleases"> News releases</label></li>
+					<li><label><input type="checkbox" name="newsType" data-path="/tags/-" onchange="checkInt( this );" value="readouts"> Readouts</label></li>
+					<li><label><input type="checkbox" name="newsType" data-path="/tags/-" onchange="checkInt( this );" value="speeches"/> Speeches</label></li>
+					<li><label><input type="checkbox" name="newsType" data-path="/tags/-" onchange="checkInt( this );" value="statements"/> Statements</label></li>
+				</ul>
+				<p>(- <label><input type="checkbox" data-path="/condition" value="allOfThem"/> When all of them -)</label></p>
+			</fieldset>
+
+			  <!--
+			  <div class="form-group">
+				<label for="dt_type">News type</label>
+				<select class="form-control" id="dt_type" name="/workspace/tags/-" >
+					<option>Any</option>
+					<option value="gc-news:type/backgrounders">backgrounders</option>
+					<option value="gc-news:type/mediaadvisories">media advisories</option>
+					<option value="gc-news:type/newsreleases">news releases</option>
+					<option value="gc-news:type/readouts">readouts</option>
+					<option value="gc-news:type/speeches">speeches</option>
+					<option value="gc-news:type/statements">statements</option>
+				</select>
+			  </div>
+			  -->
+
+			</div>
+			<div class="col-md-6">
+
+
+			<fieldset class="p-0  h-100" data-path="/workspace/filter/-" data-template-object='{ "group": "institution", "tags": [], "condition": "atLeastOne", "@type": "filterItem" }'>
+
+		<div class="form-group  h-100">
+			  <label for="dt_department">Institution</label>
+				<select class="form-control  h-100" id="dt_department" data-path="/tags/-" data-void-empty multiple>
+					<option value="">Any</option>
+					<option>Aboriginal Business Canada</option>
+					<option>Accessibility Standards Canada</option>
+					<option>Administrative Tribunals Support Service of Canada</option>
+					<option>Advisory Panel on Responsible Conduct of Research</option>
+					<option>Agriculture and Agri-Food Canada</option>
+					<option>Atlantic Canada Opportunities Agency</option>
+					<option>Bedford Institute of Oceanography</option>
+					<option>Canada Agricultural Review Tribunal</option>
+					<option>Canada-Alberta Oil Sands Environmental Monitoring</option>
+					<option>Canada Border Services Agency</option>
+					<option>Canada Centre for Inland Waters</option>
+					<option>Canada Economic Development for Quebec Regions</option>
+					<option>Canada Employment Insurance Commission</option>
+					<option>Canada Energy Regulator</option>
+					<option>Canada Excellence Research Chairs</option>
+					<option>Canada Firearms Centre</option>
+					<option>Canada Industrial Relations Board</option>
+					<option>Canada Infrastructure Bank</option>
+					<option>Canada Research Coordinating Committee</option>
+					<option>Canada Revenue Agency</option>
+					<option>Canada School of Public Service</option>
+					<option>Canadian Army</option>
+					<option>Canadian Centre for Housing Technology</option>
+					<option>Canadian Centre for Occupational Health and Safety</option>
+					<option>Canadian Coast Guard</option>
+					<option>Canadian Commercial Corporation</option>
+					<option>Canadian Conservation Institute</option>
+					<option>Canadian Cultural Property Export Review Board</option>
+					<option>Canadian Dairy Information Centre - CDIC</option>
+					<option>Canadian Food Inspection Agency</option>
+					<option>Canadian Grain Commission</option>
+					<option>Canadian Heritage</option>
+					<option>Canadian Heritage Information Network</option>
+					<option>Canadian Human Rights Commission</option>
+					<option>Canadian Institutes of Health Research</option>
+					<option>Canadian Intellectual Property Office</option>
+					<option>Canadian Intergovernmental Conference Secretariat</option>
+					<option>Canadian International Trade Tribunal</option>
+					<option>Canadian Northern Economic Development Agency</option>
+					<option>Canadian Nuclear Safety Commission</option>
+					<option>Canadian Pari-Mutuel Agency</option>
+					<option>Canadian Radio-television and Telecommunications Commission</option>
+					<option>Canadian Security Intelligence Service</option>
+					<option>Canadian Space Agency</option>
+					<option>Canadian Special Operations Forces Command</option>
+					<option>Canadian Transportation Agency</option>
+					<option>Civilian Review and Complaints Commission for the RCMP</option>
+					<option>Committee on the status of Endangered Wildlife</option>
+					<option>Communications Research Centre Canada</option>
+					<option>Communications Security Establishment Canada</option>
+					<option>Competition Bureau Canada</option>
+					<option>Competition Tribunal</option>
+					<option>Copyright Board Canada</option>
+					<option>Correctional Service Canada</option>
+					<option>Criminal Intelligence Service Canada</option>
+					<option>Crown-Indigenous Relations and Northern Affairs Canada</option>
+					<option>Defence Construction Canada</option>
+					<option>Defence Research and Development Canada</option>
+					<option>Democratic Institutions</option>
+					<option>Department of Finance Canada</option>
+					<option>Department of Justice Canada</option>
+					<option>Education in Canada</option>
+					<option>Elections Canada</option>
+					<option>Employment and Social Development Canada</option>
+					<option>Environmental Protection Review Canada</option>
+					<option>Environment and Climate Change Canada</option>
+					<option>Farm Products Council of Canada</option>
+					<option>Federal Economic Development Agency for Northern Ontario - FedNor</option>
+					<option>Federal Economic Development Agency for Southern Ontario</option>
+					<option>Financial Consumer Agency of Canada</option>
+					<option>Financial Transactions and Reports Analysis Centre of Canada</option>
+					<option>Fisheries and Oceans Canada</option>
+					<option>Geographical Names Board of Canada</option>
+					<option>Geological Survey of Canada</option>
+					<option>Geomatics Canada</option>
+					<option>Global Affairs Canada</option>
+					<option>Health Canada</option>
+					<option>Historic Sites and Monuments Board of Canada</option>
+					<option>Human Rights Tribunal of Canada</option>
+					<option>Immigration, Refugees and Citizenship Canada</option>
+					<option>Immigration and Refugee Board of Canada</option>
+					<option>Impact Assessment Agency of Canada</option>
+					<option>Independent Review Panel for Defence Acquisition</option>
+					<option>Indian Oil and Gas</option>
+					<option>Indigenous and Northern Affairs Canada</option>
+					<option>Indigenous Services Canada</option>
+					<option>Industrial Technologies Office</option>
+					<option>Infrastructure Canada</option>
+					<option>Innovation, Science and Economic Development Canada</option>
+					<option>Innovation Hub</option>
+					<option>Integrated Terrorism Assessment Centre</option>
+					<option>Interagency Advisory Panel on Research Ethics</option>
+					<option>Intergovernmental Affairs</option>
+					<option>Judicial Compensation and Benefits Commission</option>
+					<option>Labour Program</option>
+					<option>Law Commission of Canada</option>
+					<option>Leader of the Government in the House of Commons</option>
+					<option>Library and Archives Canada</option>
+					<option>Management Advisory Board for the RCMP</option>
+					<option>Marine Security Operations Centres Project</option>
+					<option>Measurement Canada</option>
+					<option>Military Grievances External Review Committee</option>
+					<option>Military Police Complaints Commission of Canada</option>
+					<option>National Defence</option>
+					<option>National Film Board</option>
+					<option>National Research Council Canada</option>
+					<option>National Security and Intelligence Review Agency</option>
+					<option>National Seniors Council</option>
+					<option>Natural Resources Canada</option>
+					<option>Natural Sciences and Engineering Research Council</option>
+					<option>Networks of Centres of Excellence of Canada</option>
+					<option>Northern Pipeline Agency Canada</option>
+					<option>Occupational Health and Safety Tribunal Canada</option>
+					<option>Office of the Chief Military Judge</option>
+					<option>Office of the Commissioner for Federal Judicial Affairs Canada</option>
+					<option>Office of the Communications Security Establishment Commissioner</option>
+					<option>Office of the Extractive Sector Corporate Social Responsibility Counsellor</option>
+					<option>Office of the Federal Ombudsperson for Victims of Crime</option>
+					<option>Office of the Intelligence Commissioner</option>
+					<option>Office of the National Defence and Canadian Armed Forces Ombudsman</option>
+					<option>Office of the Procurement Ombudsman</option>
+					<option>Office of the Superintendent of Bankruptcy Canada</option>
+					<option>Office of the Superintendent of Financial Institutions Canada</option>
+					<option>Office of the Taxpayers&#39; Ombudsperson</option>
+					<option>Office of the Veterans&#39; Ombudsman</option>
+					<option>Pacific Economic Development</option>
+					<option>Parks Canada</option>
+					<option>Parole Board of Canada</option>
+					<option>Patented Medicine Prices Review Board Canada</option>
+					<option>Physical Resources Bureau</option>
+					<option>Polar Knowledge Canada</option>
+					<option>PPP Canada</option>
+					<option>Prairies Economic Development</option>
+					<option>Privy Council Office</option>
+					<option>Public Health Agency of Canada</option>
+					<option>Public Prosecution Service of Canada</option>
+					<option>Public Safety Canada</option>
+					<option>Public Servants Disclosure Protection Tribunal Canada</option>
+					<option>Public Service Commission of Canada</option>
+					<option>Public Service Labour Relations and Employment Board</option>
+					<option>Public Services and Procurement Canada</option>
+					<option>RCMP External Review Committee</option>
+					<option>Registry of the Specific Claims Tribunal of Canada</option>
+					<option>Royal Canadian Air Force</option>
+					<option>Royal Canadian Mounted Police</option>
+					<option>Royal Canadian Navy</option>
+					<option>Saguenay - Lac-Saint-Jean</option>
+					<option>Secretariat of the National Security and Intelligence Committee of Parliamentarians</option>
+					<option>Security Intelligence Review Committee</option>
+					<option>Service Canada</option>
+					<option>Shared Services Canada</option>
+					<option>Social Sciences and Humanities Research Council of Canada</option>
+					<option>Social Security Tribunal of Canada</option>
+					<option>Statistics Canada</option>
+					<option>The Canadian Shellfish Sanitation Program</option>
+					<option>The Correctional Investigator Canada</option>
+					<option>The National Battlefields Commission</option>
+					<option>The Ontario-Quebec Continental Gateway</option>
+					<option>Translation Bureau</option>
+					<option>Transportation Appeal Tribunal of Canada</option>
+					<option>Transportation Safety Board of Canada</option>
+					<option>Transport Canada</option>
+					<option>Treasury Board of Canada Secretariat</option>
+					<option>Tri-agency Institutional Programs Secretariat</option>
+					<option>Veterans Affairs Canada</option>
+					<option>Veterans Review and Appeal Board</option>
+					<option>Western Economic Diversification Canada</option>
+					<option>Wild Species</option>
+					<option>Women and Gender Equality Canada</option>
+			  </select>
+			</div>
+
+
+			</fieldset>
+
+
+			</div>
+			<div class="col-md-3">
+
+			<fieldset class="p-0" data-path="/workspace/filter/-" data-template-object='{ "group": "subject", "tags": [], "condition": "atLeastOne", "@type": "filterItem" }'>
+
+				<div class="form-group">
+				  <label for="dt_subject">Subject</label>
+				  <select class="form-control" id="dt_subject" name="dt_subject" data-path="/tags/-" data-void-empty>
+					<!-- data-void-empty means the data-path action is going to be voided if the value is empty string -->
+					<option value="">Any</option>
+					<option value="AA">Arts, Music, Literature</option>
+					<option value="AG">Agriculture</option>
+					<option value="EC">Economics and Industry</option>
+					<option value="ET">Education and Training</option>
+					<option value="FM">Form descriptors</option>
+					<option value="GV">Government and Politics</option>
+					<option value="HE">Health and Safety</option>
+					<option value="HI">History and Archaeology</option>
+					<option value="IN">Information and Communications</option>
+					<option value="LB">Labour</option>
+					<option value="LN">Language and Linguistics</option>
+					<option value="LW">Law</option>
+					<option value="MI">Military</option>
+					<option value="NE">Nature and Environment</option>
+					<option value="PE">Persons</option>
+					<option value="PR">Processes</option>
+					<option value="SO">Society and Culture</option>
+					<option value="ST">Science and Technology</option>
+					<option value="TR">Transport</option>
+				  </select>
+				</div>
+			</fieldset>
+
+			<fieldset class="p-0" data-path="/workspace/filter/-" data-template-object='{ "group": "minister", "tags": [], "condition": "atLeastOne", "@type": "filterItem" }'>
+
+				<div class="form-group">
+				  <label for="dt_minister">Minister</label>
+				  <select class="form-control" id="dt_minister" data-path="/tags/-" data-void-empty>
+						<option value="">Any</option>
+						<option>Hon. Ahmed D. Hussen</option>
+						<option>Hon. Anita Anand</option>
+						<option>Hon. Arif Virani</option>
+						<option>Hon. Bill Blair</option>
+						<option>Hon. Carla Qualtrough</option>
+						<option>Hon. Chrystia Freeland</option>
+						<option>Hon. Dan Vandal</option>
+						<option>Hon. Diane Lebouthillier</option>
+						<option>Hon. Dominic LeBlanc</option>
+						<option>Hon. Filomena Tassi</option>
+						<option>Hon. François-Philippe Champagne</option>
+						<option>Hon. Gary Anandasangaree</option>
+						<option>Hon. Ginette Petitpas Taylor</option>
+						<option>Hon. Gudie Hutchings</option>
+						<option>Hon. Harjit Singh Sajjan</option>
+						<option>Hon. Jean-Yves Duclos</option>
+						<option>Hon. Jenna Sudds</option>
+						<option>Hon. Jonathan Wilkinson</option>
+						<option>Hon. Kamal Khera</option>
+						<option>Hon. Karina Gould</option>
+						<option>Hon. Lawrence MacAulay</option>
+						<option>Hon. Marci Ien</option>
+						<option>Hon. Marc Miller</option>
+						<option>Hon. Marie-Claude Bibeau</option>
+						<option>Hon. Mark Holland</option>
+						<option>Hon. Mary Ng</option>
+						<option>Hon. Mélanie Joly</option>
+						<option>Hon. Pablo Rodriguez</option>
+						<option>Hon. Pascale St-Onge</option>
+						<option>Hon. Patricia A. Hajdu</option>
+						<option>Hon. Randy Boissonnault</option>
+						<option>Hon. Rechie Valdez</option>
+						<option>Hon. Seamus O’Regan</option>
+						<option>Hon. Sean Fraser</option>
+						<option>Hon. Soraya Martinez Ferrada</option>
+						<option>Hon. Steven Guilbeault</option>
+						<option>Hon. Terry Beech</option>
+						<option>Hon. Ya’ara Saks</option>
+						<option>Right Hon. Justin P. J. Trudeau</option>
+				  </select>
+				</div>
+			</fieldset>
+
+			<fieldset class="p-0" data-path="/workspace/filter/-" data-template-object='{ "group": "dt_audience", "tags": [], "condition": "atLeastOne", "@type": "filterItem" }'>
+
+				<div class="form-group">
+				  <label for="dt_audience">Audience</label>
+				  <select class="form-control" id="dt_audience" data-path="/tags/-" data-void-empty>
+						<option value="">Any</option>
+						<option>Aboriginal peoples</option>
+						<option>business</option>
+						<option>children</option>
+						<option>consumers</option>
+						<option>educators</option>
+						<option>employers</option>
+						<option>funding applicants</option>
+						<option>general public</option>
+						<option>government</option>
+						<option>immigrants</option>
+						<option>job seekers</option>
+						<option>media</option>
+						<option>non-Canadians</option>
+						<option>non-governmental organizations</option>
+						<option>parents</option>
+						<option>persons with disabilities</option>
+						<option>rural community</option>
+						<option>scientists</option>
+						<option>seniors</option>
+						<option>students</option>
+						<option>travellers</option>
+						<option>veterans</option>
+						<option>visitors to Canada</option>
+						<option>women</option>
+						<option>youth</option>
+				  </select>
+				</div>
+
+			</fieldset>
+
+			<fieldset class="p-0" data-path="/workspace/filter/-" data-template-object='{ "group": "dt_location", "tags": [], "condition": "atLeastOne", "@type": "filterItem" }'>
+
+				<div class="form-group">
+				  <label for="dt_location">Region</label>
+				  <select class="form-control" id="dt_location" data-path="/tags/-" data-void-empty>
+						<option value="">Any</option>
+						<option>Atlantic</option>
+						<option>British Columbia</option>
+						<option>Ontario</option>
+						<option>Prairies</option>
+						<option>Quebec</option>
+						<option>Territories</option>
+				  </select>
+				</div>
+
+			</fieldset>
+
+		</div></div>
+
+		<button class="btn btn-primary btn-lg mrgn-tp-xl" type="button" data-wb-doaction>
+			Add filter
+
+			<wb-config wb-plugin="wb-doaction">
+				<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace"></wb-config>
+						<wb-config op="add" path="/workspace">
+							<wb-config wb-prop="value" wb-value='{ "filter": [], "freq": "now" }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs"  run-after="prepData" cumulative="true" inputs="#add-filter input, #add-filter fieldset, #add-filter select"></wb-config>
+
+
+				<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="wb-add-from" value="/workspace" path="/usersFilters/-">
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+
+				<wb-config source="#myDataSet" action="saveDataSet" run-after="getinputs" mode="local"></wb-config>
+
+			</wb-config>
+		</button>
+
+	 </form>
+<!--
+			<div class="row">
+				<div class="col-xs-6">
+					<button type="submit" class="btn btn-primary" aria-controls="dataset-filter">Filter</button>
+				</div>
+				<div class="col-xs-6">
+					<button type="reset" class="btn btn-default">Reset filters</button>
+				</div>
+			</div>-->
+
+
+	 <!--
+<pre><code>
+  "usersFilters": [
+
+	{
+	  "@type": "filterGroup",
+	  "filter": [
+		 {
+		  "@type": "filterItem",
+		  "group": "newsType",
+		  "tags": [ "backgrounder", "mediaadvisories" ],
+		  "condition": "atLeastOne"
+		 },
+
+		 {
+		  "@type": "filterItem",
+		  "group": "institution",
+		  "tags": [ "aboriginal", "esdc", "ised" ],
+		  "condition": "atLeastOne"
+		 }
+	  ],
+	  "freq": "gc-subs:weekly"
+	},</code></pre>-->
+
+
+
+	<h2 id="yoursFilters">Yours filter</h2>
+
+<details><summary>Debug</summary>
+	<div id="pre-views-layer" data-wb-jsonmanager='{
+		"url": "#[filters]",
+		"name": "views",
+		"patches": [
+			{
+				"op": "patches", "path": "/usersFilters",
+				"patches": [
+					{
+						"op": "patches", "path": "/filter",
+						"patches": [
+							{ "op": "wb-swap", "path": "/group", "ref": "/labels/en" },
+							{ "op": "wb-swap", "path": "/tags", "ref": "/labels/en" }
+						]
+					}
+				]
+			},
+
+
+
+
+			{
+				"notes": "This patch is not used",
+				"op": "patches", "path": "/filters",
+				"patches": [
+					{ "op": "wb-swap", "path": "/tags", "ref": "/labels/en" }
+				]
+			}
+
+		],
+		"debug": true
+	}'></div>
+</details>
+
+
+	<ol data-wb-json='
+	{
+		"url": "#[views]/usersFilters",
+		"mapping": [
+			{ "selector": "[data-freq]", "value": "/freq" },
+			{
+				"selector": "[data-filter-container]",
+				"value": "/filter",
+				"mapping": [
+					{ "selector": "[data-group]", "value": "/group" },
+					{
+						"selector": "ul", "value": "/tags",
+						"mapping": [
+							{ "selector": "li", "value": "/" }
+						]
+					}
+				]
+			},
+			{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+		],
+		"removeAll": "li"
+	}'>
+<!--
+
+	{
+		"url": "#[views]/usersFilters",
+		"mapping": [
+			{ "selector": "[data-freq]", "value": "/freq" },
+			{
+				"template": "[data-filter]",
+				"test": "fn:guessType",
+				"expect": "filterItem",
+				"value": "/filter",
+				"mapping": [
+
+					{ "selector": "[data-group]", "value": "/group" },
+					{
+						"template": "[data-tag]",
+						"test": "fn:guessType",
+						"expect": "xsd:string",
+						"value": "/tags",
+						"mapping": [
+							{ "selector": "[data-tags]", "value": "/" }
+						]
+					}
+				]
+			}
+		]
+	}
+
+					-->
+		<template>
+			<li>
+				<button type="button" class="btn btn-danger" data-wb-doaction>
+					<span class="wb-inv">Remove</span>
+					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+
+					<wb-config wb-plugin="wb-doaction">
+						<wb-config source="#yoursFilters" action="setFocus"></wb-config>
+						<wb-config source="#myDataSet" action="patch" cumulative="true">
+							<wb-config wb-prop="patches">
+								<wb-config data-btn-remove op="remove" path="/usersFilters/[[-id-]]"></wb-config>
+							</wb-config>
+						</wb-config>
+					</wb-config>
+				</button>
+
+				<p>Filter details:</p>
+				<div class="row wb-eqht-grd" data-filter-container>
+					<template>
+						<div class="col-md-2 brdr-tp brdr-rght brdr-bttm brdr-lft">
+							<p data-group></p>
+							<ul>
+								<template data-tag>
+									<li></li>
+								</template>
+							</ul>
+						</div>
+					</template>
+				</div>
+				<p>Frequency:</p>
+				<p><strong data-freq></strong></p>
+				<hr>
+			</li>
+		</template>
+
+
+	</ol>
+
+<!--
+	<ul data-wb-json='
+	{
+		"url": "#[views]/filters",
+		"mapping": [
+			{ "selector": "[data-freq]", "value": "/freq" },
+			{
+				"template": "[data-tmpl]",
+				"test": "fn:guessType",
+				"test": "xsd:string",
+				"value": "/tags",
+				"mapping": [
+					{ "selector": "[data-tags]", "value": "/" }
+				]
+			}
+		]
+	}'>
+
+		<template>
+			<li>
+				<template data-tmpl>
+					<p data-tags></p>
+				</template>
+				<p><strong data-freq></strong></p>
+
+			</li>
+		</template>
+
+
+	</ul>
+-->
+
+

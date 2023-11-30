@@ -199,8 +199,33 @@ var componentName = "wb-data-json",
 				$elm.attr( attrname, content );
 			} else if ( jsonType === "select" ) {
 
-				// Find all elm that have a matching value
-				var optionsSelected = elm.querySelectorAll( "[value='" + content + "']" );
+				var selector = "",
+					optionsSelected;
+
+				if ( !Array.isArray( content ) ) {
+					content = [ content ];
+				}
+				content.forEach( function( itm ) {
+					selector = selector + ",[value='" + itm + "']";
+				} );
+				selector = selector.substring( 1 );
+
+				if ( !itmSettings.multiple ) {
+
+					// Find all elm that have a matching value
+					optionsSelected = elm.querySelector( selector );
+
+					if ( optionsSelected ) {
+						optionsSelected = [ optionsSelected ];
+					} else {
+						optionsSelected = [];
+					}
+				} else {
+
+					// Note: If we do support multiple value selector, we would need to unselect all items before to apply the current selection
+					optionsSelected = elm.querySelectorAll( selector );
+				}
+
 				optionsSelected.forEach( function( opt ) {
 
 					// If option, set "selected" || if input set "checked"
@@ -687,6 +712,9 @@ var componentName = "wb-data-json",
 
 		// Can we proceed?
 		if ( mappingConfig.test && !canProcessMapping( content, mappingConfig ) ) {
+			console.log( mappingConfig.test );
+			console.log( content );
+			console.log( "nope" );
 			return;
 		}
 

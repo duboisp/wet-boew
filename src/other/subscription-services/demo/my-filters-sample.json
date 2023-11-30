@@ -1,0 +1,150 @@
+{
+
+  "filters": [
+
+	{
+	  "tags": [ "gc-news:type/backgrounders" ],
+	  "freq": "gc-subs:weekly"
+	},
+	{
+	  "tags": [ "gc-news:type/backgrounders" ],
+	  "freq": "gc-subs:weekly"
+	}
+
+  ],
+
+  "usersFilters_with_notes": [
+
+	{
+	  "@type": "filterGroup",
+	  "filter": [
+		 {
+		  "@type": "filterItem",
+		  "group": "newsType",
+		  "tags": [ "backgrounder", "mediaadvisories" ],
+		  "conditional": "and|or (when all | when at least one)",
+
+
+		  "notes": "Multiple val is the result of multiple select or multiple checkbox"
+		 },
+
+		  "Here is always 'AND' when multiple tag",
+
+		  {
+			"@type": "newstype",
+			"val": [ "backgrounder", "mediaadvisories" ],
+			"conditional": "and|or (with all [All of them] | at least one | none that contains)"
+		   }
+	  ],
+	  "freq": "gc-subs:weekly"
+	},
+
+	"HERE is always 'OR' when multiple filters",
+
+	{
+	  "tags": [ "gc-news:type/backgrounders" ],
+	  "freq": "gc-subs:weekly"
+	}
+
+  ],
+
+
+
+  "usersFilters": [
+
+	{
+	  "@type": "filterGroup",
+	  "filter": [
+		 {
+		  "@type": "filterItem",
+		  "group": "newsType",
+		  "tags": [ "backgrounder", "mediaadvisories" ],
+		  "condition": "atLeastOne"
+		 },
+
+		 {
+		  "@type": "filterItem",
+		  "group": "institution",
+		  "tags": [ "aboriginal", "esdc", "ised" ],
+		  "condition": "atLeastOne"
+		 }
+	  ],
+	  "freq": "gc-subs:weekly"
+	},
+
+
+	{
+	  "@type": "filterGroup",
+	  "filter": [
+		 {
+		  "@type": "filterItem",
+		  "group": "newsType",
+		  "tags": [ "readouts" ],
+		  "condition": "atLeastOne"
+		 },
+
+		 {
+		  "@type": "filterItem",
+		  "group": "institution",
+		  "tags": [ "ised", "eccc" ],
+		  "condition": "allOfThem"
+		 }
+	  ],
+	  "freq": "gc-subs:daily"
+	}
+
+  ],
+
+
+  "alltags": [ "gc-news:type/mediaadvisories", "gc-news:type/backgrounders" ],
+
+  "commments": ["gc-news:type/backgrounders",
+                "gc-news:type/mediaadvisories",
+               "gc-news:type/newsreleases",
+                "gc-news:type/readouts",
+                "gc-news:type/speeches",
+                "gc-news:type/statements"
+			],
+
+  "labels": {
+	"en": {
+	  "gc-news:type/backgrounders": "Backgrounders",
+	  "gc-news:type/mediaadvisories": "Media advirories",
+	  "newsType": "News type",
+	  "institution": "Institution",
+	  "backgrounder": "Backgrounders",
+	  "mediaadvisories": "Media advisories",
+	  "aboriginal": "Aboriginal Business Canada",
+	  "esdc": "Employment and Social Development Canada",
+	  "ised": "Innovation Science Economic Canada",
+	  "eccc": "Environment Change Climatic Canada",
+
+
+	  "AA": "Arts, Music, Literature",
+	  "AG": "Agriculture",
+	  "EC": "Economics and Industry",
+	  "ET": "Education and Training",
+	  "FM": "Form descriptors",
+	  "GV": "Government and Politics",
+	  "HE": "Health and Safety",
+	  "HI": "History and Archaeology",
+	  "IN": "Information and Communications",
+	  "LB": "Labour",
+	  "LN": "Language and Linguistics",
+	  "LW": "Law",
+	  "MI": "Military",
+	  "NE": "Nature and Environment",
+	  "PE": "Persons",
+	  "PR": "Processes",
+	  "SO": "Society and Culture",
+	  "ST": "Science and Technology",
+	  "TR": "Transport"
+
+
+
+
+
+
+	}
+  }
+}
