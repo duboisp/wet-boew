@@ -163,6 +163,11 @@ function getWbConfig( elm, parseOptions ) {
 		console.error( innerConfigArray );
 	}
 
+	if ( context.debug ) {
+		console.log( "Debug of wb-config: " + context.debug );
+		console.log( configuration );
+	}
+
 	return {
 		context: context,
 		parsed: configuration

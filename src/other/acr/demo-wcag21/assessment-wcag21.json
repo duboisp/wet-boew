@@ -5,11 +5,12 @@
 
   "earl:subject": {
     "@id": "_:subject",
-    "dct:references": "https://example.com/web/page/url.html",
+    "dct:references": [ "https://example.com/web/page/url.html" ],
     "@type": [
       "earl:TestSubject",
       "schema:WebPage"
     ],
+	"oa:hasState": [ ],
     "dct:description": "Describe what is being assessed, like the full page or a component inside that page. Provide a pointer when applicable (earl:pointer)",
     "earl:pointer": {
       "@type": "oa:CssSelector",
@@ -17,10 +18,11 @@
     }
   },
 
+  "2earl:assertedBy": null,
   "earl:assertedBy": {
     "foaf:name": "Service Canada - Principal Publisher",
     "foaf:homepage": "https://github.com/ServiceCanada",
-    "@type": ["earl:Assertor", "foaf:Organization"],
+    "@type": ["earl:Assertor", "foaf:Person"],
     "earl:mainAssertor": {
       "foaf:name": "Full name of the accessor (Github: @GithubHandle)",
       "foaf:homepage": "https://github.com/GithubHandle",

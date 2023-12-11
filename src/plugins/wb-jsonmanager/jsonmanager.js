@@ -46,6 +46,26 @@ var componentName = "wb-jsonmanager",
 						jsonpatch.apply( newTree, [ patchConf ] );
 					} );
 				}
+			},{
+				name: "if",
+				fn: function( obj, key, tree ) {
+					var test = this.test,
+						patches = this.patches,
+						valExpected = this.value,
+						val = obj[ key ];
+
+					if ( !test || !valExpected || !patches || !Array.isArray( patches ) ) {
+						console.error( "Patches: Incomplete 'if' configuration" );
+						return;
+					}
+
+					if ( ( test === "typeof" && typeof val === valExpected ) ||
+						( test === "isArray" && Array.isArray( val ) === valExpected ) ) {
+
+						jsonpatch.apply( tree, patches );
+
+					}
+				}
 			},
 			{
 				name: "wb-count",
@@ -489,11 +509,14 @@ var componentName = "wb-jsonmanager",
 
 					} else if ( !url && elmData.load ) {
 
+						// Local saving name to ease interconnection for multipage form or for interconnectivity between them
+						var nameForSaving = elmData.savename || dsName;
+
 						switch ( elmData.load ) {
 
 						case "cache":
 							caches.open( componentName ).then( function( cacheStorage ) {
-								cacheStorage.match( "#[" + dsName + "]" ).then( function( retRes ) {
+								cacheStorage.match( "#" + nameForSaving + "" ).then( function( retRes ) {
 									retRes.text().then( function( txt ) {
 										$elm.trigger( {
 											type: "json-fetched.wb",
@@ -517,12 +540,12 @@ var componentName = "wb-jsonmanager",
 							break;
 
 						case "local":
-							loadFromStorage( localStorage, $elm, dsName );
+							loadFromStorage( localStorage, $elm, dsName, nameForSaving );
 							break;
 
 						case "session":
 						default:
-							loadFromStorage( sessionStorage, $elm, dsName );
+							loadFromStorage( sessionStorage, $elm, dsName, nameForSaving );
 							break;
 						}
 
@@ -539,15 +562,17 @@ var componentName = "wb-jsonmanager",
 			} );
 		}
 	},
-	loadFromStorage = function( storage, $elm, dsName ) {
+	loadFromStorage = function( storage, $elm, dsName, nameForSaving ) {
 		var storageLoad;
 
 		dsFetching[ dsName ][ dsName ] = false;
 
-		storageLoad = storage.getItem( "ds-[" + dsName + "]" );
+		storageLoad = storage.getItem( "ds-" + nameForSaving );
+
+		console.log( storageLoad );
 
 		// Check if the storage item do exist
-		if ( !storageLoad ) {
+		if ( !storageLoad || storageLoad === null ) {
 
 			// Throw a fetch error
 			$elm.trigger( {
@@ -559,6 +584,7 @@ var componentName = "wb-jsonmanager",
 					error: "Data was not found in storage as expected"
 				}
 			} );
+			console.error( "Data was not found in storage as expected: " + "ds-" + nameForSaving );
 			return;
 		}
 
@@ -1119,6 +1145,7 @@ $document.on( patchesEvent, selector, function( event ) {
 		i, i_len, i_cache, pntrSelector;
 
 	if ( elm === event.currentTarget && Array.isArray( patches ) ) {
+
 		settings = wb.getData( $elm, componentName );
 
 		if ( !settings ) {
@@ -1196,24 +1223,33 @@ $document.on( saveEvent, function( event ) {
 		dsName,
 		mode = data.mode,
 		fileName,
-		settings;
+		settings,
+		nameForSaving;
 
 	settings = wb.getData( $elm, componentName );
 
 	if ( !settings ) {
 		return true;
 	}
+
 	dsName = "[" + settings.name + "]";
 
 	if ( !settings.name || !datasetCache[ dsName ] ) {
 		throw "A valid dataset name must be specified";
 	}
 
+	// Local saving name to ease interconnection for multipage form or for interconnectivity between them
+	if ( settings.savename ) {
+		nameForSaving = settings.savename;
+	} else {
+		nameForSaving = data.fname || dsName.slice( 1, -1);
+	}
+
 
 	switch ( mode ) {
 
 	case "download":
-		fileName = data.fname || dsName.slice( 1, -1) + ".json",
+		fileName = nameForSaving + ".json",
 		wb.download( new Blob( [ JSON.stringify( datasetCache[ dsName ], null, 2 ) ], { type: "application/json;charset=utf-8" } ), fileName );
 		break;
 
@@ -1223,18 +1259,18 @@ $document.on( saveEvent, function( event ) {
 			  status: 200,
 			  headers: { 'Content-Type': "application/json;charset=utf-8" }
 			} );
-			cacheStorage.put( "#" + dsName, res );
+			cacheStorage.put( "#" + nameForSaving, res );
 		} );
 
 	case "local":
 
-		localStorage.setItem( "ds-" + dsName, JSON.stringify( datasetCache[ dsName ] ) );
+		localStorage.setItem( "ds-" + nameForSaving, JSON.stringify( datasetCache[ dsName ] ) );
 		console.log( "Saved in local" );
 		break;
 
 	case "session":
 	default:
-		sessionStorage.setItem( "ds-" + dsName, JSON.stringify( datasetCache[ dsName ] ) );
+		sessionStorage.setItem( "ds-" + nameForSaving, JSON.stringify( datasetCache[ dsName ] ) );
 		console.log( "Saved in session" );
 		break;
 	}

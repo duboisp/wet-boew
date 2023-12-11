@@ -7,8 +7,6 @@
 	"tag": "acr",
 	"parentdir": "acr",
 	"altLangPage": "assess-prep-fr.html",
-	"css": ["demo/acr"],
-	"js": ["demo/acr"],
 	"dateModified": "2023-04-25"
 }
 ---
@@ -23,6 +21,80 @@
 </ol>
 
 <hr />
+
+<details>
+	<sumary>Debug...</summary>
+
+	<!--
+	<div id="dsa11y" data-wb-jsonmanager='{
+		"url": [
+			"../acr/demo-wcag21/labels.json",
+			{ "url": "demo-wcag21/assessment-wcag21.json" }
+		],
+		"name": "a11y",
+		"savename": "a11y-assess",
+		"debug": true
+	}'></div>
+	-->
+
+	<div id="dsa11y" data-wb-jsonmanager='{
+		"load": "local",
+		"name": "a11y",
+		"savename": "a11y-assess",
+		"debug": true
+	}'></div>
+
+
+</details>
+
+<details>
+	<summary>Dataset DEBUG</summary>
+<div id="ds-details" data-wb-jsonmanager='{
+	"url": [
+		{
+			"url": "https://wet-boew.github.io/vocab/labels/2023/acr-methodology.json",
+			"path": "/labels"
+		},
+		"#[a11y]"
+	],
+	"name": "details",
+	"patches": [
+		{ "op": "wb-swap", "path": "/acr:standard", "ref": "/labels/acr:ConformanceStandard/en" },
+		{ "op": "wb-swap", "path": "/acr:conformanceOption", "ref": "/labels/acr:ConformanceOption/en" },
+		{ "op": "wb-swap", "path": "/acr:involvesExpertise", "ref": "/labels/acr:Topic/en" },
+		{
+			"op": "patches", "path": "/earl:result", "patches": [
+				{ "op": "wb-swap", "path": "/earl:test", "ref": "/labels/earl:TestCriterion/en" },
+				{ "op": "wb-swap", "path": "/earl:outcome", "ref": "/labels/earl:OutcomeValue/en" },
+				{ "op": "wb-swap", "path": "/earl:mode", "ref": "/labels/earl:TestMode/en" },
+				{ "op": "wb-swap", "path": "/acr:relevancy", "ref": "/labels/acr:RelevancyValue/en" },
+				{ "op": "wb-swap", "path": "/acr:severity", "ref": "/labels/acr:SeverityValue/en" },
+				{
+					"op": "patches", "path": "/earl:result", "patches": [
+						{ "op": "wb-swap", "path": "/earl:test", "ref": "/labels/earl:TestCriterion/en" },
+						{ "op": "wb-swap", "path": "/earl:outcome", "ref": "/labels/earl:OutcomeValue/en" },
+						{ "op": "wb-swap", "path": "/acr:relevancy", "ref": "/labels/acr:RelevancyValue/en" },
+						{ "op": "wb-swap", "path": "/acr:severity", "ref": "/labels/acr:SeverityValue/en" }
+					]
+				}
+			]
+		}
+	],
+	"debug": true
+}'></div>
+</details>
+
+
+<form>
+
+<button class="btn btn-lg btn-primary" type="button" data-wb-doaction>
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#dsa11y" action="saveDataSet" mode="local"></wb-config>
+	</wb-config>
+
+	Save in localstorage
+</button>
+
 
 <fieldset>
 	<legend>Select assessment type</legend>
@@ -50,36 +122,665 @@
 
 <fieldset>
 	<legend>Subject</legend>
-		<label>Type of document
-			<select>
-				<option>Web</option>
-				<option>Component in a web page</option>
-				<option>Non-web document</option>
-				<option>ICT with two-way voice communication</option>
-				<option>ICT with video capabilities</option>
-				<option>Hardware</option>
-				<option>Software</option>
-				<option>Documentation and support services</option>
-				<option>ICT providing relay or emergency service access</option>
-			</select>
-		</label>
-		<label>Stable URL representing the subject: <input type="url"></label>
-		<label>(Optional) Applicability: <input></label>
+	<label>Type of document
+		<select disabled>
+			<option selected>Web</option>
+			<option>Component in a web page</option>
+			<option>Non-web document</option>
+			<option>ICT with two-way voice communication</option>
+			<option>ICT with video capabilities</option>
+			<option>Hardware</option>
+			<option>Software</option>
+			<option>Documentation and support services</option>
+			<option>ICT providing relay or emergency service access</option>
+		</select>
+	</label>
+
+	<div class="row">
+		<div class="col-md-6">
+
+			<p>Subject URLs:</p>
+			<ul data-wb-json='
+				{
+					"url": "#[a11y]/earl:subject/dct:references",
+					"mapping": [
+						{ "selector": "a", "value": "/@value" },
+						{ "selector": "a", "value": "/@value", "attr": "href" },
+						{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+					],
+					"removeAll": "li"
+				}
+			'
+			>
+				<template>
+					<li><a href="">https</a>
+						<button type="button" class="btn btn-danger" data-wb-doaction>
+							Remove
+
+							<wb-config wb-plugin="wb-doaction">
+								<wb-config source="#dsa11y" action="patch" cumulative="true">
+									<wb-config wb-prop="patches">
+										<wb-config data-btn-remove op="remove" path="/earl:subject/dct:references/[[-id-]]"></wb-config>
+									</wb-config>
+								</wb-config>
+							</wb-config>
+						</button>
+					</li>
+				</template>
+			</ul>
+
+			<label>Add URL:
+				<input id="addSubjectURL" data-path="/earl:subject/dct:references/-" type="url" placeholder="https://"  data-clean-on-import data-independent-input>
+			</label>
+			<button type="button" data-wb-doaction>
+				Add
+
+				<wb-config wb-plugin="wb-doaction">
+
+					<wb-config source="#dsa11y" action="importInDataset" cumulative="true" inputs="#addSubjectURL"></wb-config>
+
+				</wb-config>
+			</button>
+		</div>
+		<div class="col-md-6">
+			<p>Page state being tested</p>
+			<ul data-wb-json='
+				{
+					"url": "#[a11y]/earl:subject/oa:hasState",
+					"mapping": [
+						{ "selector": "[data-statevalue]", "value": "/acr:stateValue" },
+						{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" }
+					],
+					"removeAll": "li"
+				}
+			'
+			>
+				<template>
+					<li><span data-statevalue></span>
+						<button type="button" class="btn btn-danger" data-wb-doaction>
+							Remove
+
+							<wb-config wb-plugin="wb-doaction">
+								<wb-config source="#dsa11y" action="patch" cumulative="true">
+									<wb-config wb-prop="patches">
+										<wb-config data-btn-remove op="remove" path="/earl:subject/oa:hasState/[[-id-]]"></wb-config>
+									</wb-config>
+								</wb-config>
+							</wb-config>
+						</button>
+					</li>
+				</template>
+			</ul>
+
+			<fieldset id="addSubjectHasState" data-path="/earl:subject/oa:hasState/-" data-template-object='{ "@type": "acr:MediaQueryList" }' data-independent-input>
+				<label>Media query:
+					<select id="abc" data-path="/acr:stateValue" data-clean-on-import data-independent-input>
+						<option value="(max-width: 479px)">Extra extra small (max-width: 479px)</option>
+						<option value="(min-width: 480px) and (max-width: 767px)">Extra small (min-width: 480px) and (max-width: 767px)</option>
+						<option value="(min-width: 768px) and (max-width: 991px)">Small (min-width: 768px) and (max-width: 991px)</option>
+						<option value="(min-width: 992px) and (max-width: 1199px)">Medium (min-width: 992px) and (max-width: 1199px)</option>
+						<option value="(min-width: 1200px) and (max-width: 1599px)">Large (min-width: 1200px) and (max-width: 1599px)</option>
+						<option value="(min-width: 1600px)">Extra large (min-width: 1600px)</option>
+					</select>
+				</label>
+				<button type="button" data-wb-doaction>
+					Add
+
+					<wb-config wb-plugin="wb-doaction">
+
+						<wb-config source="#dsa11y" action="importInDataset" cumulative="true" inputs="#addSubjectHasState, #abc"></wb-config>
+
+					</wb-config>
+				</button>
+			</fieldset>
+
+			<fieldset id="addSubjectHasCSSState" data-path="/earl:subject/oa:hasState/-" data-template-object='{ "@type": "oa:CssSelector" }' data-independent-input>
+				<label>State known by CSS selector:
+					<select id="abc-addSubjectHasCSSState" data-path="/acr:stateValue" data-clean-on-import data-independent-input>
+						<option value="[dir=rtl]">Right to left text direction</option>
+					</select>
+				</label>
+				<button type="button" data-wb-doaction>
+					Add
+
+					<wb-config wb-plugin="wb-doaction">
+
+						<wb-config source="#dsa11y" action="importInDataset" cumulative="true" inputs="#addSubjectHasCSSState, #abc-addSubjectHasCSSState"></wb-config>
+
+					</wb-config>
+				</button>
+			</fieldset>
+		</div>
+		<div class="col-md-12">
+			<label class="full-width">Applicability (Short description of what is being assessed): <input class="full-width" type="text" data-path="/earl:subject/dct:description"></label>
+		</div>
+		<div class="col-md-12">
+			<label>CSS Selector: <input type="text" data-path="/earl:subject/earl:pointer/@value"> (ex: <code>title, meta, main</code>; <code>main *:not(.pagedetails *, .pagedetails)</code>)</label>
+		</div>
+	</div>
 </fieldset>
 
+<h2>Assessor</h2>
 
-<fieldset>
-	<legend>Assessor</legend>
-		<label>Organisation name: <input></label>
-		<label>Organisation URL: <input type="url"></label>
-		<label>Your name: <input></label>
-		<label>Your home page URL (ex. Github): <input type="url"></label>
-</fieldset>
+<div data-wb-json='{
+	"url": "#[a11y]/earl:assertedBy",
+	"streamline": true,
+	"mapping": [
+		{
+			"@type": "rdf:Alt",
+			"comment": "this ALT is needed because when earl:assertedBy is null, there is 2 condition that is applicable and we only want the first one to be executed",
+			"mapping": [
+				{
+					"template": "[data-no-assertor]",
+					"test": "fn:guessType",
+					"assess": "/",
+					"expect": "undefined",
+					"mapping": null
+				},
+				{
+					"template": "[data-main-assertor]",
+					"test": "fn:guessType",
+					"assess": "/",
+					"expect": "foaf:Organization",
+					"mapping": [
+						{
+							"selector": "[data-main]",
+							"value": "/earl:mainAssertor/foaf:homepage",
+							"type": "attr",
+							"attr": "href"
+						},
+						{
+							"selector": "[data-main]",
+							"value": "/earl:mainAssertor/foaf:name",
+							"type": "replace"
+						},
+						{
+							"selector": "[data-assertor]",
+							"value": "/foaf:homepage",
+							"type": "attr",
+							"attr": "href"
+						},
+						{
+							"selector": "[data-assertor]",
+							"value": "/foaf:name",
+							"type": "replace"
+						},
+						{
+							"template": "[data-main-assisted]",
+							"test": "fn:guessType",
+							"value": "/foaf:member",
+							"assess": "/",
+							"dev_debug_note": "We should not also define the assess here, but somehow the value if navigated before the actual test",
+							"expect": "earl:Software",
+							"mapping": [
+								{
+									"selector": "[data-name]",
+									"value": "/doap:name"
+								},
+								{
+									"selector": "[data-homepage]",
+									"value": "/doap:homepage"
+								},
+								{
+									"selector": "[data-repository]",
+									"value": "/doap:repository"
+								},
+								{
+									"selector": "[data-created]",
+									"value": "/doap:created"
+								},
+								{
+									"selector": "[data-release]",
+									"value": "/doap:release"
+								}
+							]
+						}
+					]
+				},
+				{
+					"template": "[data-assertor]",
+					"test": "fn:guessType",
+					"assess": "/",
+					"expect": "foaf:Person",
+					"mapping": [
+						{
+							"selector": "[data-assertor]",
+							"value": "/foaf:homepage",
+							"type": "attr",
+							"attr": "href"
+						},
+						{
+							"selector": "[data-assertor]",
+							"value": "/foaf:name",
+							"type": "replace"
+						},
+						{
+							"template": "[data-assertor-assisted]",
+							"test": "fn:guessType",
+							"assess": "/",
+							"dev_debug_note": "See the other debug note",
+							"value": "/foaf:member",
+							"expect": "earl:Software",
+							"mapping": [
+								{
+									"selector": "[data-name]",
+									"value": "/doap:name"
+								},
+								{
+									"selector": "[data-homepage]",
+									"value": "/doap:homepage"
+								},
+								{
+									"selector": "[data-repository]",
+									"value": "/doap:repository"
+								},
+								{
+									"selector": "[data-created]",
+									"value": "/doap:created"
+								},
+								{
+									"selector": "[data-release]",
+									"value": "/doap:release"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 
-<label>Date: <input type="date"></label>
+	],
+	"removeAll": "p, dl"
+}'>
+	<template data-main-assertor>
+		<p><a data-main href="#">Unknown</a> on behalf of <a data-assertor href="#">Not Available</a></p>
+		<template data-main-assisted>
+			<p>With the software assistance:</p>
+			<dl>
+				<dt>Product name:</dt>
+				<dd data-name></dd>
+				<dt>Homepage:</dt>
+				<dd data-homepage></dd>
+				<dt>Repository URL:</dt>
+				<dd data-repository></dd>
+				<dt>Was released/installed on:</dt>
+				<dd data-created></dd>
+				<dt>Software version:</dt>
+				<dd data-release></dd>
+			</dl>
+		</template>
+	</template>
+	<template data-assertor>
+		<p><a data-assertor href="#">Unknown</a></p>
+		<template data-assertor-assisted>
+			<p>With the software assistance:</p>
+			<dl>
+				<dt>Product name:</dt>
+				<dd data-name></dd>
+				<dt>Homepage:</dt>
+				<dd data-homepage></dd>
+				<dt>Repository URL:</dt>
+				<dd data-repository></dd>
+				<dt>Was released/installed on:</dt>
+				<dd data-created></dd>
+				<dt>Software version:</dt>
+				<dd data-release></dd>
+			</dl>
+		</template>
+	</template>
+	<template data-no-assertor>
+		<p>There is no assessor currently defined</p>
+	</template>
+</div>
 
-<button type="submit">Generate the baseline report</button>
+<details>
+	<summary><h3>Update the assessor information</h3></summary>
+	<fieldset id="assertedByOrg" data-path="/earl:assertedBy" data-template-object='{ "@type": ["earl:Assertor","foaf:Organization"], "earl:mainAssertor": { "@type": ["earl:Assertor","foaf:Person"] } }' data-independent-input>
+		<legend class="h4">Organisation</legend>
 
+		<div class="row">
+			<div class="col-md-7">
+				<div class="row" data-details>
+					<div class="col-md-12">
+						<label>Organisation name: <input data-path="/foaf:name" data-clean-on-import data-independent-input></label>
+					</div>
+					<div class="col-md-12">
+						<label>Organisation URL: <input type="url" data-path="/foaf:homepage" data-clean-on-import data-independent-input></label>
+					</div>
+					<div class="col-md-12">
+						<label>Your name: <input data-path="/earl:mainAssertor/foaf:name" data-clean-on-import data-independent-input></label>
+					</div>
+					<div class="col-md-12">
+						<label>Your home page URL (ex. Github): <input type="url" data-path="/earl:mainAssertor/foaf:homepage" data-clean-on-import data-independent-input></label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-5">
+				<fieldset data-path="/foaf:member" data-template-object='{ "@type": ["earl:Assertor","earl:Software"] }' data-independent-input>
+					<legend class="h6">with the software assistance</legend>
+					<label>Product name: <input data-path="/doap:name" data-clean-on-import data-independent-input></label>
+					<label>Homepage: <input data-path="/doap:homepage" data-clean-on-import data-independent-input></label>
+					<label>Open source repository (if applicable): <input data-path="/doap:repository" data-clean-on-import data-independent-input></label>
+					<label>Was released/installed on: <input data-path="/doap:created" data-clean-on-import data-independent-input></label>
+					<label>Software version: <input data-path="/doap:release" data-clean-on-import data-independent-input></label>
+				</fieldset>
+			</div>
+		</div>
+
+
+		<button type="button" data-wb-doaction>
+			Apply the organisation assessor
+
+			<wb-config wb-plugin="wb-doaction">
+
+				<wb-config source="#dsa11y" action="importInDataset" cumulative="true" inputs="#assertedByOrg, #assertedByOrg [data-details] input, #assertedByOrg fieldset"></wb-config>
+
+			</wb-config>
+		</button>
+	</fieldset>
+	<fieldset id="assertedByInd" data-path="/earl:assertedBy" data-template-object='{ "@type": ["earl:Assertor","foaf:Person"] }' data-independent-input>
+		<legend class="h4">Individual</legend>
+
+		<div class="row">
+			<div class="col-md-7">
+				<div class="row" data-details>
+					<div class="col-md-12">
+						<label>Your name: <input data-path="/foaf:name" data-clean-on-import data-independent-input></label>
+					</div>
+					<div class="col-md-12">
+						<label>Your home page URL (ex. Github): <input type="url" data-path="/foaf:homepage" data-clean-on-import data-independent-input></label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-5">
+				<fieldset data-path="/foaf:member" data-template-object='{ "@type": ["earl:Assertor","earl:Software"] }' data-independent-input>
+					<legend class="h6">with the software assistance</legend>
+					<label>Product name: <input data-path="/doap:name" data-clean-on-import data-independent-input></label>
+					<label>Homepage: <input data-path="/doap:homepage" data-clean-on-import data-independent-input></label>
+					<label>Open source repository (if applicable): <input data-path="/doap:repository" data-clean-on-import data-independent-input></label>
+					<label>Was released/installed on: <input data-path="/doap:created" data-clean-on-import data-independent-input></label>
+					<label>Software version: <input data-path="/doap:release" data-clean-on-import data-independent-input></label>
+				</fieldset>
+			</div>
+		</div>
+
+
+		<button type="button" data-wb-doaction>
+			Apply the individual assessor
+
+			<wb-config wb-plugin="wb-doaction">
+
+				<wb-config source="#dsa11y" action="importInDataset" cumulative="true" inputs="#assertedByInd, #assertedByInd [data-details] input, #assertedByInd fieldset"></wb-config>
+
+			</wb-config>
+		</button>
+	</fieldset>
+</details>
+
+<h2>Assessment summary and general information</h2>
+
+<div class="form-group">
+	<label>Date: <input type="date" name="/dct:date" data-wb-json='{ "url":"#[a11y]/dct:date", "type": "val" }'></label>
+</div>
+
+<div class="form-group">
+	<label for="f-description">Description</label>
+	<textarea id="f-description" class="form-control full-width" rows="5" name="/dct:description" data-wb-json='{ "url":"#[a11y]/dct:description", "type": "val" }'></textarea>
+</div>
+
+<button type="button" class="btn btn-primary btn-lg">Download the report</button>
+
+<button type="button" class="btn btn-default">Save for later</button>
+
+
+<h2 id="assessment-details">Assessment details</h2>
+
+<table class="table table-columnfloat">
+	<thead>
+		<tr>
+			<th class="col-md-3">Success Criteria</th>
+			<th>Actions</th>
+			<th class="col-md-2">Result</th>
+			<th>Comment</th>
+		</tr>
+	</thead>
+	<tbody data-wb-json='{
+		"url": "#[details]/earl:result",
+		"tobeclone": "tr",
+		"source": "#tmpl-result",
+		"removeAll": "tr",
+		"mapping": [
+			{ "selector": "[data-label]", "value": "/earl:test" },
+			{ "selector": "[data-btn-remove]", "value": "/_:iterator", "attr": "path", "placeholder": "[[-id-]]" },
+			{ "selector": "[data-btn-copy]", "value": "/_:iterator", "attr": "from", "placeholder": "[[-id-]]" },
+			{ "selector": "[data-btn-set-id]", "value": "/_:iterator", "attr": "value", "placeholder": "[[-id-]]" },
+			{ "selector": "[data-outcome]", "value": "/earl:outcome" },
+			{ "selector": "[data-applicability]", "value": "/earl:subject/dct:description" },
+			{ "selector": "[data-notes]", "value": "/dct:description" },
+			{ "selector": "[data-mode]", "value": "/earl:mode" },
+			{ "selector": "[data-severity]", "value": "/acr:severity" },
+			{ "selector": "[data-relevancy]", "value": "/acr:relevancy" },
+			{
+				"selector": "[data-specific-results]",
+				"value": "/earl:result",
+				"mapping": [
+					{ "selector": "[data-result-label]", "value": "/earl:test" },
+					{ "selector": "[data-result-outcome]", "value": "/earl:outcome" },
+					{ "selector": "[data-result-severity]", "value": "/acr:severity" },
+					{ "selector": "[data-result-relevancy]", "value": "/acr:relevancy" },
+					{ "selector": "[data-result-notes", "value": "/dct:description" }
+				]
+			},
+			{
+				"@type": "rdf:Alt",
+				"mapping": [
+					{
+						"test": "fn:isLiteral",
+						"assess": "/acr:asset",
+						"mapping": [
+							{
+								"@type": "rdf:Alt",
+								"mapping": [
+									{
+										"template": "[data-asset-literal]",
+										"test": "fn:guessType",
+										"value": "/acr:asset",
+										"expect": "xsd:anyURI",
+										"mapping": [
+											{ "selector": "a", "value": "/acr:asset", "attr": "href" }
+										]
+									},
+									{
+										"template": "[data-asset-code]",
+										"test": "fn:guessType",
+										"value": "/acr:asset",
+										"expect": "xsd:string",
+										"mapping": [
+											{ "selector": "code", "value": "/acr:asset" }
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"template": "[data-asset-image]",
+						"test": "fn:guessType",
+						"assess": "/acr:asset",
+						"expect": "acr:AttachmentImage",
+						"mapping": [
+							{ "selector": "img", "value": "/acr:asset/acr:content/@value", "attr": "src" },
+							{ "selector": "a", "value": "/acr:asset/acr:content/@value", "attr": "href" },
+							{ "selector": "img", "value": "/acr:asset/dct:title", "attr": "alt" }
+
+						]
+					},
+					{
+						"template": "[data-asset-literal]",
+						"test": "fn:guessType",
+						"value": "/acr:asset",
+						"expect": "xsd:anyURI",
+						"mapping": [
+							{ "selector": "a", "value": "/acr:asset", "attr": "href" }
+						]
+					},
+					{
+						"template": "[data-asset-code]",
+						"test": "fn:guessType",
+						"value": "/acr:asset",
+						"expect": "xsd:string",
+						"mapping": [
+							{ "selector": "code", "value": "/acr:asset" }
+						]
+					},
+					{
+						"about": "When the value is an array of items",
+						"template": "[data-asset-array]",
+						"test": "fn:isArray",
+						"value": "/acr:asset",
+						"mapping": [
+								{
+									"template": "[data-download-link]",
+									"test": "fn:guessType",
+									"value": "/",
+									"expect": "xsd:anyURI",
+									"append": true,
+									"mapping": [
+										{ "selector": "a", "value": "/@value", "attr": "href" }
+									]
+								},
+								{
+									"template": "[data-source-code]",
+									"test": "fn:guessType",
+									"value": "/",
+									"expect": "xsd:string",
+									"append": true,
+									"mapping": [
+										{ "selector": "code", "value": "/@value" }
+									]
+								},
+								{
+									"template": "[data-asset-image]",
+									"test": "fn:guessType",
+									"value": "/",
+									"expect": "acr:AttachmentImage",
+									"append": true,
+									"mapping": [
+										{ "selector": "img", "value": "/acr:content/@value", "attr": "src" },
+										{ "selector": "a", "value": "/acr:content/@value", "attr": "href" },
+										{ "selector": "img", "value": "/dct:title", "attr": "alt" }
+
+									]
+								}
+						]
+					}
+				]
+			}
+		]
+	}'>
+	</tbody>
+</table>
+
+<template id="tmpl-result">
+	<table>
+		<tr>
+			<th data-label></th>
+			<td>
+				<a class="btn btn-default" data-wb-doaction href="edit-sc.html">
+					Update
+
+					<wb-config wb-plugin="wb-doaction">
+
+						<!--
+							* Save current edit
+							* Prep the working space
+							* Set the record ID somewhere
+							* Redirect to the page (Use an anchor???)
+
+							NOTE: The patch action need to be passive because the action are going to be cancelled when the browser remove the button from the DOM
+
+						-->
+
+						<wb-config source="#dsa11y" REMaction-name="step1" action="importInDataset" cumulative="true" passive="true"></wb-config>
+
+						<wb-config source="#dsa11y" action="patch" cumulative="true" wb-debug="patches" passive="true">
+							<wb-config wb-prop="patches">
+								<wb-config op="add" path="/workspace">
+									<wb-config wb-prop="value" wb-value="{}"></wb-config>
+								</wb-config>
+								<wb-config data-btn-copy op="copy" from="/earl:result/[[-id-]]" path="/workspace"></wb-config>
+								<wb-config data-btn-set-id op="add" path="/workspace-id" value="[[-id-]]"></wb-config>
+
+							</wb-config>
+						</wb-config>
+
+						<wb-config source="#dsa11y" action="saveDataSet" mode="local"></wb-config>
+
+					</wb-config>
+				</a><br>
+				<button class="btn btn-danger" type="button" data-wb-doaction>
+					Remove
+
+					<wb-config wb-plugin="wb-doaction">
+						<wb-config source="#assessment-details" action="setFocus"></wb-config>
+						<wb-config source="#dsa11y" action="patch" cumulative="true">
+							<wb-config wb-prop="patches">
+								<wb-config data-btn-remove op="remove" path="/earl:result/[[-id-]]"></wb-config>
+							</wb-config>
+						</wb-config>
+					</wb-config>
+				</button>
+			</td>
+			<td><span data-outcome></span></td>
+			<td>
+				<p><strong>Applicability</strong>: <span data-applicability>As defined</span></p>
+				<ul class="list-inline clearfix">
+					<li>Test mode: <span data-mode>Unknown</span></li>
+					<li class="pull-right clr-rght-md clr-rght-lg">Severity: <span data-severity>Not specified</span></li>
+					<li class="pull-right clr-rght-md clr-rght-lg">Relevance: <span data-relevancy>Not specified</span></li>
+				</ul>
+				<p data-notes></p>
+				<template data-asset-literal>
+					<p><a href download>Download attachment</a></p>
+				</template>
+				<template data-asset-code>
+					<pre><code></code></pre>
+				</template>
+				<template data-asset-image data-proofer-ignore>
+					<p>Image (<a href download>Download</a>):</p>
+					<img class="img-responsive" src="" alt lang="en">
+				</template>
+				<template data-asset-array>
+					<p>Attachments:</p>
+					<ul>
+						<template data-download-link>
+							<li><a href download>Download attachment</a></li>
+						</template>
+						<template data-source-code>
+							<li><pre><code></code></pre></li>
+						</template>
+						<template data-asset-image data-proofer-ignore>
+							<li>
+								<p>Image (<a href download>Download</a>):</p>
+								<img class="img-responsive" src="" alt lang="en">
+							</li>
+						</template>
+					</ul>
+				</template>
+				<dl data-specific-results>
+					<template>
+						<dt data-result-label></dt>
+						<dd>( <em data-result-outcome></em> <span data-result-severity></span> <span data-result-relevancy></span> ) <span data-result-notes></span></dd>
+					</template>
+				</dl>
+			</td>
+		</tr>
+	</table>
+</template>
+
+</form>
+
+<!--
 <h3>JSON baseline code sample</h3>
 
 <ouput><pre><code>{
@@ -134,6 +835,8 @@
 	]
 }</code></pre></output>
 
+-->
+
 <!--
 
 Namespace for EN 301 549 standard: https://www.etsi.org/deliver/etsi_en/301500_301599/301549/
@@ -176,7 +879,7 @@ Completing ARC
 
 
 <!-- Code sample of the Edit a SC could look like -->
-
+<!--
 <form action="URL/of/the/previous/page.html" method="GET">
 
 <div data-json-manager=' {
@@ -209,7 +912,7 @@ Completing ARC
 <button type="submit">Cancel</button>
 
 </form>
-
+-->
 
 <!-- DAta JSON code
 

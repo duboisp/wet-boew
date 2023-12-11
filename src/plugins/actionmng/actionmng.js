@@ -128,19 +128,23 @@ var $document = wb.doc,
 
 	patchAct = function( event, data ) {
 
+		console.log( "PATCHES received - action manager" );
+		console.log( data );
+
 		// Prepare patches operation for execution by the json-manager
 		var source = data.source,
 			ops = data.patches,
 			isCumulative = !!data.cumulative;
 
 		if ( !ops ) {
+			console.log( "No operations" );
 			return;
 		}
 
 		if ( !$.isArray( ops ) ) {
 			ops = [ ops ];
 		}
-
+		console.log( $( source ) );
 		$( source ).trigger( {
 			type: "patches.wb-jsonmanager",
 			patches: ops,
@@ -388,7 +392,7 @@ var $document = wb.doc,
 	importInDataset = function( event, data ) {
 
 		var elm = event.currentTarget,
-			processedInputs = 0,
+			processedAsyncInputs = 0,
 			nbInputs = 0,
 			inputs;
 
@@ -402,6 +406,10 @@ var $document = wb.doc,
 
 			// Resolve that CSS selector
 			inputs = document.querySelectorAll( data.inputs );
+
+		} else if ( elm.nodeName === "A" ) {
+
+			inputs = $( elm ).parentsUntil( "form" ).parent().get( 0 ).elements;
 
 		} else {
 			// Get the form inputs
@@ -423,25 +431,50 @@ var $document = wb.doc,
 		for( var i = 0; i < inputs.length; i++ ) {
 			var inField = inputs[ i ];
 
+			/*
 			// The input was already processed
 			if ( inField.wbImported ) {
 				delete inField.wbImported;
 				continue;
-			}
+			}*/
 
 			// Skip the input if not specifically selected and mark as independent input
 			if ( !data.inputs && inField.dataset.independentInput !== undefined ) {
-				processedInputs = processedInputs + 1;
 				continue;
 			}
 
 			// If not named or checked is explicit to false, skip the input
 			if ( !( inField.name || inField.dataset.path ) || ( [ "radio", "checkbox" ].indexOf( inField.type ) !== -1  && inField.checked === false ) ) {
-				processedInputs = processedInputs + 1;
 				continue;
 			}
 
+			recursiveFieldset( inField );
+
+			arrInputToProcess.push( inField );
+		}
+
+		// Clean processed marked elements like when they are in fieldset
+		for( var i = 0; i < inputs.length; i++ ) {
+			if ( inputs[ i ].wbImported ) {
+				delete inputs[ i ].wbImported;
+			}
+
+			// Check for the input inside the fieldset as they could be not directly in scope of the input selector
+			if ( inputs[ i ].type === "fieldset" ) {
+				for( var j = 0; j < inputs[ i ].elements.length; j ++) {
+					if ( inputs[ i ].elements[ j ].wbImported ) {
+						delete inputs[ i ].elements[ j ].wbImported;
+					}
+				}
+			}
+		}
+
+		function recursiveFieldset( inField ) {
+
 			if ( inField.type === "fieldset" && inField.dataset.path && inField.dataset.templateObject ) {
+
+				console.log( "inField" );
+				console.log( inField );
 
 				// Process its inner input as they are going to be the object to add at the specified path
 				// Only support plain input
@@ -456,18 +489,22 @@ var $document = wb.doc,
 
 				for ( var j = 0; j < innerElements.length; j++ ) {
 
+
 					var inputElement = innerElements[ j ];
-					inputElement.wbImported = true;
-					processedInputs = processedInputs + 1;
 
 					if (
 
 						( !data.inputs && inputElement.dataset.independentInput !== undefined ) ||
 						!inputElement.dataset.path ||
-						( [ "radio", "checkbox" ].indexOf( inputElement.type ) !== -1  && inputElement.checked === false ) ) {
+						( [ "radio", "checkbox" ].indexOf( inputElement.type ) !== -1  && inputElement.checked === false ) ||
+						inputElement.wbImported ) {
 
 						continue;
 					}
+
+					inputElement.wbImported = true;
+
+					recursiveFieldset( inputElement );
 
 					var innerElemValue = [ inputElement ];
 
@@ -492,12 +529,9 @@ var $document = wb.doc,
 					}
 				}
 
-				console.log( patches );
-
 				// If there is no sub-items to add, let's skip it
 				if ( !patches.length ) {
-					processedInputs = processedInputs + 1;
-					continue;
+					return;
 				}
 
 				// Check if the templateObject is ok
@@ -516,11 +550,8 @@ var $document = wb.doc,
 				inField.value = compiledValue;
 			}
 
-			arrInputToProcess.push( inField );
 		}
 
-		console.log( "arrInputToProcess" );
-		console.log( arrInputToProcess );
 
 
 		// Process individual inputs
@@ -560,14 +591,12 @@ var $document = wb.doc,
 					path;
 
 				if (curFiles.length === 0) {
-					processedInputs = processedInputs + 1;
 					break; // No file selected
 				}
 
 				if ( !inField.accept || inField.accept === "" ) {
 					console.error( "An accept attribute must be defined on input[type=file]" );
 					console.log( inField );
-					processedInputs = processedInputs + 1;
 					break;
 				}
 
@@ -584,6 +613,8 @@ var $document = wb.doc,
 				file = curFiles[ 0 ];
 				path = inField.dataset.path || inField.name;
 
+
+				processedAsyncInputs = processedAsyncInputs + 1;
 
 				switch (encodeTargetAs) {
 
@@ -608,9 +639,9 @@ var $document = wb.doc,
 								value: txt
 							}
 						);
-						processedInputs = processedInputs + 1;
+						processedAsyncInputs = processedAsyncInputs - 1;
 
-						if ( processedInputs === nbInputs ) {
+						if ( processedAsyncInputs === 0 ) {
 
 							// Execute a patch to the dataset
 							patchAct( event, data );
@@ -634,9 +665,9 @@ var $document = wb.doc,
 								value: "data:" + file.type + ";base64," + wb.string.arrayBufferToBase64( arrBuff )
 							}
 						);
-						processedInputs = processedInputs + 1;
+						processedAsyncInputs = processedAsyncInputs - 1;
 
-						if ( processedInputs === nbInputs ) {
+						if ( processedAsyncInputs === 0 ) {
 
 							// Execute a patch to the dataset
 							patchAct( event, data );
@@ -669,8 +700,6 @@ var $document = wb.doc,
 					inputValue = inField.value;
 				}
 
-				processedInputs = processedInputs + 1;
-
 				var patch = {
 						op: "add",
 						path: inField.dataset.path || inField.name,
@@ -692,12 +721,7 @@ var $document = wb.doc,
 
 		}
 
-		console.log( "processedInputs" );
-		console.log( processedInputs );
-		console.log( nbInputs );
-		console.log( data );
-
-		if ( processedInputs === nbInputs ) {
+		if ( processedAsyncInputs === 0 ) {
 
 			// Execute a patch to the dataset
 			patchAct( event, data );
@@ -1041,6 +1065,7 @@ $document.on( "do." + actionEvent, function( event ) {
 				// Check if this action must be put in sequence to another action
 				if ( !i_cache[ "run-after" ] ) {
 					console.log( "Trigger: " + i_action + "." + actionEvent );
+					console.log( $elm );
 					$elm.trigger( i_action + "." + actionEvent, i_cache );
 				}
 			}
@@ -1052,6 +1077,11 @@ $document.on( "do." + actionEvent, function( event ) {
 		}
 
 		$( event.target ).removeClass( componentName );
+
+		// Do we need to navigate to another page?
+		if ( event.navigate ) {
+			window.open( event.navigate, "_self" );
+		}
 	}
 } );
 

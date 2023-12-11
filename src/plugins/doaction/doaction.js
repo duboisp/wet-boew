@@ -41,7 +41,8 @@ $document.on( "click", selector, function( event ) {
 			// Execute actions if any.
 			$elm.trigger( {
 				type: runActions,
-				actions: wb.getData( $elm, componentName )
+				actions: wb.getData( $elm, componentName ),
+				navigate: elm.href || false
 			} );
 		} else {
 
@@ -49,7 +50,8 @@ $document.on( "click", selector, function( event ) {
 			$document.one( "wb-ready.wb", function( ) {
 				$elm.trigger( {
 					type: runActions,
-					actions: wb.getData( $elm, componentName )
+					actions: wb.getData( $elm, componentName ),
+					navigate: elm.href || false
 				} );
 			} );
 		}

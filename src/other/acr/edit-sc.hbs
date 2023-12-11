@@ -49,14 +49,47 @@
 	} -->
 	</div>
 
-	<!-- If load from localhost fail, throw a fetch error state
-	<div id="myDataSet" data-wb-jsonmanager='{
+	<!-- If load from localhost fail, throw a fetch error state -->
+	<!-- Backup copy ..... <div id="dsA11y" data-wb-jsonmanager='{
 		"load": "local",
-		"name": "edit-sc",
+		"savename": "a11y-assess",
+		"name": "a11y",
+		"patches": [
+			{ "op": "add", "path": "/workspace/earl:result", "value": [] }
+		],
 		"debug": true
 	}'></div>
-	 -->
+	<div id="myDataSet" data-wb-jsonmanager='{
+		"url": "#[a11y]",
+		"name": "edit-sc",
+		"patches": [
+			{ "op": "wb-swap", "path": "/workspace/earl:test", "ref": "/sc-rulesets", "put": "/sc-rulesets", "comment_value": "_value_ is a selector from where to take the value from the _ref_ which would be replaced at the specified _path_ location" }
+		],
+		"debug": true
+	}'></div>-->
 
+
+	<div id="myDataSet" data-wb-jsonmanager='{
+		"load": "local",
+		"savename": "a11y-assess",
+		"name": "edit-sc",
+		"patches": [
+			{ "op": "if", "path": "/workspace/earl:result", "test": "typeof", "value": "undefined", "patches": [
+					{ "op": "add", "path": "/workspace/earl:result", "value": [] }
+				]
+			},
+			{ "op": "if", "path": "/workspace/acr:asset", "test": "typeof", "value": "undefined", "patches": [
+					{ "op": "add", "path": "/workspace/acr:asset", "value": [] }
+				]
+			},
+			{ "op": "wb-swap", "path": "/workspace/earl:test", "ref": "/sc-rulesets", "put": "/sc-rulesets", "comment_value": "_value_ is a selector from where to take the value from the _ref_ which would be replaced at the specified _path_ location" }
+		],
+		"debug": true
+	}'></div>
+
+
+<!-- The following is a static load for testing purpose -->
+	<!--
 	<div id="myDataSet" data-wb-jsonmanager='{
 		"url2": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json#/earl:result/0",
 		"url": "demo/workingspace-data.json",
@@ -66,6 +99,7 @@
 		],
 		"debug": true
 	}'></div>
+	-->
 
 	<div id="pre-views-layer" data-wb-jsonmanager='{
 		"url": "#[edit-sc]",
@@ -184,7 +218,35 @@ Build a file import (JSON + Text + Base64 for image or other file)
 
 -->
 
+<div data-wb-json='{
+	"url": "#[edit-sc]",
+	"template": "[data-save-btn]",
+	"streamline": true,
+	"mapping": [
+		{ "selector": "[data-workspace-id-rem]", "value": "/workspace-id", "attr": "path", "placeholder": "[[-id-]]" },
+		{ "selector": "[data-workspace-id]", "value": "/workspace-id", "attr": "path", "placeholder": "[[-id-]]" }
+	],
+	"removeAll": "a"
+}'>
+	<template data-save-btn>
+		<a class="btn btn-lg btn-primary" href="assess-prep-en.html#assessment-details" data-wb-doaction>
+			<wb-config wb-plugin="wb-doaction">
+				<wb-config source="#myDataSet" action="importInDataset" cumulative="true" passive="true"></wb-config>
+				<wb-config source="#myDataSet" action="patch" cumulative="true" passive="true">
+					<wb-config wb-prop="patches">
+						<wb-config data-workspace-id-rem op="remove" path="/earl:result/[[-id-]]"></wb-config>
+						<wb-config data-workspace-id op="move" path="/earl:result/[[-id-]]" from="/workspace"></wb-config>
+						<wb-config op="remove" path="/workspace"></wb-config>
+					</wb-config>
+				</wb-config>
+				<wb-config source="#myDataSet" action="saveDataSet" mode="local"></wb-config>
+			</wb-config>
 
+			Save and return
+		</a>
+	</template>
+</div>
+<!--
 <button class="btn btn-lg btn-primary" type="button" data-wb-doaction>
 	<wb-config wb-plugin="wb-doaction">
 		<wb-config source="#myDataSet" action="importInDataset" cumulative="true"></wb-config>
@@ -193,6 +255,7 @@ Build a file import (JSON + Text + Base64 for image or other file)
 
 	Save and return
 </button>
+-->
 
 <button class="btn btn-link" type="button" data-wb-doaction>
 	<!-- This button is updated with data-json from the information in the workspace -->
@@ -925,8 +988,35 @@ Idea: Have a default version of the data in order to remove entry that matching 
 		<wb-config source="#myDataSet" action="saveDataSet" mode="local"></wb-config>
 	</wb-config>
 
-	Save and return
+	Save and return (BUTTON)
 </button>
+
+<div data-wb-json='{
+	"url": "#[edit-sc]",
+	"template": "[data-save-btn]",
+	"streamline": true,
+	"mapping": [
+		{ "selector": "[data-workspace-id]", "value": "/workspace-id", "attr": "path", "placeholder": "[[-id-]]" }
+	],
+	"removeAll": "a"
+}'>
+	<template data-save-btn>
+		<a class="btn btn-lg btn-primary" href="assess-prep-en.html#assessment-details" data-wb-doaction>
+			<wb-config wb-plugin="wb-doaction">
+				<wb-config source="#myDataSet" action="importInDataset" cumulative="true" passive="true"></wb-config>
+				<wb-config source="#myDataSet" action="patch" cumulative="true" passive="true">
+					<wb-config wb-prop="patches">
+						<wb-config data-workspace-id op="move" path="/earl:result/[[-id-]]" from="/workspace"></wb-config>
+						<wb-config op="remove" path="/workspace"></wb-config>
+					</wb-config>
+				</wb-config>
+				<wb-config source="#myDataSet" action="saveDataSet" mode="local"></wb-config>
+			</wb-config>
+
+			Save and return (ANCHOR)
+		</a>
+	</template>
+</div>
 
 <button class="btn btn-link" type="button" data-wb-doaction>
 	<!-- This button is updated with data-json from the information in the workspace -->

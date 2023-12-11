@@ -27,7 +27,7 @@ var componentName = "wb-data-json",
 		"[data-" + shortName + "]"
 	],
 	allowJsonTypes = [ "after", "append", "before", "prepend", "val" ],
-	allowAttrNames = /(href|src|data-*|aria-*|role|pattern|min|max|step|low|high|lang|hreflang|action)/,
+	allowAttrNames = /(href|src|data-*|aria-*|role|pattern|min|max|step|low|high|lang|hreflang|action|path)/,
 	allowPropNames = /(checked|selected|disabled|required|readonly|multiple|hidden)/,
 	selectorsLength = selectors.length,
 	selector = selectors.join( "," ),
@@ -454,6 +454,7 @@ var componentName = "wb-data-json",
 		try {
 			rawValue = getRawValue( content, mappingConfig.assess || mappingConfig.value );
 			value = getValue( rawValue );
+
 		} catch ( ex ) {
 
 			// If this is an error, the path probably don't exist
@@ -694,6 +695,13 @@ var componentName = "wb-data-json",
 	// Mapping the data into a template or into a node
 	processMapping = function( elm, clone, content, mappingConfig ) {
 
+		// Log the dataset if requested
+		if ( mappingConfig.debug ) {
+			console.log( "Mapping debug - For the following data and config" );
+			console.log( content );
+			console.log( mappingConfig );
+		}
+
 		var j, j_cache,
 			cached_node, cached_value,
 			cached_value_is_HTML, cached_value_is_JSON, cached_value_is_IRI,
@@ -714,7 +722,7 @@ var componentName = "wb-data-json",
 		if ( mappingConfig.test && !canProcessMapping( content, mappingConfig ) ) {
 			console.log( mappingConfig.test );
 			console.log( content );
-			console.log( "nope" );
+			console.log( "nope don't pass the test" );
 			return;
 		}
 
@@ -798,6 +806,10 @@ var componentName = "wb-data-json",
 			}
 		}
 
+		if ( mappingConfig.debug ) {
+			console.log( "Mapping debug, list of mapping" );
+			console.log( mapping );
+		}
 
 		//
 		// Process the mapping
@@ -832,9 +844,11 @@ var componentName = "wb-data-json",
 
 			// Go to the next mapping if the value of JSON node don't exist to ensure we keep the default text set in the template, but move ahead if empty or null
 			if ( typeof cached_value === "undefined" ) {
-				console.info( "Value is not found" );
-				console.info( j_cache );
-				console.info( content );
+				if ( mappingConfig.debug ) {
+					console.info( "Value is not found" );
+					console.info( j_cache );
+					console.info( content );
+				}
 				continue;
 			}
 
@@ -915,25 +929,35 @@ var componentName = "wb-data-json",
 				mapValue( cached_node, cached_value, j_cache );
 			}
 
-		}
+			if ( mappingConfig.debug ) {
+				console.log( "Mapping debug - Internal idx: " + j );
+				console.log( cached_node );
+				console.log( cached_value );
+			}
 
-		// Log the dataset if requested
-		if ( mappingConfig.debug ) {
-			console.info( "Log processed data mapping" );
-			console.log( mappingConfig );
-			console.log( content );
 		}
 
 		// Add the template, if applicable
 		if ( template ) {
+
+			// Remove any inner template to avoid interference when re-drawing the updated content
+			var innerTmpl = clone.querySelectorAll( "template" );
+			innerTmpl.forEach( function( tmpl ) {
+				tmpl.remove();
+			} );
+
+			// Insert the clone
 			if ( template.parentNode ) {
 				if ( !mappingConfig.append ) {
 					template.parentNode.insertBefore( clone, template );
+					mappingConfig.debug && console.log( "insertBefore" );
 				} else {
 					template.parentNode.appendChild( clone );
+					mappingConfig.debug && console.log( "appendChild" );
 				}
 			} else {
 				upstreamClone.appendChild( clone );
+				mappingConfig.debug && console.log( "upstream appendChild" );
 			}
 
 			return elm;
@@ -994,13 +1018,7 @@ var componentName = "wb-data-json",
 		}
 
 		// Exclude null values and replace with default text
-		if ( value !== null && !mappingConfig.type ) {
-			if ( mappingConfig.isHTML ) {
-				element.innerHTML = value;
-			} else {
-				element.textContent = value;
-			}
-		} else if ( mappingConfig.type === "select" ) {
+		if ( mappingConfig.type === "select" ) {
 
 			// Find all elm that have a matching value
 			var optionsSelected = element.querySelectorAll( "[value='" + value + "']" );
@@ -1013,7 +1031,12 @@ var componentName = "wb-data-json",
 					opt.checked = true;
 				}
 			} );
+		} else if ( value !== null && mappingConfig.isHTML ) {
+			element.innerHTML = value;
+		} else if ( value !== null ) {
+			element.textContent = value;
 		}
+
 	},
 
 
