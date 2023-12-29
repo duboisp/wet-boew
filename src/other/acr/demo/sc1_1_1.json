@@ -47,9 +47,89 @@
 	  "rules": [
 		{ "earl:test": "WCAG2xTech:failures/F72" }
 	  ]
+	},
+	{
+	  "@id": "#failure",
+	  "dct:title": "Failure",
+	  "label": "Failure",
+	  "rulesets": [
+		{
+		  "@id": "#f72",
+		  "dct:title": "F72 - Inner rules 1",
+		  "rules": [
+			{ "earl:test": "WCAG2xTech:failures/F72" }
+		  ]
+		},
+		{
+		  "@id": "#f71",
+		  "dct:title": "F71 - Inner rules 2",
+		  "rules": [
+			{ "earl:test": "WCAG2xTech:failures/F71" }
+		  ]
+		},
+		{
+		  "@id": "#f67",
+		  "dct:title": "F67 - Inner rules 2",
+		  "rules": [
+			{ "earl:test": "WCAG2xTech:failures/F67" }
+		  ]
+		}
+	  ]
 	}
   ],
   "rulesets": [
+
+  {
+	  "@id": "act:rulesets/wcag2x/sc/non-text-content#situations",
+	  "dct:title": "Applicable situation",
+	  "dct:title-multilang": {
+		"en": "Applicable situation",
+		"fr": "Situation applicable"
+	  },
+	  "rules": [
+		{ "earl:test": "act_rules:WCAG2x/sc/1_1_1_situation_a" },
+		{ "earl:test": "act_rules:WCAG2x/sc/1_1_1_situation_b" },
+		{ "earl:test": "act_rules:WCAG2x/sc/1_1_1_situation_c" },
+		{ "earl:test": "act_rules:WCAG2x/sc/1_1_1_situation_d" },
+		{ "earl:test": "act_rules:WCAG2x/sc/1_1_1_situation_e" },
+		{ "earl:test": "act_rules:WCAG2x/sc/1_1_1_situation_f" }
+	  ]
+	},
+	{
+	  "@id": "#1_1_1_situation_a",
+	  "dct:title": "Short text alternative is sufficient",
+	  "rules": [
+		{ "earl:test": "WCAG2xTech:general/G94" },
+		{ "earl:test": "WCAG2xTech:aria/ARIA6" },
+		{ "earl:test": "WCAG2xTech:aria/ARIA10" },
+		{ "earl:test": "WCAG2xTech:general/G196" },
+		{ "earl:test": "WCAG2xTech:html/H2" },
+		{ "earl:test": "WCAG2xTech:html/H37" },
+		{ "earl:test": "WCAG2xTech:html/H53" },
+		{ "earl:test": "WCAG2xTech:html/H86" },
+		{ "earl:test": "WCAG2xTech:pdf/PDF1" },
+		{ "earl:test": "WCAG2xTech:failures/F3" },
+		{ "earl:test": "WCAG2xTech:failures/F13" },
+		{ "earl:test": "WCAG2xTech:failures/F20" },
+		{ "earl:test": "WCAG2xTech:failures/F30" },
+		{ "earl:test": "WCAG2xTech:failures/F38" },
+		{ "earl:test": "WCAG2xTech:failures/F39" },
+		{ "earl:test": "WCAG2xTech:failures/F65" },
+		{ "earl:test": "WCAG2xTech:failures/F67" },
+		{ "earl:test": "WCAG2xTech:failures/F71" },
+		{ "earl:test": "WCAG2xTech:failures/F72" }
+	  ]
+	},
+	{
+	  "@id": "#level-aaa",
+	  "dct:title": "Level AAA techniques",
+	  "rules": [
+		{ "earl:test": "WCAG2xTech:failures/F72" }
+	  ]
+	},
+
+
+
 	{
 	  "dct:title": "Full sets per profile",
 	  "subsets": [

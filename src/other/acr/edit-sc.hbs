@@ -785,20 +785,139 @@ Idea: Have a default version of the data in order to remove entry that matching 
 	}'></div>
 </details>
 
-<!-- This suggestion is build based on the test evaluation on this page -->
+<!--
+This work
+
+{
+		"url": "#[ds-sc-loaded]",
+		"streamline": true,
+				"mapping": [
+					{
+						"note": "We assume this is an entry about a group of rulesets",
+						"template": "[data-rulesets]",
+						"value": "/sc-rulesets",
+						"mapping": [
+							{ "selector": "optgroup", "value": "/dct:title", "attr": "label" },
+							{
+								"template": "[data-item]",
+								"value": "/rulesets",
+								"assess": "/rulesets",
+								"mapping": [
+									{ "selector": "option", "value": "/dct:title" },
+									{ "selector": "option", "attr": "value", "value": "/@id" }
+								]
+							}
+						],
+						"debug": true
+					}
+		],
+		"removeAll": "option"
+	}
+
+-->
+<!-- This suggestion is build based on the test evaluation on this page
+
+
+					{
+						"note": "If it only contains rules",
+						"template": "[data-single]",
+						"test": "fn:guessType",
+						"assess": "/rulesets",
+						"expect": "undefined",
+						"mapping": [
+							{ "selector": "option", "value": "/dct:title" },
+							{ "selector": "option", "attr": "value", "value": "/@id" }
+						],
+						"debug": true
+					},
+
+
+
+						{
+		"url": "#[ds-sc-loaded]/sc-rulesets",
+		"mapping": [
+			{
+				"@type": "rdf:Alt",
+				"mapping": [
+					{
+						"note": "We assume this is an entry about a group of rulesets",
+						"template": "[data-rulesets]",
+						"assess": "/rulesets",
+						"value": "/rulesets",
+						"mapping": [
+							{ "selector": "optgroup", "value": "/dct:title", "attr": "label" },
+							{
+								"template": "[data-item]",
+								"value": "/rules",
+								"mapping": [
+									{ "selector": "option", "value": "/dct:title" },
+									{ "selector": "option", "attr": "value", "value": "/@id" }
+								]
+							}
+						],
+						"debug": true
+					}
+				]
+			}
+		],
+		"removeAll": "option, optgroup"
+	}
+-->
 <label>Suggestion of rulesets
 <select id="suggest-rulesets" name="/workspace/selected"  data-wb-json='
 	{
 		"url": "#[ds-sc-loaded]/sc-rulesets",
 		"mapping": [
-			{ "selector": "option", "value": "/dct:title" },
-			{ "selector": "option", "attr": "value", "value": "/@id" }
+			{
+				"@type": "rdf:Alt",
+				"mapping": [
+					{
+						"note": "If it only contains rules",
+						"template": "[data-single]",
+						"test": "fn:guessType",
+						"assess": "/rulesets",
+						"expect": "undefined",
+						"mapping": [
+							{ "selector": "option", "value": "/dct:title" },
+							{ "selector": "option", "attr": "value", "value": "/@id" }
+						],
+						"debug": true
+					},
+					{
+						"note": "We assume this is an entry about a group of rulesets",
+						"template": "[data-rulesets]",
+						"assess": "/rulesets",
+						"test": "fn:guessType",
+						"expect": "rdfs:Container",
+						"mapping": [
+							{ "selector": "optgroup", "value": "/dct:title", "attr": "label" },
+							{
+								"template": "[data-item]",
+								"value": "/rulesets",
+								"assess": "/rulesets",
+								"mapping": [
+									{ "selector": "option", "value": "/dct:title" },
+									{ "selector": "option", "attr": "value", "value": "/@id" }
+								]
+							}
+						],
+						"debug": true
+					}
+				]
+			}
 		],
-		"removeAll": "option"
+		"removeAll": "optgroup, option"
 	}
 '>
-	<template>
+	<template data-single>
 		<option></option>
+	</template>
+	<template data-rulesets>
+		<optgroup>
+			<template data-item>
+				<option></option>
+			</template>
+		</optgroup>
 	</template>
 </select>
 </label>
@@ -839,6 +958,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 						<wb-config op="copy" from="/sc-rulesets" path="/workspace/rulesets"></wb-config>
 
 						<!-- Select the value and replace the working copy-->
+						<!-- The following line do cause an issue when using optgroup because we are unable to select the inner value, one way to solve will be to use a fully compliant JSON-LD store where we can flatten the data and get the "@id" instead of navigating via its hierarchy"
 						<wb-config op="wb-swap" path="/workspace/selected" ref="/workspace/rulesets"></wb-config>
 					</wb-config>
 				</wb-config>

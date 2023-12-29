@@ -430,7 +430,20 @@ var componentName = "wb-data-json",
 			if ( dataTableAddRow ) {
 				dataTableAddRow( $( clone ) ); // If wb-tables, use its API to add rows
 			} else if ( !useClone && template ) {
-				elmAppendTo.appendChild( clone );
+
+				// This fix the issue when inserting option inside the optgroup for the "import a set of sub-tests" (it reuse the same logic as ProcessMapping)
+				if ( template.parentNode ) {
+
+					if ( !mappingConfig.append ) {
+						template.parentNode.insertBefore( clone, template );
+						mappingConfig.debug && console.log( "insertBefore" );
+					} else {
+						template.parentNode.appendChild( clone );
+						mappingConfig.debug && console.log( "appendChild" );
+					}
+				} else {
+					elmAppendTo.appendChild( clone );
+				}
 			}
 		}
 
