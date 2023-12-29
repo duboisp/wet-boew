@@ -368,6 +368,9 @@ var componentName = "wb-data-json",
 			template = document.querySelector( mappingConfig.source );
 		} else if ( !useClone && mappingConfig.template ) {
 			template = elm.querySelector( mappingConfig.template );
+
+			// Ensure we don't recreated it if during a subsequent iteration of processMapping
+			delete mappingConfig.template;
 		} else if ( !useClone ) {
 			template = elm.querySelectorAll( ":scope > template" );
 			if ( template.length === 1 || template[ 0 ].attributes.length === 0 ) {

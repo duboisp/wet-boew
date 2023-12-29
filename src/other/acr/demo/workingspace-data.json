@@ -149,5 +149,25 @@
    {
 	"index": 5,
 	"path": "/somewhere"
+   },
+
+
+
+
+
+   "profiles": {
+	  "act:standard/profiles/wcag#levelAA": "demo/levelAA.json",
+	  "act:standard/profiles/en301549#web": [ "fileA.json", "fileB.json" ]
    }
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -31,6 +31,7 @@ var $document = wb.doc,
 		"loadJSON",
 		"uploadJSON",
 		"importInDataset",
+		"copyBetweenDataset",
 		"saveDataSet",
 		"patch",
 		"ajax",
@@ -386,6 +387,20 @@ var $document = wb.doc,
 		// Trigger the upload
 		fileInput.click();
 
+	},
+
+	// Copy a JSO between dataset via JSON manager
+	copyBetweenDataset = function( event, data ) {
+
+		$( event.currentTarget ).trigger( {
+			type: "dscopy.wb-jsonmanager",
+			metadata: data
+		} );
+
+		// Run sync action if configured by the author
+		if ( data[ "action-name" ] ) {
+			executeAfterRunAction( data[ "action-name" ] );
+		}
 	},
 
 	// Take form input and integrate to JSON manager
@@ -1147,6 +1162,9 @@ $document.on( actionMngEvent, selector, function( event, data ) {
 			break;
 		case "importInDataset":
 			importInDataset( event, data );
+			break;
+		case "copyBetweenDataset":
+			copyBetweenDataset( event, data );
 			break;
 		case "saveDataSet":
 			saveDataSet( event, data );

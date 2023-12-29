@@ -88,6 +88,7 @@
 	}'></div>
 
 
+
 <!-- The following is a static load for testing purpose -->
 	<!--
 	<div id="myDataSet" data-wb-jsonmanager='{
@@ -701,11 +702,94 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 -->
 
+<!--
+
+{ "n": "Initiate the load",			"op": "wb-load", "path": "/stdprofiles", "name": "ds-loaded",
+			  "issue": "When loaded as a patch, the dataset can only exist once and cant be executed in inner patches"
+			}
+
+-->
+
+<details>
+	<summary>Post loaded dataset</summary>
+	<div id="uniqueID" data-wb-jsonmanager='{
+		"name": "ds-loaded",
+		"load": "wait",
+		"debug": true
+	}'></div>
+</details>
+<details>
+	<summary>Load JSON mapping from Standards Profile value</summary>
+	<div id="ds-standard-profile" data-wb-jsonmanager='{
+		"url": [
+			"#[edit-sc]",
+			{ "url": "demo/workingspace-data.json", "path": "/stdprofiles" }
+		],
+		"name": "ds-standard-profile",
+		"patches": [
+			{ "n": "Get matching profile", 		"op": "wb-swap", "path": "/acr:conformanceOption", "ref": "/stdprofiles/profiles", "put": "/stdprofiles" }
+		],
+		"n1-postload": "Will create a sibling div element where the URL parameter is defined by the value located by the specified path",
+		"n2-postload": "If bind property is specified, it dont create a new element but it will reuse it",
+		"postload": [
+			{ "name": "ds-loaded", "path": "/stdprofiles" }
+		],
+		"debug": true
+	}'></div>
+
+</details>
+
+<details>
+	<summary>Specific TEST - Post loaded dataset</summary>
+<div id="ds-sc-loaded" data-wb-jsonmanager='{
+		"name": "ds-sc-loaded",
+		"load": "wait",
+		"debug": true
+	}'></div>
+<div data-wb-jsonmanager='{
+		"url": [
+			"#[edit-sc]",
+			{ "url": "#[ds-loaded]", "path": "/rules" }
+		],
+		"name": "ds-load-sc-details",
+		"patches": [
+			{ "n": "Get matching profile", 		"op": "wb-swap", "path": "/workspace/earl:test", "ref": "/successcriteria", "put": "/selected" }
+		],
+		"n1-postload": "Will create a sibling div element where the URL parameter is defined by the value located by the specified path",
+		"n2-postload": "If bind property is specified, it dont create a new element but it will reuse it",
+		"postload": [
+			{ "name": "ds-sc-loaded", "path": "/selected" }
+		],
+		"debug": true
+	}'></div>
+
+</details>
+
+<p data-json-replace="#[ds-loaded]/yep">Not loaded yet</p>
+<p data-json-replace="#[ds-sc-loaded]/maybe">Not loaded yet 2 sc_1_1_1</p>
+
+
+<details>
+	<summary>ds-suggestion-test</summary>
+	<div id="ds-suggestion-test" data-wb-jsonmanager='{
+		"url-notes": "Load user data + Reference data to know where to load sub-test",
+		"url": [
+			"#[edit-sc]",
+			{ "url": "demo/workingspace-data.json", "path": "/rulesets" }
+		],
+		"name": "ds-suggestion-test",
+		"patches": [
+			{ "op": "wb-swap", "path": "/workspace/earl:test", "ref": "/rulesets/sc-rulesets", "put": "/sc-rulesets", "comment_value": "_value_ is a selector from where to take the value from the _ref_ which would be replaced at the specified _path_ location" }
+		],
+		"debug": true
+	}'></div>
+</details>
+
 <!-- This suggestion is build based on the test evaluation on this page -->
 <label>Suggestion of rulesets
-<select id="suggest-rulesets" name="/workspace-rulesets/selected"  data-wb-json='
+<select id="suggest-rulesets" name="/workspace/selected"  data-wb-json='
 	{
-		"url": "#[pre-views-sc]/sc-rulesets",
+		"url": "#[ds-sc-loaded]/sc-rulesets",
 		"mapping": [
 			{ "selector": "option", "value": "/dct:title" },
 			{ "selector": "option", "attr": "value", "value": "/@id" }
@@ -730,8 +814,42 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 	<wb-config wb-plugin="wb-doaction">
 
+				<!-- Save all and current state of the form -->
+				<wb-config source="#myDataSet" action="importInDataset" action-name="saveAll" cumulative="true"></wb-config>
+
+
 				<!-- Clean the workspace -->
-				<wb-config source="#myDataSet" action="patch" action-name="prepData" cumulative="true" passive="true">
+				<wb-config source="#ds-sc-loaded" action="patch" action-name="prepData" run-after="saveAll" cumulative="true" passive="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace"></wb-config>
+						<wb-config op="add" path="/workspace">
+							<wb-config wb-prop="value" wb-value='{ "rulesets": [] }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<!-- Get the form input -->
+				<wb-config source="#ds-sc-loaded" action="importInDataset" action-name="getinputs" run-after="prepData" cumulative="true" inputs="#suggest-rulesets, #short-sub-tests-table input, #short-sub-tests-table select, #short-sub-tests-table textarea"></wb-config>
+
+				<!-- Get the selected ruleset -->
+				<wb-config source="#ds-sc-loaded" action="patch" cumulative="true" action-name="preProcess" run-after="getinputs">
+					<wb-config wb-prop="patches">
+
+						<!-- Create a working copy -->
+						<wb-config op="copy" from="/sc-rulesets" path="/workspace/rulesets"></wb-config>
+
+						<!-- Select the value and replace the working copy-->
+						<wb-config op="wb-swap" path="/workspace/selected" ref="/workspace/rulesets"></wb-config>
+					</wb-config>
+				</wb-config>
+
+				<!-- Copy the value from the working dataset into the official one -->
+				<wb-config from="#[ds-sc-loaded]/workspace/selected/rules" to="#[edit-sc]/workspace/earl:result/-" action="copyBetweenDataset" cumulative="true" run-after="preProcess">
+				</wb-config>
+
+<script>/* VERSION 2
+				<!-- Clean the workspace -->
+				<wb-config source="#ds-suggestion-test" action="patch" action-name="prepData" cumulative="true" passive="true">
 					<wb-config wb-prop="patches">
 						<wb-config op="remove" path="/workspace-rulesets"></wb-config>
 						<wb-config op="add" path="/workspace-rulesets">
@@ -741,25 +859,50 @@ Idea: Have a default version of the data in order to remove entry that matching 
 				</wb-config>
 
 				<!-- Get the form input -->
-				<wb-config source="#myDataSet" action="importInDataset" action-name="getinputs" run-after="prepData" cumulative="true" inputs="#suggest-rulesets, #short-sub-tests-table input, #short-sub-tests-table select, #short-sub-tests-table textarea"></wb-config>
+				<wb-config source="#ds-suggestion-test" action="importInDataset" action-name="getinputs" run-after="prepData" cumulative="true" inputs="#suggest-rulesets, #short-sub-tests-table input, #short-sub-tests-table select, #short-sub-tests-table textarea"></wb-config>
 
 				<!-- Save all and current state
 				<wb-config source="#myDataSet" action="importInDataset" action-name="saveAll" run-after="getinputs" cumulative="true"></wb-config>
 				-->
 
-				<!-- Create a working copy -->
-				<wb-config source="#myDataSet" action="patch" cumulative="true" run-after="getinputs">
+				<!-- Get the selected ruleset -->
+				<wb-config source="#ds-suggestion-test" action="patch" cumulative="true" action-name="preProcess" run-after="getinputs">
 					<wb-config wb-prop="patches">
+
+						<!-- Create a working copy -->
 						<wb-config op="copy" from="/sc-rulesets" path="/workspace-rulesets/rulesets"></wb-config>
 
-				<!-- Select the value -->
-					<wb-config op="wb-swap" path="/workspace-rulesets/selected" ref="/workspace-rulesets/rulesets"></wb-config>
+						<!-- Select the value and replace the working copy-->
+						<wb-config op="wb-swap" path="/workspace-rulesets/selected" ref="/workspace-rulesets/rulesets"></wb-config>
+					</wb-config>
+				</wb-config>
 
-				<!-- Copy the rule -->
-					<wb-config op="wb-add-from" value="/workspace-rulesets/selected/rules" path="/workspace/earl:result/-"></wb-config>
+				<!-- Copy the value from the working dataset into the official one -->
+				<wb-config from="#[ds-suggestion-test]/workspace-rulesets/selected/rules" to="#[edit-sc]/workspace/earl:result/-" action="copyBetweenDataset" cumulative="true" run-after="preProcess">
+				</wb-config>
+*/</script>
+
+<script>/*
+				<!-- Create a working copy -->
+				<!-- was working....-->
+				<wb-config source="#myDataSet" action="patch" cumulative="true" run-after="getinputs">
+					<wb-config wb-prop="patches">
+
+						<!-- Copy from ruleset to our workspace -->
+						<wb-config op="copy" from="/sc-rulesets" path="/workspace-rulesets/rulesets"></wb-config>
+
+						<!-- Select the value -->
+						<wb-config op="wb-swap" path="/workspace-rulesets/selected" ref="/workspace-rulesets/rulesets"></wb-config>
+
+						<!-- Copy the rule -->
+						<wb-config op="wb-add-from" value="/workspace-rulesets/selected/rules" path="/workspace/earl:result/-"></wb-config>
 
 					</wb-config>
 				</wb-config>
+*/</script>
+
+
+
 				<!--<wb-config op="copy" from="/sc-rulesets/WCAG21:non-text-content/rulesets/act:rulesets/wcag2x/sc/non-text-content#situations">
 					<wb-config wb-prop="value" wb-value='{
 						"earl:test": "Enter the URL of the test or technique",

@@ -1,0 +1,121 @@
+{
+  "sc-rulesets": [
+	{
+	  "@id": "act:rulesets/wcag2x/sc/non-text-content#situations",
+	  "dct:title": "Applicable situation",
+	  "dct:title-multilang": {
+		"en": "Applicable situation",
+		"fr": "Situation applicable"
+	  },
+	  "rules": [
+		{ "earl:test": "act_rules:WCAG2x/sc/1_2_1_situation_a" },
+		{ "earl:test": "act_rules:WCAG2x/sc/1_2_1_situation_b" }
+	  ]
+	},
+	{
+	  "@id": "#1_2_1_situation_a",
+	  "dct:title": "Situation A: If the content is prerecorded audio-only",
+	  "rules": [
+		{ "earl:test": "WCAG2xTech:general/G158" },
+		{ "earl:test": "WCAG2xTech:failures/F30" },
+		{ "earl:test": "WCAG2xTech:failures/F67" }
+	  ]
+	},
+	{
+	  "@id": "#1_2_1_situation_b",
+	  "dct:title": "Situation B: If the content is prerecorded video-only",
+	  "rules": [
+		{ "earl:test": "WCAG2xTech:general/G159" },
+		{ "earl:test": "WCAG2xTech:general/G166" },
+		{ "earl:test": "WCAG2xTech:failures/F30" },
+		{ "earl:test": "WCAG2xTech:failures/F67" }
+	  ]
+	},
+	{
+	  "@id": "#advisory",
+	  "dct:title": "Advisory techniques",
+	  "rules": [
+		{ "earl:test": "WCAG2xTech:html/H96" }
+	  ]
+	}
+  ],
+  "rulesets": [
+	{
+	  "dct:title": "Full sets per profile",
+	  "subsets": [
+		{
+		  "dct:title": "All success criterion at level AA",
+		  "rules": [
+			{ "@id": "_:sc1.1.1" },
+			{
+			  "earl:test": "WCAG21:audio-only-and-video-only-prerecorded"
+			},
+			{
+			  "earl:test": "WCAG21:captions-prerecorded"
+			},
+			{
+			  "earl:test": "WCAG21:audio-description-or-media-alternative-prerecorded"
+			},
+			{
+			  "earl:test": "WCAG21:captions-live"
+			},
+			{
+			  "earl:test": "WCAG21:audio-description-prerecorded"
+			}
+		  ]
+		},
+		{
+		  "dct:title": "WCAG 2.1 delta at level AA",
+		  "rules": [
+			{ "@id": "_:sc1.1.1" },
+			{
+			  "earl:test": "WCAG21:audio-only-and-video-only-prerecorded"
+			},
+			{
+			  "earl:test": "WCAG21:captions-prerecorded"
+			},
+			{
+			  "earl:test": "WCAG21:audio-description-or-media-alternative-prerecorded"
+			},
+			{
+			  "earl:test": "WCAG21:captions-live"
+			},
+			{
+			  "earl:test": "WCAG21:audio-description-prerecorded"
+			}
+		  ]
+		}
+	  ]
+	},
+	{
+	  "@id": "Individual Success Criteria.json",
+	  "dct:title": "Success criterion",
+	  "subsets": [
+	  {
+		"dct:title": "SC 1.1.1 - Non text content",
+		"rules": [
+		  { "@id": "_:sc1.1.1" }
+		]
+	  },
+	  {
+		"dct:title": "SC 1.2.1 - Audio only and video only prerecorded",
+		"rules": [
+		  {
+			"@id": "_:sc1.2.1"
+		  }
+		]
+	  }
+	  ]
+	}
+  ],
+
+  "tests": [
+	{
+	  "@id": "_:sc1.1.1",
+	  "earl:test": "WCAG21:non-text-content",
+	  "rulesets": "act:rulesets/wcag2x/sc/non-text-content"
+	}
+  ],
+
+  "maybe": "This ds is loaded sc _ 1.1.1"
+}

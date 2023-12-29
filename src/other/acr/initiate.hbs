@@ -1,0 +1,85 @@
+---
+{
+	"title": "Load assessment - Accessibility Conformance Report Methodology",
+	"language": "en",
+	"category": "Other",
+	"description": "",
+	"tag": "acr",
+	"parentdir": "acr",
+	"altLangPage": "assess-prep-fr.html",
+	"dateModified": "2023-05-09",
+	"js-deactivated": ["demo/load"]
+}
+---
+
+<h2>Load an assessment</h2>
+
+<!-- The button work like the action manager JSON load, but do a popup file upload -->
+<button type="button" data-wb-doaction='[
+	{ "action": "uploadJSON", "source": "#ds-a11y", "asDataset": "uploaded" }
+
+]'>Upload and load</button>
+
+<!-- Need to implement a mapping on failure -->
+
+<div data-wb-json='{
+	"url": "#[a11y]/",
+	"fail": {
+		"template": "template",
+		"removeAll": "div.alert-danger",
+		"mapping": null
+	}
+}'>
+	<template>
+		<div class="alert alert-danger">
+			<p>The select file for upload is an invalid JSON file, please select a valid JSON file.</p>
+		</div>
+	</template>
+</div>
+
+
+<h2>Create a new assessment</h2>
+
+<label>
+	Choose your standard:
+	<select>
+		<option value="acr:standard	https://www.w3.org/TR/WCAG21">WCAG</option>
+		<option>EN 301 549</option>
+	</select>
+</label>
+
+<br>
+
+<label>
+	WCAG - Choose your profile:
+	<select>
+		<option value="rulesets/wcag2x/wcag21_levelAA.json">Level AA</option> <!-- acr:conformanceOption	act:standard/profiles/wcag#levelAA -->
+		<option value="rulesets/wcag2x/wcag21_delta_levelAA.json">Delta WCAG 2.1 Level AA</option>
+	</select>
+</label>
+
+
+<br>
+
+<label>
+	EN 301 549 - Choose your profile:
+	<select>
+		<option value="rulesets/en301549/v3_closed_functionality">5.1. Clause functionality</option>
+		<option>6. ICT with two-way voice communication</option>
+		<option>7. ICT with video capabilities</option>
+		<option>8. Hardware</option>
+		<option>9. Web</option>
+		<option>10. Non-web documents</option>
+		<option>11. Software</option>
+		<option>12.2. Support services </option>
+		<option>13.1. and 13.2 Relay services</option>
+		<option>13.3. Two way communication emergency services</option>
+	</select>
+</label>
+
+
+<button>
+	1.
+</button>
+
+<!-- <p>Note: Based on the following ruleset: <code data-json-replace="#[a11y]/dct:source">Not available</code></p> -->

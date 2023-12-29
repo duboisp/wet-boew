@@ -1,0 +1,29 @@
+{
+  "standard": [
+	{
+	  "dct:title": "wcag20",
+	  "acr:standard": "https://www.w3.org/TR/WCAG21"
+	  "profiles": [
+		{
+		  "title": "conformance Option",
+		  "acr:conformanceOption": "act:standard/profiles/wcag#levelAA",
+		  "reference": "act:rulesets/wcag2x/levelAA.json",
+		  "reference": "URL of the rules"
+		}
+	  ]
+	"wcag21",
+	"en301549"
+  ],
+  "master-rulesets": [
+	{
+	  "acr:standard": "https://www.w3.org/TR/WCAG21",
+	  "acr:conformanceOption": "act:standard/profiles/wcag#levelAA",
+	  "rulesets": "act:rulesets/wcag2x/levelAA.json"
+	},
+	{
+	  "acr:standard": "https://www.w3.org/TR/WCAG21",
+	  "acr:conformanceOption": "act:standard/profiles/wcag#levelA",
+	  "rulesets": "act:rulesets/wcag2x/levelA.json"
+	}
+  ]
+}

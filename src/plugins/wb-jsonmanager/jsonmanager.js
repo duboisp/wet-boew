@@ -30,6 +30,7 @@ var componentName = "wb-jsonmanager",
 	dsFetching = {},
 	dsFetchIsArray = {},
 	dsFetchMerged = {},
+	dsPostLoadReference = {},
 	$document = wb.doc,
 	defaults = {
 		ops: [
@@ -276,12 +277,26 @@ var componentName = "wb-jsonmanager",
 				name: "wb-add-from",
 				fn: function( obj, key, tree ) {
 
-					var fromObj = jsonpointer.get( tree, this.value );
+					var fromObj;
 
-					console.log( "wb-add-from (NOT ARRAY PATH)- Set value to: " + this.path );
-					console.log( fromObj );
+					if ( this.from ) {
+						fromObj = jsonpointer.get( tree, this.from );
+					} else if ( this.value ) {
+						fromObj = this.value;
+					} else {
+						console.log( "wb-add-from: Missing 'from' or 'value' parameter" );
+						return;
+					}
 
-					applyPatch( tree, "add", this.path, fromObj );
+					// Make the value in a array, which help to normalize the processing and we only grab the first one
+					if ( !Array.isArray( fromObj ) ){
+						fromObj = [ fromObj ];
+					}
+
+					//console.log( "wb-add-from (NOT ARRAY PATH)- Set value to: " + this.path );
+					//console.log( fromObj );
+
+					applyPatch( tree, "add", this.path, fromObj[ 0 ] );
 				}
 			},
 		],
@@ -348,11 +363,21 @@ var componentName = "wb-jsonmanager",
 				// Add the referenced item at the path location. Here the path is an array.
 				name: "wb-add-from",
 				fn: function( arr, idx, tree ) {
-					var val = jsonpointer.get( tree, this.value ),
+					var val,
 						i, i_len;
 
+
+					if ( this.from ) {
+						val = jsonpointer.get( tree, this.from );
+					} else if ( this.value ) {
+						val = this.value;
+					} else {
+						console.log( "wb-add-from: Missing 'from' or 'value' parameter" );
+						return;
+					}
+
 					// Make the value in a array, which help to normailize the processing
-					if ( !Array.isArray( val ) ) {
+					if ( !Array.isArray( val ) ){
 						val = [ val ];
 					}
 
@@ -442,7 +467,7 @@ var componentName = "wb-jsonmanager",
 
 					dsName = elmData.name;
 					if ( !dsName || dsName in dsNameRegistered ) {
-						throw "Dataset name must be unique";
+						throw "Dataset name, " + dsName +". must be unique";
 					}
 					dsNameRegistered.push( dsName );
 
@@ -513,6 +538,14 @@ var componentName = "wb-jsonmanager",
 						var nameForSaving = elmData.savename || dsName;
 
 						switch ( elmData.load ) {
+
+						case "wait":
+
+							// Let's wait for a future fetch event, like triggered by a post-load
+							elm.id = elm.id || wb.getId();
+							dsPostLoadReference[ dsName ] = elm.id;
+							//dsFetching[ dsName ][ "#[" + dsName + "]" ] = false;
+							break;
 
 						case "cache":
 							caches.open( componentName ).then( function( cacheStorage ) {
@@ -962,9 +995,17 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 		objIterator, savingPathSplit,
 		patches, filterTrueness, filterFaslseness, filterPath, extractor;
 
-	if ( elm === event.currentTarget ) {
-		settings = wb.getData( $elm, componentName );
 
+	console.log( "FETCHED........" );
+	console.log( elm );
+	console.log( fetchedOpts );
+	console.log( JSONresponse );
+
+
+
+	if ( elm === event.currentTarget ) {
+
+		settings = wb.getData( $elm, componentName );
 		// Is the fetched JSON need to be wrap in another plain object
 		if ( fetchedOpts && fetchedOpts.savingPath ) {
 			savingPathSplit = fetchedOpts.savingPath.split( "/" );
@@ -1007,6 +1048,9 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			}
 		}
 		if ( !urlWasFound ) {
+			console.error( "URL not found" );
+			console.error( dsFetching[ dsName ] );
+			console.error( wasUrl );
 			return;
 		}
 
@@ -1094,7 +1138,134 @@ $document.on( "json-fetched.wb", selector, function( event ) {
 			}
 		}
 
+		// The result might depend if the element with the postload are defined before or after this current element being Fetched
+		if ( !settings.wait && settings.postload ) {
+
+			// Check if we need to trigger a post load
+			// TODO, repeat this logic for when the JSON manager wait for a patch operation before to start.
+			if ( settings.postload ) {
+				console.warn( "++++++++++++++++++++++++++++++++" );
+				console.log( "Post load" );
+				var postload = settings.postload;
+
+				if ( !Array.isArray( postload ) ) {
+					postload = [ postload ];
+				}
+
+				i_len = postload.length;
+				for ( i = 0; i !== i_len; i += 1 ) {
+					i_cache = postload[ i ];
+
+					// Setting integrity check
+					if ( !i_cache.name || !i_cache.path ) {
+						console.error( "Invalid postload configuration" );
+						console.log( elm );
+						continue;
+					}
+
+					// Grab the ID
+					var postLoadDatasetId = dsPostLoadReference[ i_cache.name ];
+					if ( !postLoadDatasetId ) {
+						console.error( "A JSON Manager plugin must be defined for the dataset named: " + i_cache.name );
+						console.log( dsPostLoadReference );
+						console.log( elm );
+						continue;
+					}
+
+					// Get allowed domain
+					var allowedBasePath = i_cache.allowed || [];
+
+					if ( i_cache.allowed && !Array.isArray( i_cache.allowed ) ) {
+						allowedBasePath = [ i_cache.allowed ];
+					}
+					allowedBasePath = allowedBasePath.join( "," );
+
+					// Get the path to fetch JSON
+					var pathToFetch = jsonpointer.get( JSONresponse, i_cache.path ),
+						postLoadDatasetName = i_cache.name;
+
+					if ( !pathToFetch ) {
+						console.log( "Unable to post fetch URL: " + pathToFetch + " for dataset: " + postLoadDatasetName + " via " + dsName );
+						continue
+					}
+
+					// Prepare the dataset to receive all the inputs and resetting whatever containing data
+					dsFetching[ postLoadDatasetName ] = {};
+					delete dsFetchIsArray[ postLoadDatasetName ];
+					delete dsFetchMerged[ postLoadDatasetName ];
+					delete datasetCache[ postLoadDatasetName ];
+					delete datasetCacheSettings[ postLoadDatasetName ];
+
+					// Support multiple fetching URLs
+					if ( !Array.isArray( pathToFetch ) ) {
+						pathToFetch = [ pathToFetch ];
+					}
+
+					var j,
+						j_len = pathToFetch.length,
+						path;
+
+					for ( j = 0; j !== j_len; j = j + 1 ) {
+						path = pathToFetch[ j ];
+
+						// Validate each pathToFetch MUST https or local; in scope of allowed domain and in scope of a basepath
+						// If it fail, trigger a failed fetch for that dataset.
+
+						if ( typeof path !== "string" ) {
+							console.error( "Post load path are not authorized: " + path );
+							console.log( typeof path );
+							console.log( elm );
+							break;
+						}
+
+						var urlPart = wb.getUrlParts( path );
+
+						var isSameDomainOrLocalhost = wb.pageUrlParts.host === urlPart.host && wb.pageUrlParts.protocol === urlPart.host ||
+							( urlPart.protocol === "http:" &&  [ "localhost", "0.0.0.0", "127.0.0.1" ].indexOf( urlPart.hostname ) !== -1  );
+
+						if ( !isSameDomainOrLocalhost && urlPart.protocol !== "https:" ||
+								!isSameDomainOrLocalhost && allowedBasePath.length && !path.match( "^(" + allowedBasePath + ")" )
+							) {
+							console.error( "Post load path are not authorized by whitelist or unauthorized protocol" );
+							console.log( elm );
+							break;
+						}
+
+						// Initialize the dataset for this fetch
+						var urlSplit = path.split( "#" );
+						var pathDsRef = urlSplit[ 0 ];
+						if ( !pathDsRef &&  urlSplit[ 1 ].charCodeAt( 0 ) === 91 ) {
+
+							// Extract and use the dataset name as the reference
+							pathDsRef = "#[" + urlSplit[ 1 ].split( "/" )[ 0 ] + "]"; // This change is a bug fix that prevented to chain multiple JSON manager
+						}
+						dsFetching[ postLoadDatasetName ][ pathDsRef ] = false;
+
+						// Trigger the post load fetch
+						var postFetchOpts = {
+							callerId: postLoadDatasetId,
+							url: path
+						};
+						$( "#" + postLoadDatasetId ).trigger( {
+							type: "json-fetch.wb",
+							fetch: postFetchOpts
+						} );
+					}
+
+					console.log( "Post load triggered" );
+					console.log( postLoadDatasetId );
+					console.log( postFetchOpts );
+				}
+			}
+		}
+
+		console.log( "dsDelayed[ dsName ] -> " + dsName );
+		console.log( dsDelayed[ dsName ] );
+
+		// Trigger the FETCH for the item that have this Dataset
 		if ( !settings.wait && dsDelayed[ dsName ] ) {
+
+			// Dispatch fetch event
 			backlog = dsDelayed[ dsName ];
 			i_len = backlog.length;
 			for ( i = 0; i !== i_len; i += 1 ) {
@@ -1211,11 +1382,170 @@ $document.on( patchesEvent, selector, function( event ) {
 	}
 } );
 
+$document.on( "dscopy.wb-jsonmanager", function( event ) {
+
+	var elm = event.target,
+		$elm = $( elm ),
+		data = event.metadata,
+		fromRaw = data.from,
+		toRaw = data.to;
+
+	// Check if the input seem valid
+	if ( !fromRaw || !toRaw || fromRaw.substring( 0, 2 ) != "#[" || toRaw.substring( 0, 2 ) != "#[" ) {
+		console.error( "Dataset copy: Bad or incomplete 'from' and 'to' parameter received" );
+		console.log( elm );
+		return;
+	}
+
+	// Get dataset and path info
+	var from = parseDatasetURL( fromRaw ),
+		to = parseDatasetURL( toRaw );
+
+	if ( !from.dataset || !from.path || !to.dataset || !to.path ) {
+		console.error( "Dataset copy: Malformated dataset selector in 'from' or 'to'" );
+		console.log( elm );
+		return;
+	}
+
+	// Debug
+	console.log( "DEBUG dataset copy" );
+	console.log( from )
+	console.log( datasetCache );
+
+
+	// Save copy
+	var dsJSON = datasetCache[ to.datasetRaw ],
+		dsJSONfrom = datasetCache[ from.datasetRaw ];
+
+	if ( !dsJSON ) {
+		console.error( "Dataset, 'from', not found: " + to.datasetRaw );
+		return;
+	}
+
+	if ( !dsJSONfrom ) {
+		console.error( "Dataset, 'to',  not found: " + from.datasetRaw );
+		return;
+	}
+
+	var value = jsonpointer.get( dsJSONfrom, from.path );
+
+	if ( Array.isArray( value ) ) {
+		jsonpatch.apply( dsJSON, [ {
+			op: "wb-add-from",
+			path: to.path,
+			value: value
+		} ] );
+	} else {
+		jsonpatch.apply( dsJSON, [ {
+			op: "add",
+			path: to.path,
+			value: value
+		} ] );
+	}
+
+	console.log( "Dataset Updated" );
+
+
+	// Update reference to this dataset
+	var dsName = to.datasetRaw,
+		delayedLst,
+		i_len, i, i_cache,
+		pntrSelector,
+		resultSet;
+
+	console.log( dsName );
+	console.log( dsDelayed );
+
+	delayedLst = dsDelayed[ dsName ];
+	i_len = delayedLst.length;
+	for ( i = 0; i !== i_len; i += 1 ) {
+		i_cache = delayedLst[ i ];
+		pntrSelector = i_cache.selector;
+		if ( pntrSelector.length ) {
+			try {
+				resultSet = jsonpointer.get( dsJSON, pntrSelector );
+			} catch  ( e ) {
+				throw dsName + " - JSON selector not found: " + pntrSelector;
+			}
+		} else {
+			resultSet = dsJSON;
+		}
+		$( "#" + i_cache.callerId ).trigger( {
+			type: "json-fetched.wb",
+			fetch: {
+				url: "#[" + dsName + "]",
+				response: resultSet,
+				status: "200",
+				refId: i_cache.refId,
+				xhr: null
+			}
+		}, this );
+	}
+
+} );
+
+
+// Extract the dataset name from the URL + the page
+function parseDatasetURL( url ) {
+
+	var ret = {},
+		urlParts = url.split( "#" ),
+		url = urlParts[ 0 ],
+		selector = urlParts[ 1 ] || false,
+		hashPart, datasetName;
+
+	if ( url && url.length ) {
+		ret.url = url;
+	}
+
+	if ( selector ) {
+
+		// If a Dataset Name exist let it managed by wb-jsonpatch plugin
+		hashPart = selector.split( "/" );
+		datasetName = hashPart[ 0 ];
+
+		// A dataset name must start with "[" character, if it is a letter, then follow JSON Schema (to be implemented)
+		if ( datasetName.charCodeAt( 0 ) === 91 ) {
+			// The Trim the "[]" character and define it as the dataset name
+			ret.dataset = datasetName.substring( 1, datasetName.length - 2 );
+			ret.datasetRaw = datasetName;
+		}
+
+		// Figure out what is going to be the path
+		if ( ret.dataset && hashPart.length ) {
+			ret.path = selector.substring( datasetName.length );
+		}
+
+		if ( !ret.dataset && hashPart.length ) {
+			ret.path = selector;
+		}
+	}
+	/*
+	// Figure out the fetching reference for this dataset, one reference by URLs. (Note: CharCode 91 === "["
+	urlSplit = fetchOpts.url.split( "#" );
+	fetchedRef = urlSplit[ 0 ];
+	if ( !fetchedRef &&  urlSplit[ 1 ].charCodeAt( 0 ) === 91 ) {
+
+		// Extract and use the dataset name as the reference
+		fetchedRef = "#[" + urlSplit[ 1 ].split( "/" )[ 0 ] + "]"; // This change is a bug fix that prevented to chain multiple JSON manager
+	}
+	dsFetching[ dsName ][ fetchedRef ] = false;
+	*/
+
+	// Return a JSO object like:
+	//{
+	//	url,
+	//	dataset,
+	//	path,
+	//}
+	return ret;
+}
+
 // I need to Save, Load, Export and Import
 // To save a JSON dataset in a local storage
 $document.on( saveEvent, function( event ) {
 
-	console.log( event );
+	//console.log( event );
 
 	var elm = event.target,
 		$elm = $( elm ),
