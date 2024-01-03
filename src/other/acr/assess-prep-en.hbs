@@ -89,6 +89,7 @@
 
 <button class="btn btn-lg btn-primary" type="button" data-wb-doaction>
 	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#dsa11y" action="importInDataset" cumulative="true" passive="true"></wb-config>
 		<wb-config source="#dsa11y" action="saveDataSet" mode="local"></wb-config>
 	</wb-config>
 
@@ -96,32 +97,11 @@
 </button>
 
 
-<fieldset>
-	<legend>Select assessment type</legend>
-	<label>
-		Select a baseline ruleset
-		<select>
-			<optgroup label="Technical assessment">
-				<option value="">WCAG 2.1 Level AA Success Criterion</option>
-				<option value="">EN 301 549</option>
-				<option value="">Level AAA Delta WCAG 2.1 Success Criterion</option>
-				<option value="">Delta from WCAG 2.0 to WCAG 2.1 Level AA Success Criterion</option>
-				<option value="">Delta as 2022-09 from WCAG 2.1 to of WCAG 2.2 Level AA Success Criterion</option>
-				<option value="">Delta as 2023-04 from WCAG 2.1 to of WCAG 2.2 Level AA Success Criterion</option>
-			</optgroup>
-			<optgroup label="Thematic">
-				<option value="">Images and non text content</option>
-			</optgroup>
-			<optgroup label="Preliminary assessment">
-				<option value="">Identifying applicable WCAG 2.1 Level AA Success Criterion</option>
-			</optgroup>
-		</select>
-	</label>
-	<p><a href="https://github.com/wet-boew/act-rules/">ACT rules GitHub repository</a></p>
-</fieldset>
+<p><a href="https://github.com/wet-boew/act-rules/">ACT rules GitHub repository</a></p>
 
 <fieldset>
 	<legend>Subject</legend>
+	<!--
 	<label>Type of document
 		<select disabled>
 			<option selected>Web</option>
@@ -135,7 +115,7 @@
 			<option>ICT providing relay or emergency service access</option>
 		</select>
 	</label>
-
+-->
 	<div class="row">
 		<div class="col-md-6">
 
@@ -528,9 +508,24 @@
 	<textarea id="f-description" class="form-control full-width" rows="5" name="/dct:description" data-wb-json='{ "url":"#[a11y]/dct:description", "type": "val" }'></textarea>
 </div>
 
-<button type="button" class="btn btn-primary btn-lg">Download the report</button>
+<button type="button" class="btn btn-primary btn-lg" data-wb-doaction>
+	Download the report and save for later
 
-<button type="button" class="btn btn-default">Save for later</button>
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#dsa11y" action="importInDataset" cumulative="true" passive="true"></wb-config>
+		<wb-config source="#dsa11y" action="saveDataSet" mode="local"></wb-config>
+		<wb-config source="#dsa11y" action="saveDataSet" mode="download"></wb-config>
+	</wb-config>
+</button>
+
+<button type="button" class="btn btn-link" data-wb-doaction>
+	Only save for later
+
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#dsa11y" action="importInDataset" cumulative="true" passive="true"></wb-config>
+		<wb-config source="#dsa11y" action="saveDataSet" mode="local"></wb-config>
+	</wb-config>
+</button>
 
 
 <h2 id="assessment-details">Assessment details</h2>
@@ -882,6 +877,27 @@
 		</tr>
 	</table>
 </template>
+
+
+<p><a href="initiate.html" class="btn btn-primary btn-lg" data-wb-doaction>
+	Download the report and close this assessment
+
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#dsa11y" action="importInDataset" cumulative="true" passive="true"></wb-config>
+		<wb-config source="#dsa11y" action="saveDataSet" mode="download"></wb-config>
+		<wb-config source="#dsa11y" action="saveDataSet" mode="local-remove"></wb-config>
+	</wb-config>
+</a></p>
+
+<button type="button" class="btn btn-link" data-wb-doaction>
+	Only save for later
+
+	<wb-config wb-plugin="wb-doaction">
+		<wb-config source="#dsa11y" action="importInDataset" cumulative="true" passive="true"></wb-config>
+		<wb-config source="#dsa11y" action="saveDataSet" mode="local"></wb-config>
+	</wb-config>
+</button>
+
 
 </form>
 

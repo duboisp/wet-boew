@@ -179,6 +179,19 @@
 				<wb-config op="add" path="/dct:date">
 					<wb-config wb-prop="value" wb-value='null'></wb-config>
 				</wb-config>
+				<wb-config op="add" path="/earl:subject">
+					<wb-config wb-prop="value" wb-value='{
+						"@id": "_:subject",
+						"dct:references": [ ],
+						"@type": [ "earl:TestSubject", "schema:WebPage" ],
+						"dct:description": "",
+						"oa:hasState": [],
+						"earl:pointer": {
+						  "@type": "oa:CssSelector",
+						  "@value": ""
+						}
+					  }'></wb-config>
+				</wb-config>
 				<wb-config op="add" path="/dct:description" value="About this assessment and any summary notes."></wb-config>
 				<wb-config op="add" path="/earl:result">
 					<wb-config wb-prop="value" wb-value='[]'></wb-config>

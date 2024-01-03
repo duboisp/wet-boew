@@ -1617,6 +1617,14 @@ $document.on( saveEvent, function( event ) {
 		console.log( "Saved in local" );
 		break;
 
+	case "local-remove":
+		localStorage.removeItem( "ds-" + nameForSaving );
+		break;
+
+	case "session-remove":
+		sessionStorage.removeItem( "ds-" + nameForSaving );
+		break;
+
 	case "session":
 	default:
 		sessionStorage.setItem( "ds-" + nameForSaving, JSON.stringify( datasetCache[ dsName ] ) );
