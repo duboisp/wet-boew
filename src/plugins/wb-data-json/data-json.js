@@ -744,12 +744,17 @@ var componentName = "wb-data-json",
 		if ( mappingConfig.template ) {
 			template = clone.querySelector( mappingConfig.template );
 
+			console.log( template );
+
 			upstreamClone = clone; // Keep reference of the top clone
 
 			clone = template.content.cloneNode( true );
 
 			// Ensure we don't recreated it if during a subsequent iteration
 			delete mappingConfig.template;
+		} else {
+			console.log( "There is no template --> Need to assume the mapping children would define it" );
+			console.log( "Recommend to add a template config, especially if you are using removeAll config for re-rendering" );
 		}
 
 

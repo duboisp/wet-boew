@@ -1340,11 +1340,13 @@ $document.on( patchesEvent, selector, function( event ) {
 			return true;
 		}
 
-		if ( !dsDelayed[ dsName ] ) {
-			throw "Applying patched on undefined dataset name: " + dsName;
+		// Create the cache if it don't exist
+		if ( !datasetCache[ dsName ] ) {
+			datasetCache[ dsName ] = {};
 		}
 
 		dsJSON = datasetCache[ dsName ];
+
 		if ( !isCumulative ) {
 			dsJSON = $.extend( true, ( Array.isArray( dsJSON ) ? [] : {} ), dsJSON );
 		}
@@ -1361,6 +1363,11 @@ $document.on( patchesEvent, selector, function( event ) {
 		}
 
 		if ( passiveUpdate ) {
+			return;
+		}
+
+		if ( !dsDelayed[ dsName ] ) {
+			console.error( "Applying patched on an unused dataset name by data-json: " + dsName );
 			return;
 		}
 
@@ -1575,6 +1582,8 @@ $document.on( saveEvent, function( event ) {
 	dsName = "[" + settings.name + "]";
 
 	if ( !settings.name || !datasetCache[ dsName ] ) {
+		console.log( dsName );
+		console.log( datasetCache );
 		throw "A valid dataset name must be specified";
 	}
 
