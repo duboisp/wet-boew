@@ -84,6 +84,238 @@
 	"WCAG21:non-text-content": "demo/sc1_1_1.json",
 	"WCAG21:audio-only-and-video-only-prerecorded": "demo/sc1_2_1.json"
 
-  }
+  },
 
+   "sc-rulesets": [
+	{
+	  "@id": "_:allsc",
+	  "dct:title": "All Level A and level AA Success Criteria",
+	  "dct:title-multilang": {
+		"en": "All Level A and level AA Success Criteria",
+		"fr": "Tous les critères de niveau A et de niveau AA"
+	  },
+	  "rules": [
+		{ "earl:test": "WCAG21:non-text-content" },
+		{ "earl:test": "WCAG21:audio-only-and-video-only-prerecorded"},
+		{ "earl:test": "WCAG21:captions-prerecorded"},
+		{ "earl:test": "WCAG21:audio-description-or-media-alternative-prerecorded"},
+		{ "earl:test": "WCAG21:captions-live"},
+		{ "earl:test": "WCAG21:audio-description-prerecorded"},
+		{ "earl:test": "WCAG21:info-and-relationships"},
+		{ "earl:test": "WCAG21:meaningful-sequence"},
+		{ "earl:test": "WCAG21:sensory-characteristics"},
+		{ "earl:test": "WCAG21:orientation"},
+		{ "earl:test": "WCAG21:identify-input-purpose"},
+		{ "earl:test": "WCAG21:use-of-color"},
+		{ "earl:test": "WCAG21:audio-control"},
+		{ "earl:test": "WCAG21:contrast-minimum"},
+		{ "earl:test": "WCAG21:resize-text"},
+		{ "earl:test": "WCAG21:image-of-text"},
+		{ "earl:test": "WCAG21:reflow"},
+		{ "earl:test": "WCAG21:non-text-contrast"},
+		{ "earl:test": "WCAG21:text-spacing"},
+		{ "earl:test": "WCAG21:content-on-hover-or-focus"},
+		{ "earl:test": "WCAG21:keyboard"},
+		{ "earl:test": "WCAG21:no-keyboard-trap"},
+		{ "earl:test": "WCAG21:character-key-shortcuts"},
+		{ "earl:test": "WCAG21:timing-adjustable"},
+		{ "earl:test": "WCAG21:pause-stop-hide"},
+		{ "earl:test": "WCAG21:three-flashes-or-below-threshold"},
+		{ "earl:test": "WCAG21:byNot tested-blocks"},
+		{ "earl:test": "WCAG21:page-titled"},
+		{ "earl:test": "WCAG21:focus-order"},
+		{ "earl:test": "WCAG21:link-purpose-in-context"},
+		{ "earl:test": "WCAG21:multiple-ways"},
+		{ "earl:test": "WCAG21:headings-and-labels"},
+		{ "earl:test": "WCAG21:focus-visible"},
+		{ "earl:test": "WCAG21:pointer-gestures"},
+		{ "earl:test": "WCAG21:pointer-cancellation"},
+		{ "earl:test": "WCAG21:label-in-name"},
+		{ "earl:test": "WCAG21:motion-actuation"},
+		{ "earl:test": "WCAG21:language-of-page"},
+		{ "earl:test": "WCAG21:language-of-parts"},
+		{ "earl:test": "WCAG21:on-focus"},
+		{ "earl:test": "WCAG21:on-input"},
+		{ "earl:test": "WCAG21:consistent-navigation"},
+		{ "earl:test": "WCAG21:consistent-identification"},
+		{ "earl:test": "WCAG21:error-identification"},
+		{ "earl:test": "WCAG21:labels-or-instructions"},
+		{ "earl:test": "WCAG21:error-suggestion"},
+		{ "earl:test": "WCAG21:error-prevention-legal-financial-data)"},
+		{ "earl:test": "WCAG21:parsing"},
+		{ "earl:test": "WCAG21:name-role-value"},
+		{ "earl:test": "WCAG21:status-messages"}
+	  ]
+	},
+	{
+	  "@id": "_:not_found",
+	  "dct:title": "Broken links, Page not found",
+	  "dct:title-multilang": {
+		"en": "Broken links, Page not found",
+		"fr": "Lien brisé et page non trouvé"
+	  },
+	  "rules": [
+		{ "earl:test": "act:rules/functional/not_found" }
+	  ]
+	},
+	{
+	  "@id": "_:assisted",
+	  "dct:title": "Software assistance report",
+	  "dct:title-multilang": {
+		"en": "Software assistance report",
+		"fr": "Rapport du logiciel d'assistance"
+	  },
+	  "rules": [
+		{ "earl:test": "act:rules/automated/accessibility_insights_web" },
+		{ "earl:test": "act:rules/automated/wave_browser_extension" }
+	  ]
+	},
+	{
+	  "@id": "_:wcag21",
+	  "dct:title": "Delta WCAG 2.1 added success criteria",
+	  "dct:title-multilang": {
+		"en": "WCAG 2.1 added success criteria",
+		"fr": "Critère de mérite ajouté avec le WCAG 2.1"
+	  },
+	  "rules": [
+		{ "earl:test": "WCAG21:orientation"},
+		{ "earl:test": "WCAG21:identify-input-purpose"},
+		{ "earl:test": "WCAG21:reflow"},
+		{ "earl:test": "WCAG21:non-text-contrast"},
+		{ "earl:test": "WCAG21:text-spacing"},
+		{ "earl:test": "WCAG21:content-on-hover-or-focus"},
+		{ "earl:test": "WCAG21:character-key-shortcuts"},
+		{ "earl:test": "WCAG21:pointer-gestures"},
+		{ "earl:test": "WCAG21:pointer-cancellation"},
+		{ "earl:test": "WCAG21:label-in-name"},
+		{ "earl:test": "WCAG21:motion-actuation"},
+		{ "earl:test": "WCAG21:status-messages"}
+	  ]
+	},
+	{
+	  "@id": "_:wcagAAA",
+	  "dct:title": "Level AAA success criteria",
+	  "dct:title-multilang": {
+		"en": "Level AAA success criteria",
+		"fr": "Critère de mérite de niveau AAA"
+	  },
+	  "rules": [
+		{ "earl:test": "WCAG21:sign-language-prerecorded"},
+		{ "earl:test": "WCAG21:extended-audio-description-prerecorded"},
+		{ "earl:test": "WCAG21:media-alternative-prerecorded"},
+		{ "earl:test": "WCAG21:audio-only-live"},
+		{ "earl:test": "WCAG21:identify-purpose"},
+		{ "earl:test": "WCAG21:contrast-enhanced"},
+		{ "earl:test": "WCAG21:low-or-no-background-audio"},
+		{ "earl:test": "WCAG21:visual-presentation"},
+		{ "earl:test": "WCAG21:images-of-text-no-exception"},
+		{ "earl:test": "WCAG21:keyboard-no-exception"},
+		{ "earl:test": "WCAG21:no-timing"},
+		{ "earl:test": "WCAG21:interruptions"},
+		{ "earl:test": "WCAG21:re-authenticating"},
+		{ "earl:test": "WCAG21:timeouts"},
+		{ "earl:test": "WCAG21:three-flashes"},
+		{ "earl:test": "WCAG21:animation-from-interactions"},
+		{ "earl:test": "WCAG21:location"},
+		{ "earl:test": "WCAG21:link-purpose-link-only"},
+		{ "earl:test": "WCAG21:section-headings"},
+		{ "earl:test": "WCAG21:target-size"},
+		{ "earl:test": "WCAG21:concurrent-input-mechanisms"},
+		{ "earl:test": "WCAG21:unusual-words"},
+		{ "earl:test": "WCAG21:abbreviations"},
+		{ "earl:test": "WCAG21:reading-level"},
+		{ "earl:test": "WCAG21:pronunciation"},
+		{ "earl:test": "WCAG21:change-on-request"},
+		{ "earl:test": "WCAG21:help"},
+		{ "earl:test": "WCAG21:error-prevention-all"}
+	  ]
+	},
+	{
+	  "@id": "_:wcagDelta21AAA",
+	  "dct:title": "Delta WCAG 2.1 Level AAA success criteria",
+	  "dct:title-multilang": {
+		"en": "Delta WCAG 2.1 Level AAA success criteria",
+		"fr": "Delta des critère de mérite de niveau AAA pour le WCAG 2.1"
+	  },
+	  "rules": [
+		{ "earl:test": "WCAG21:identify-purpose"},
+		{ "earl:test": "WCAG21:timeouts"},
+		{ "earl:test": "WCAG21:animation-from-interactions"},
+		{ "earl:test": "WCAG21:target-size"},
+		{ "earl:test": "WCAG21:concurrent-input-mechanisms"}
+
+	  ]
+	},
+	{
+	  "@id": "_:wcagDelta22AA",
+	  "dct:title": "Delta WCAG 2.2 Level AA success criteria",
+	  "dct:title-multilang": {
+		"en": "Delta WCAG 2.2 Level AA success criteria",
+		"fr": "Delta des critère de mérite de niveau AA pour le WCAG 2.2"
+	  },
+	  "rules": [
+		{ "earl:test": "WCAG22:focus-not-obscured-minimum"},
+		{ "earl:test": "WCAG22:dragging-movements"},
+		{ "earl:test": "WCAG22:target-size-minimum"},
+		{ "earl:test": "WCAG22:consistent-help"},
+		{ "earl:test": "WCAG22:redundant-entry"},
+		{ "earl:test": "WCAG22:accessible-authentication-minimum"}
+
+	  ]
+	},
+	{
+	  "@id": "_:wcagDelta22AAA",
+	  "dct:title": "Delta WCAG 2.2 Level AAA success criteria",
+	  "dct:title-multilang": {
+		"en": "Delta WCAG 2.2 Level AAA success criteria",
+		"fr": "Delta des critère de mérite de niveau AAA pour le WCAG 2.2"
+	  },
+	  "rules": [
+		{ "earl:test": "WCAG22:focus-not-obscured-enhanced"},
+		{ "earl:test": "WCAG22:focus-appearance"},
+		{ "earl:test": "WCAG22:accessible-authentication-enhanced"}
+
+	  ]
+	},
+
+
+	{
+	  "@id": "_:images",
+	  "dct:title": "Images",
+	  "dct:title-multilang": {
+		"en": "Images",
+		"fr": "Images"
+	  },
+	  "rules": [
+		{ "earl:test": "WCAG21:non-text-content" },
+		{ "earl:test": "WCAG21:info-and-relationships"},
+		{ "earl:test": "WCAG21:meaningful-sequence"},
+		{ "earl:test": "WCAG21:sensory-characteristics"},
+		{ "earl:test": "WCAG21:orientation"},
+		{ "earl:test": "WCAG21:use-of-color"},
+		{ "earl:test": "WCAG21:contrast-minimum"},
+		{ "earl:test": "WCAG21:resize-text"},
+		{ "earl:test": "WCAG21:image-of-text"},
+		{ "earl:test": "WCAG21:reflow"},
+		{ "earl:test": "WCAG21:non-text-contrast"},
+		{ "earl:test": "WCAG21:text-spacing"},
+		{ "earl:test": "WCAG21:content-on-hover-or-focus"},
+		{ "earl:test": "WCAG21:link-purpose-in-context"},
+		{ "earl:test": "WCAG21:multiple-ways"},
+		{ "earl:test": "WCAG21:focus-visible"},
+		{ "earl:test": "WCAG21:pointer-gestures"},
+		{ "earl:test": "WCAG21:pointer-cancellation"},
+		{ "earl:test": "WCAG21:motion-actuation"},
+		{ "earl:test": "WCAG21:language-of-parts"},
+		{ "earl:test": "WCAG21:on-focus"},
+		{ "earl:test": "WCAG21:consistent-identification"},
+		{ "earl:test": "WCAG21:labels-or-instructions"},
+		{ "earl:test": "WCAG21:parsing"},
+		{ "earl:test": "WCAG21:name-role-value"}
+	  ]
+	}
+
+
+
+  ]
 }

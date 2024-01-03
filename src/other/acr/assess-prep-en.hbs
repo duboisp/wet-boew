@@ -535,6 +535,112 @@
 
 <h2 id="assessment-details">Assessment details</h2>
 
+
+<details>
+	<summary>Populate Success Criteria presets</summary>
+
+	<!-- Placeholder for when the standard profile is loaded -->
+	<div id="ds-loaded-profile" data-wb-jsonmanager='{
+		"name": "ds-loaded-profile",
+		"load": "wait",
+		"debug": true
+	}'></div>
+
+	<!-- Load the main index file to find the preset files -->
+	<div id="ds-standard-profile" data-wb-jsonmanager='{
+		"url": [
+			"#[a11y]",
+			{ "url": "demo/workingspace-data.json", "path": "/stdprofiles" }
+		],
+		"name": "ds-standard-profile",
+		"patches": [
+			{ "n": "Get matching profile", "op": "wb-swap", "path": "/acr:conformanceOption", "ref": "/stdprofiles/profiles", "put": "/stdprofiles" }
+		],
+		"postload": [
+			{ "name": "ds-loaded-profile", "path": "/stdprofiles" }
+		],
+		"debug": true
+	}'></div>
+
+</details>
+
+
+<!-- This suggestion is build based on the test evaluation on this page -->
+<label>Add success criteria rulesets
+<select id="suggest-rulesets" name="/workspace/selected"  data-wb-json='
+	{
+		"url": "#[ds-loaded-profile]/sc-rulesets",
+		"mapping": [
+			{ "selector": "option", "value": "/dct:title" },
+			{ "selector": "option", "attr": "value", "value": "/@id" }
+		],
+		"removeAll": "option"
+	}
+'>
+	<template>
+		<option></option>
+	</template>
+</select>
+</label>
+
+<button class="btn btn-default" type="button" data-wb-doaction>
+	Import a set of sub-tests
+
+	<wb-config wb-plugin="wb-doaction">
+
+				<!-- Save all and current state of the form -->
+				<wb-config source="#dsa11y" action="importInDataset" action-name="saveAll" cumulative="true"></wb-config>
+
+				<!-- Clean the workspace -->
+				<wb-config source="#ds-loaded-profile" action="patch" action-name="prepData" run-after="saveAll" cumulative="true" passive="true">
+					<wb-config wb-prop="patches">
+						<wb-config op="remove" path="/workspace"></wb-config>
+						<wb-config op="add" path="/workspace">
+							<wb-config wb-prop="value" wb-value='{ "rulesets": [] }'></wb-config>
+						</wb-config>
+					</wb-config>
+				</wb-config>
+
+				<!-- Get the form input -->
+				<wb-config source="#ds-loaded-profile" action="importInDataset" action-name="getinputs" run-after="prepData" cumulative="true" inputs="#suggest-rulesets"></wb-config>
+
+				<!-- Get the selected ruleset -->
+				<wb-config source="#ds-loaded-profile" action="patch" cumulative="true" passive="true" action-name="preProcess" run-after="getinputs">
+					<wb-config wb-prop="patches">
+
+						<!-- Create a working copy -->
+						<wb-config op="copy" from="/sc-rulesets" path="/workspace/rulesets"></wb-config>
+
+						<!-- Select the value and replace the working copy-->
+						<wb-config op="wb-swap" path="/workspace/selected" ref="/workspace/rulesets"></wb-config>
+
+						<!-- Complement each test rule with the current default subject reference -->
+						<wb-config op="patches" path="/workspace/selected/rules" iterate="true">
+							<wb-config wb-prop="patches">
+								<wb-config op="add" path="/earl:subject" value="_:subject"></wb-config>
+							</wb-config>
+						</wb-config>
+
+					</wb-config>
+				</wb-config>
+
+
+				<!-- Copy the value from the working dataset into the official one -->
+				<wb-config from="#[ds-loaded-profile]/workspace/selected/rules" to="#[a11y]/earl:result/-" action="copyBetweenDataset" cumulative="true" run-after="preProcess">
+				</wb-config>
+
+	</wb-config>
+
+</button>
+
+<button class="btn btn-link" type="button">
+	<span class="wb-inv">Import </span>for an applicable refined subject
+
+
+</button>
+
+
+
 <table class="table table-columnfloat">
 	<thead>
 		<tr>

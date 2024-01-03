@@ -324,7 +324,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 				<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
 					<wb-config wb-prop="patches">
-						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						<wb-config op="wb-add-from" from="/workspace-asset" path="/workspace/acr:asset/-">
 						</wb-config>
 					</wb-config>
 				</wb-config>
@@ -364,7 +364,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 					<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
 						<wb-config wb-prop="patches">
-							<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+							<wb-config op="wb-add-from" from="/workspace-asset" path="/workspace/acr:asset/-">
 							</wb-config>
 						</wb-config>
 					</wb-config>
@@ -396,7 +396,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 					<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
 						<wb-config wb-prop="patches">
-							<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+							<wb-config op="wb-add-from" from="/workspace-asset" path="/workspace/acr:asset/-">
 							</wb-config>
 						</wb-config>
 					</wb-config>
@@ -437,7 +437,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 				<wb-config source="#myDataSet" action="patch" run-after="prepData" cumulative="true">
 					<wb-config wb-prop="patches">
 						<wb-config op="add" path="/workspace-asset/@type" value="xsd:anyURI"></wb-config>
-						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						<wb-config op="wb-add-from" from="/workspace-asset" path="/workspace/acr:asset/-">
 						</wb-config>
 					</wb-config>
 				</wb-config>
@@ -472,7 +472,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 				<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
 					<wb-config wb-prop="patches">
-						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						<wb-config op="wb-add-from" from="/workspace-asset" path="/workspace/acr:asset/-">
 						</wb-config>
 					</wb-config>
 				</wb-config>
@@ -510,7 +510,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 				<wb-config source="#myDataSet" action="patch" run-after="getinputs" cumulative="true">
 					<wb-config wb-prop="patches">
-						<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+						<wb-config op="wb-add-from" from="/workspace-asset" path="/workspace/acr:asset/-">
 						</wb-config>
 					</wb-config>
 				</wb-config>
@@ -895,7 +895,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 						<wb-config op="wb-swap" path="/workspace-rulesets/selected" ref="/workspace-rulesets/rulesets"></wb-config>
 
 						<!-- Copy the rule -->
-						<wb-config op="wb-add-from" value="/workspace-rulesets/selected/rules" path="/workspace/earl:result/-"></wb-config>
+						<wb-config op="wb-add-from" from="/workspace-rulesets/selected/rules" path="/workspace/earl:result/-"></wb-config>
 
 					</wb-config>
 				</wb-config>
@@ -915,7 +915,7 @@ Idea: Have a default version of the data in order to remove entry that matching 
 
 	<!--
 
-	<wb-config op="wb-add-from" value="/workspace-asset" path="/workspace/acr:asset/-">
+	<wb-config op="wb-add-from" from="/workspace-asset" path="/workspace/acr:asset/-">
 						</wb-config>
 
 	<wb-config wb-plugin="wb-doaction">

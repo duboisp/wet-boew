@@ -39,12 +39,23 @@ var componentName = "wb-jsonmanager",
 				fn: function( obj, key, tree ) {
 					var path = this.path,
 						patches = this.patches,
+						iterate = this.iterate,
 						newTree = jsonpointer.get( tree, path );
 
 					patches.forEach( ( patchConf ) => {
 						patchConf.mainTree = tree;
 						patchConf.pathParent = path;
-						jsonpatch.apply( newTree, [ patchConf ] );
+
+						if ( iterate && Array.isArray( newTree ) ) {
+
+							// Iterate if "path" is an array and then re-apply the patches to each inner object
+							// Needed to apply patches to complete the default data when adding success criterion
+							newTree.forEach( ( currTreeToUpdate ) => {
+								jsonpatch.apply( currTreeToUpdate, [ patchConf ] );
+							} );
+						} else {
+							jsonpatch.apply( newTree, [ patchConf ] );
+						}
 					} );
 				}
 			},{
@@ -293,8 +304,8 @@ var componentName = "wb-jsonmanager",
 						fromObj = [ fromObj ];
 					}
 
-					//console.log( "wb-add-from (NOT ARRAY PATH)- Set value to: " + this.path );
-					//console.log( fromObj );
+					console.log( "wb-add-from (NOT ARRAY PATH)- Set value to: " + this.path );
+					console.log( fromObj );
 
 					applyPatch( tree, "add", this.path, fromObj[ 0 ] );
 				}
@@ -380,7 +391,6 @@ var componentName = "wb-jsonmanager",
 					if ( !Array.isArray( val ) ){
 						val = [ val ];
 					}
-
 
 					// Concat both array by cloning each value
 					i_len = val.length;
@@ -1418,12 +1428,12 @@ $document.on( "dscopy.wb-jsonmanager", function( event ) {
 		dsJSONfrom = datasetCache[ from.datasetRaw ];
 
 	if ( !dsJSON ) {
-		console.error( "Dataset, 'from', not found: " + to.datasetRaw );
+		console.error( "Dataset, 'to', not found: " + to.datasetRaw );
 		return;
 	}
 
 	if ( !dsJSONfrom ) {
-		console.error( "Dataset, 'to',  not found: " + from.datasetRaw );
+		console.error( "Dataset, 'from',  not found: " + from.datasetRaw );
 		return;
 	}
 
