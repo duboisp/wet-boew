@@ -26,48 +26,77 @@
 <details>
 	<summary>JSON Manager debug</summary>
 
-	<div data-wb-jsonmanager-proposed='{
-		"url": { "url": "#[uploaded]", load-from: "local-storage | session | data-layer", "load-key": "localStorage KEY", "Select path" },
-		"name": "edit-sc"
-	}'></div>
-
-	<div data-wb-jsonmanager-out='{
-		"url": [ { "url": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json" } ],
-		"name": "full-ds",
-		"debug": true
-	}'>
-	<!-- {
-		"url": [ { "url": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json" } ],
-		"name": "full-ds",
+	<!-- Working space data - Need to keep it clean -
+		Patches are only for:
+		* Ensure the data are structured in a way it is functional
+		* Test the integrity of the workspace
+	-->
+	<div id="dsWorkingSpace" data-wb-jsonmanager='{
+		"load": "local",
+		"savename": "acr-assess-workspace",
+		"name": "dsWorkingSpace",
+		"notes": "Patches only to validate the data integrity + complementing incomplete data",
 		"patches": [
-			{ "op": "patches", "path": "/earl:result", "patches": [
-					{ "op": "wb-swap", "path": "/earl:subject", "ref": "/earl:subject" }
+			{ "op": "if", "path": "sc/earl:result", "test": "typeof", "value": "undefined", "patches": [
+					{ "op": "add", "path": "sc/earl:result", "value": [] }
+				]
+			},
+			{ "op": "if", "path": "sc/acr:asset", "test": "typeof", "value": "undefined", "patches": [
+					{ "op": "add", "path": "sc/acr:asset", "value": [] }
+				]
+			},
+			{ "op": "if", "path": "sc/earl:test", "test": "typeof", "value": "undefined", "patches": [
+					{ "op": "add", "path": "/invalid", "value": true }
 				]
 			}
-		],
-		"debug": true
-	} -->
+		]
+	}'>
+	<!--
+
+	Working space structured like
+
+	{
+		sc: {} // Success Criteria associated for this working space (Copied by button in Assessment Global pages)
+
+		subject: {} // Subject of the assessment  (Copied by button in Assessment Global pages)
+
+		workspace-id: "" // ID of the earl:test of this workspace item calculated from the main data set.
+
+		// Any metadata and/or working document at the root
+
+	}
+
+	-->
 	</div>
 
-	<!-- If load from localhost fail, throw a fetch error state -->
-	<!-- Backup copy ..... <div id="dsA11y" data-wb-jsonmanager='{
-		"load": "local",
-		"savename": "a11y-assess",
-		"name": "a11y",
-		"patches": [
-			{ "op": "add", "path": "/workspace/earl:result", "value": [] }
+	<!-- Presentation layer of the workspace -->
+	<div id="present-workspace" data-wb-jsonmanager='{
+		"url": [
+			"#[dsWorkingSpace]",
+			"demo-wcag21/labels.json"
 		],
-		"debug": true
+		"name": "present-workspace",
+		"patches": [
+			{ "op": "wb-swap", "path": "sc/earl:test", "ref": "/labels/earl:TestCriterion/en" },
+			{ "op": "patches", "path": "sc/earl:result",
+				"patches": [
+					{ "op": "wb-swap", "path": "sc/earl:test", "ref": "/labels/earl:TestCriterion/en", "put": "sc/dct:title" }
+				]
+			}
+		]
 	}'></div>
-	<div id="myDataSet" data-wb-jsonmanager='{
-		"url": "#[a11y]",
-		"name": "edit-sc",
-		"patches": [
-			{ "op": "wb-swap", "path": "/workspace/earl:test", "ref": "/sc-rulesets", "put": "/sc-rulesets", "comment_value": "_value_ is a selector from where to take the value from the _ref_ which would be replaced at the specified _path_ location" }
-		],
-		"debug": true
-	}'></div>-->
 
+
+
+	<!-- Main data set, Recommend to use consistent naming -->
+	<div id="dsa11y" data-wb-jsonmanager='{
+		"load": "local",
+		"name": "dsa11y",
+		"savename": "a11y-assess"
+	}'></div>
+
+	<!-- Presentation layer of the main data set -->
+	<div id=""></div>
 
 	<div id="myDataSet" data-wb-jsonmanager='{
 		"load": "local",
@@ -86,21 +115,6 @@
 		],
 		"debug": true
 	}'></div>
-
-
-
-<!-- The following is a static load for testing purpose -->
-	<!--
-	<div id="myDataSet" data-wb-jsonmanager='{
-		"url2": "demo-wcag21/assessment-wcag21-SC1_1_1-a.json#/earl:result/0",
-		"url": "demo/workingspace-data.json",
-		"name": "edit-sc",
-		"patches": [
-			{ "op": "wb-swap", "path": "/workspace/earl:test", "ref": "/sc-rulesets", "put": "/sc-rulesets", "comment_value": "_value_ is a selector from where to take the value from the _ref_ which would be replaced at the specified _path_ location" }
-		],
-		"debug": true
-	}'></div>
-	-->
 
 	<div id="pre-views-layer" data-wb-jsonmanager='{
 		"url": "#[edit-sc]",
@@ -129,6 +143,48 @@
 	}'></div>
 
 </details>
+
+
+<!-- Warning message if the working space data is incomplete -->
+<div data-wb-json='{
+	"url": "#[dsWorkingSpace]",
+	"streamline": true,
+	"template": "[data-tmpl]",
+	"mapping": [
+		{
+			"template": "[data-info]",
+			"assess": "/invalid",
+			"test": "fn:getValue",
+			"operand": "eq",
+			"expect": true,
+			"mapping": null
+		}
+	],
+	"fail": {
+		"template": "[data-err]",
+		"mapping": null
+	}
+}'>
+	<template data-err>
+		<div class="alert alert-danger">
+			<h2>Error when loading the Success Criterion details</h2>
+			<p>We detected an error which could create a data lost if you proceed with the edition of the success criteria via this page.</p>
+			<p>We recommend you to go back on the <a href="assess-prep-en.html">assessment</a> main page and re-select the success criterion you will like to update.</p>
+			<p><a href="assess-prep-en.html" class="btn btn-primary btn-lg">Return to the assessment</a></p>
+		</div>
+	</template>
+	<template data-tmpl>
+		<template data-info>
+			<div class="alert alert-danger">
+				<h2>Data corruption when loading the Success Criterion details</h2>
+				<p>We detected a data corruption which could create a data lost if you proceed with the edition of the success criteria via this page.</p>
+				<p>We recommend you to go back on the <a href="assess-prep-en.html">assessment</a> main page and re-select the success criterion you will like to update. We would appreciate if you can report this error with us if this error keep persisting.</p>
+				<p><a href="assess-prep-en.html" class="btn btn-primary btn-lg">Return to the assessment</a></p>
+			</div>
+		</template>
+	</template>
+</div>
+
 
 <p data-json-replace="#[present-sc]/earl:mode">earl:test</p>
 
